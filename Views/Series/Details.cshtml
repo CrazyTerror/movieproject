@@ -1,0 +1,29 @@
+@model MovieProject.Models.Series
+@{
+    ViewData["Title"] = @Model.Name + " (" + ViewBag.Year + ")";
+}
+
+@foreach (var season in @Model.Seasons.OrderBy(s => s.SeasonNumber))
+{
+    <div>
+        <a asp-action="Details" asp-controller="Season" asp-route-seasonnumber="@season.SeasonNumber">
+            <img src="/images/season/@(season.Id).jpg" onerror="this.src='/images/season/template.jpg';this.onerror='';" alt="@season.Name" />
+        </a>
+    </div>
+}
+
+<div>
+    @Model.Seasons.Count @(@Model.Seasons.Count > 1 ? "Seasons" : "Season" )
+</div>
+
+<div class="text-center">
+    <a asp-controller="Season" asp-action="Create" class="btn btn-primary">Add Season</a>
+</div>
+
+<div class="row">
+    <img src="/images/series/@(Model.Id).jpg" onerror="this.src='/images/series/template.jpg';this.onerror='';" alt="@Model.Name" width="100%">
+</div>
+
+<div>
+    <img src="/images/series/poster/@(Model.Id).jpg" onerror="this.src='/images/series/poster/template.jpg';this.onerror='';" alt="@Model.Name">
+</div>

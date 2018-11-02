@@ -1,0 +1,51 @@
+@model MovieProject.Models.Season
+@{
+    ViewData["Title"] = @ViewBag.Series + " - " + @Model.Name;
+    string selected = "color:red;";
+}
+
+<div class="container"></div>
+
+<text>Season</text>
+@for (var i = 1; i < @ViewBag.SeasonCount + 1; i++)
+{
+    <a style="@(i == @Model.SeasonNumber ? @selected : null )" asp-action="Details" asp-controller="Season" asp-route-seasonnumber="@i">@i </a>
+}
+
+@foreach (var episode in @Model.Episodes.OrderBy(ob => ob.EpisodeNumber))
+{
+    <div class="row">
+        <a asp-action="Details" asp-controller="Episode" asp-route-episodenumber="@episode.EpisodeNumber">
+            <img src="/images/episode/@(episode.Id).jpg" onerror="this.src='/images/episode/template.jpg';this.onerror='';" alt="@episode.Name" height="170px" width="300px" />
+        </a>    
+        <div>
+            @if(@episode.EpisodeNumber < 10)
+            { 
+                <text>@(episode.SeasonNumber + "x0" + @episode.EpisodeNumber)</text>
+            } else
+            {
+                <text>@(episode.SeasonNumber + "x" + @episode.EpisodeNumber)</text>
+            }
+            <text>@(episode.Name + " - mins")</text>
+            <p>@episode.Description</p>
+        </div>
+    </div>
+}
+
+<div>
+    @Model.Episodes.Count @(Model.Episodes.Count > 1 ? "Episodes" : "Episode" )
+</div>
+
+<div class="text-center">
+    <a asp-controller="Episode" asp-action="Create" class="btn btn-primary">Add Episode</a>
+</div>
+
+<div class="row">
+    Series Background:
+    <img src="/images/series/@(Model.SeriesId).jpg" onerror="this.src='/images/series/template.jpg';this.onerror='';" alt="@Model.Name" width="100%" />
+</div>
+
+<div class="row">
+    Season Poster:
+    <img src="/images/season/@(Model.Id).jpg" onerror="this.src='/images/season/template.jpg';this.onerror='';" alt="@Model.Name" />
+</div>

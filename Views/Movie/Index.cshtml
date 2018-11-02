@@ -1,0 +1,52 @@
+@model List<MovieProject.Models.Movie>
+@using MovieProject.Infrastructure;
+
+@{
+    ViewData["Title"] = "About Movies";
+}
+<h2>@ViewData["Title"]</h2>
+
+@if (Model.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Movie</th>
+                <th scope="col">Year</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Movie m in Model)
+            {
+                <tr>
+                    <td>
+                        <a asp-action="Details" asp-route-slug="@m.Slug">
+                            <img src="/images/movie/poster/@(m.Id).jpg" onerror="this.src='/images/movie/poster/template.jpg';this.onerror='';" alt="@m.Name"/>
+                        </a>
+                    </td>
+                    <td>
+                        @(m.ReleaseDate.HasValue ? m.ReleaseDate.Value.ToString("yyyy") : "")
+                    </td>
+                    <td>
+                        <form asp-action="Delete" asp-route-id="@m.Id" method="post">
+                            <a asp-action="Edit" class="btn btn-sm btn-warning"
+                            asp-route-slug="@m.Slug">
+                                Edit
+                            </a>
+                            <input type="hidden" name="Id" value="@m.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<div class="text-center">
+    <a asp-action="Create" class="btn btn-primary">Add Movie</a>
+</div>

@@ -1,0 +1,70 @@
+@model MovieProject.Models.Movie
+@{
+    ViewData["Title"] = @Model.Name + " (" + ViewBag.Year + ")";
+    var genres = @Model.MovieGenre.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();
+}
+
+
+
+<div class="row">
+    <img src="/images/movie/@(Model.Id).jpg" onerror="this.src='/images/movie/template.jpg';this.onerror='';" alt="@Model.Name" width="100%">
+</div>
+<div class="row">
+    <div class="col-md-10">
+        <ul>
+            <li>
+                <label>Average</label>
+                @if (@Model.VoteAverage != null)
+                {
+                    @Model.VoteAverage
+                } else
+                {
+                    <text>No votes</text>
+                }
+            </li>
+            <li>
+                <label>Votes</label>
+                @if (@Model.VoteCount != null)
+                {
+                    @Model.VoteCount
+                } else
+                {
+                    <text>No votes</text>
+                }
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div>
+    <ul>
+        <li>
+            <label>Released</label>
+            @ViewBag.Date
+        </li>
+        <li>
+            <label>Runtime</label>
+            @Model.Runtime
+        </li>
+        <li>
+            <label>Genres</label>
+            @String.Join(", ", genres)
+        </li>
+    </ul>
+</div>
+
+<div class="row">
+    <h2>Actors</h2>
+        @foreach (var actor in @Model.MovieCredits)
+        {
+            <a asp-action="Details" asp-controller="People" asp-route-slug="@actor.Person.Slug">
+                <img src="/images/person/poster/@(actor.Person.Id).jpg" onerror="this.src='/images/person/poster/template.jpg';this.onerror='';" alt="@actor.Person.FirstName @actor.Person.Surname" height="127px" width="84px" />
+            </a>
+            <div>@actor.Person.FirstName @actor.Person.Surname - @actor.Character</div>
+        }
+</div>
+
+Movie Poster:
+<div>
+    <img src="/images/movie/poster/@(Model.Id).jpg" onerror="this.src='/images/movie/poster/template.jpg';this.onerror='';" alt="@Model.Name">
+</div>

@@ -1,0 +1,22 @@
+@model MovieProject.Models.Episode
+@{
+    ViewData["Title"] = @ViewBag.Series + " " + @Model.SeasonNumber + "x" + @ViewBag.Episode + " \"" +  @Model.Name + "\"";
+    string selected = "color:red;";
+}
+
+<text>Episode</text>
+<ul>
+    @for (var i = 1; i < @ViewBag.EpisodeCount + 1; i++)
+    {
+        <li>
+            <a style="@(i == @Model.EpisodeNumber ? @selected : null )" asp-action="Details" asp-controller="Episode" asp-route-episodenumber="@i">@i</a>
+        </li>
+    }
+</ul>
+
+
+<div class="row">
+    <img src="/images/episode/@(Model.Id).jpg" onerror="this.src='/images/episode/template.jpg';this.onerror='';" alt="@Model.Name" width="100%" />
+</div>
+
+<h3>@Model.Name</h3>

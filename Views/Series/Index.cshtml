@@ -1,0 +1,52 @@
+@model List<MovieProject.Models.Series>
+
+@{
+    ViewData["Title"] = "About Series";
+}
+<h2>@ViewData["Title"]</h2>
+
+@if (Model.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Series</th>
+                <th scope="col">Year</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Series s in Model)
+            {
+                <tr>
+                    <td>
+                        <a asp-action="Details" asp-route-slug="@s.Slug">
+                            <img src="/images/series/poster/@(s.Id).jpg" onerror="this.src='/images/series/poster/template.jpg';this.onerror='';" alt="@s.Name"/>
+                        </a>
+                    </td>
+                    <td>
+                        @(s.FirstAirDate.HasValue ? s.FirstAirDate.Value.ToString("yyyy") : "")
+                    </td>
+                    <td>
+                        <form asp-action="Delete" asp-route-id="@s.Id" method="post">
+                            <a asp-action="Edit" class="btn btn-sm btn-warning"
+                            asp-route-slug="@s.Slug">
+                                Edit
+                            </a>
+                            <input type="hidden" name="Id" value="@s.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<div class="text-center">
+    <a asp-controller="Series" asp-action="Create" class="btn btn-primary">Add Series</a>
+</div>
+

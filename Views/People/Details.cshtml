@@ -1,0 +1,50 @@
+@model MovieProject.Models.Person
+@{
+    ViewData["Title"] = @Model.FirstName + " " + @Model.Surname;
+}
+
+<div class="container">
+    Played In Movie:
+    @foreach (var movie in @Model.MovieCredits)
+    {
+        <div class="row">
+            <a asp-action="Details" asp-controller="Movie" asp-route-slug="@movie.Movie.Slug">
+                <img src="/images/movie/poster/@(movie.Id).jpg" onerror="this.src='/images/movie/poster/template.jpg';this.onerror='';" alt="@movie.Movie.Name" />
+            </a>
+            <ul>
+                <li>@movie.Movie.Name</li>
+                @if (@movie.Movie.ReleaseDate.HasValue)
+                {
+                    <li>@movie.Movie.ReleaseDate.Value.ToString("yyyy")</li>
+                } else
+                {
+                    <li>Unknown</li>
+                }
+                <li>@movie.Character</li>
+            </ul>
+        </div>
+    }
+</div>
+
+<div class="container">
+    Played In Series:
+    @foreach (var series in @Model.EpisodeCredits.Select(s => s.Episode.Season.Series).Distinct())
+    {
+        <div class="row">
+            <a asp-action="Details" asp-controller="Series" asp-route-slug="@series.Slug">
+                <img src="/images/series/poster/@(series.Id).jpg" onerror="this.src='/images/series/poster/template.jpg';this.onerror='';" alt="@series.Name" />
+            </a>
+        </div>
+    }
+</div>
+
+
+<div class="row">
+    Background:
+    <img src="/images/person/@(Model.Id).jpg" onerror="this.src='/images/person/template.jpg';this.onerror='';" alt="@Model.FirstName @Model.Surname" width="100%">
+</div>
+
+<div class="row">
+    Poster:
+    <img src="/images/person/poster/@(Model.Id).jpg" onerror="this.src='/images/person/poster/template.jpg';this.onerror='';" alt="@Model.FirstName @Model.Surname">
+</div>

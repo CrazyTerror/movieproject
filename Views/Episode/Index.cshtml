@@ -1,0 +1,45 @@
+@model List<MovieProject.Models.Episode>
+
+@{
+    ViewData["Title"] = "About Episodes";
+}
+<h2>@ViewData["Title"]</h2>
+
+@if (Model.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Episode</th>
+                <th scope="col">Year</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Episode e in Model)
+            {
+                <tr>
+                    <td>
+                        <a asp-controller="Episode" asp-action="Details" asp-route-seasonnumber="@e.EpisodeNumber">@e.Name</a>
+                    </td>
+                    <td>
+                        <form asp-action="Delete" asp-route-id="@e.Id" method="post">
+                            <a asp-action="Edit" class="btn btn-sm btn-warning" asp-route-id="@e.Id">
+                                Edit
+                            </a>
+                            <input type="hidden" name="Id" value="@e.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<div class="text-center">
+    <a asp-controller="Episode" asp-action="Create" class="btn btn-primary">Add Episode</a>
+</div>
