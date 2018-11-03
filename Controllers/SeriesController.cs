@@ -88,7 +88,7 @@ namespace MovieProject.Controllers
 
         [HttpPost("series/{Slug}/edit")]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(EditSeriesViewModel seriesViewModel)
+        public IActionResult Edit(string Slug, EditSeriesViewModel seriesViewModel)
         {
             var series = _context.Series.FirstOrDefault(m => m.Id == seriesViewModel.Id);
             
@@ -104,7 +104,7 @@ namespace MovieProject.Controllers
 
                 TempData["message"] = $"{series.Name} has been changed";
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Series", new { Slug = Slug });
             } 
             return View(series);
         }

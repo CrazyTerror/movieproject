@@ -14,6 +14,9 @@
     }
 </ul>
 
+<div class="text-center">
+    <a asp-controller="Episode" asp-action="Edit" class="btn btn-warning">Edit Episode</a>
+</div>
 
 <div class="row">
     <img src="/images/episode/@(Model.Id).jpg" onerror="this.src='/images/episode/template.jpg';this.onerror='';" alt="@Model.Name" width="100%" />

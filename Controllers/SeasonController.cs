@@ -70,16 +70,35 @@ namespace MovieProject.Controllers
             return RedirectToAction("Details", "Series", new { Slug = Slug});
         }
 
-        [HttpGet("series/{Slug}/seasons/{id}/edit")]
-        public ViewResult Edit()
+        [HttpGet("series/{Slug}/seasons/{SeasonNumber}/edit")]
+        public ViewResult Edit(string Slug, int SeasonNumber)
         {
-            return View();
+            var series = _context.Series.FirstOrDefault(m => m.Slug == Slug);
+            var season = _context.Seasons.Where(s => s.SeriesId == series.Id).Where(s => s.SeasonNumber == SeasonNumber).FirstOrDefault();
+
+            return View(season);
         }
 
-        [HttpPost("series/{Slug}/seasons/{id}/edit")]
-        public IActionResult Edit(Season season)
+        [HttpPost("series/{Slug}/seasons/{SeasonNumber}/edit")]
+        public IActionResult Edit(EditSeasonViewModel editSeasonViewModel, int SeasonNumber)
         {
-            return RedirectToAction(nameof(Index));
+            var season = _context.Seasons.FirstOrDefault(s => s.Id == editSeasonViewModel.Id);
+            
+            if (ModelState.IsValid)
+            {
+                _context.Seasons.Attach(season);
+
+                season.Name = editSeasonViewModel.Name;
+                season.Description = editSeasonViewModel.Description;
+                season.AirDate = editSeasonViewModel.AirDate;
+
+                _context.SaveChanges();
+
+                TempData["message"] = $"{season.Name} has been changed";
+
+                return RedirectToAction("Details", "Season", new { SeasonNumber = SeasonNumber });
+            } 
+            return View(season);
         }
 
         [HttpGet("series/{Slug}/seasons/{id}/delete")]

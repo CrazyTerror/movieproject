@@ -88,16 +88,37 @@ namespace MovieProject.Controllers
             return RedirectToAction("Details", "Season", new { SeasonNumber = SeasonNumber});
         }
 
-        [HttpGet("series/{Slug}/seasons/{seasonId}/episodes/{episodeId}/edit")]
-        public ViewResult Edit()
+        [HttpGet("series/{Slug}/seasons/{SeasonNumber}/episodes/{EpisodeNumber}/edit")]
+        public ViewResult Edit(string Slug, int SeasonNumber, int EpisodeNumber)
         {
-            return View();
+            var series = _context.Series.FirstOrDefault(m => m.Slug == Slug);
+            var season = _context.Seasons.Where(s => s.SeriesId == series.Id).Where(s => s.SeasonNumber == SeasonNumber).FirstOrDefault();
+            var episode = _context.Episodes.Where(e => e.SeasonId == season.Id).Where(e => e.EpisodeNumber == EpisodeNumber).FirstOrDefault();
+
+            return View(episode);
         }
 
-        [HttpPost("series/{Slug}/seasons/{seasonId}/episodes/{episodeId}/edit")]
-        public IActionResult Edit(Season season)
+        [HttpPost("series/{Slug}/seasons/{SeasonNumber}/episodes/{EpisodeNumber}/edit")]
+        public IActionResult Edit(EditEpisodeViewModel editEpisodeViewModel, int EpisodeNumber)
         {
-            return RedirectToAction(nameof(Index));
+            var episode = _context.Episodes.FirstOrDefault(s => s.Id == editEpisodeViewModel.Id);
+            
+            if (ModelState.IsValid)
+            {
+                _context.Episodes.Attach(episode);
+
+                episode.Name = editEpisodeViewModel.Name;
+                episode.Description = editEpisodeViewModel.Description;
+                episode.AirDate = editEpisodeViewModel.AirDate;
+                episode.Runtime = editEpisodeViewModel.Runtime;
+
+                _context.SaveChanges();
+
+                TempData["message"] = $"{episode.Name} has been changed";
+
+                return RedirectToAction("Details", "Episode", new { EpisodeNumber = EpisodeNumber });
+            } 
+            return View(episode);
         }
 
         [HttpGet("series/{Slug}/seasons/{seasonId}/episodes/{episodeId}/delete")]
