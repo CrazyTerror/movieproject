@@ -63,7 +63,18 @@ namespace MovieProject.Controllers
             var series = _context.Series.Include(s => s.Seasons).ThenInclude(s => s.Episodes).FirstOrDefault(srs => srs.Slug == Slug);
             var season = _context.Seasons.Where(s => s.SeriesId == series.Id).Where(s => s.SeasonNumber == SeasonNumber).FirstOrDefault(); 
             
+            // Change episode count in series
             _context.Series.Attach(series);
+            if (series.NumberOfEpisodes == null)
+            {
+                series.NumberOfEpisodes = 1;
+            } else
+            {
+                series.NumberOfEpisodes++;
+            }
+            series.UpdatedAt = DateTime.Now;
+
+            // Change episode count in season
             _context.Seasons.Attach(season);
             if (season.EpisodeCount == null)
             {
@@ -72,19 +83,13 @@ namespace MovieProject.Controllers
             {
                 season.EpisodeCount++;
             }
-
-            if (series.NumberOfEpisodes == null)
-            {
-                series.NumberOfEpisodes = 1;
-            } else
-            {
-                series.NumberOfEpisodes++;
-            }
-            
+            season.UpdatedAt = DateTime.Now;
+       
             // Add new Episode
             episode.SeasonId = season.Id;
             episode.SeasonNumber = season.SeasonNumber;
             episode.EpisodeNumber = season.EpisodeCount;
+            episode.UpdatedAt = DateTime.Now;
             _context.Episodes.Add(episode);
 
             _context.SaveChanges();
@@ -115,6 +120,7 @@ namespace MovieProject.Controllers
                 episode.Description = editEpisodeViewModel.Description;
                 episode.AirDate = editEpisodeViewModel.AirDate;
                 episode.Runtime = editEpisodeViewModel.Runtime;
+                episode.UpdatedAt = DateTime.Now;
 
                 _context.SaveChanges();
 
@@ -137,9 +143,11 @@ namespace MovieProject.Controllers
             {
                 _context.Attach(series);
                 series.NumberOfEpisodes--;
+                series.UpdatedAt = DateTime.Now;
 
                 _context.Attach(season);
                 season.EpisodeCount--;
+                season.UpdatedAt = DateTime.Now;
 
                 _context.Episodes.Remove(episode);
                 _context.SaveChanges();

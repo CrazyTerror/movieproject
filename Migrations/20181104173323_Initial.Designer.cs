@@ -9,7 +9,7 @@ using MovieProject.Models;
 namespace MovieProject.Migrations
 {
     [DbContext(typeof(MovieContext))]
-    [Migration("20181104145600_Initial")]
+    [Migration("20181104173323_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,6 +40,8 @@ namespace MovieProject.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime?>("AirDate");
+
+                    b.Property<string>("Banner");
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -119,6 +121,8 @@ namespace MovieProject.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("Banner");
+
                     b.Property<int?>("Budget");
 
                     b.Property<DateTime>("CreatedAt");
@@ -134,6 +138,8 @@ namespace MovieProject.Migrations
                     b.Property<string>("Name");
 
                     b.Property<string>("OfficialSite");
+
+                    b.Property<string>("Poster");
 
                     b.Property<DateTime?>("ReleaseDate");
 
@@ -213,6 +219,8 @@ namespace MovieProject.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("Banner");
+
                     b.Property<string>("Biography");
 
                     b.Property<DateTime?>("BirthDate");
@@ -232,6 +240,8 @@ namespace MovieProject.Migrations
                     b.Property<string>("IMDB");
 
                     b.Property<string>("Instagram");
+
+                    b.Property<string>("Poster");
 
                     b.Property<string>("Slug");
 
@@ -267,6 +277,8 @@ namespace MovieProject.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<string>("Poster");
+
                     b.Property<int?>("SeasonNumber");
 
                     b.Property<int>("SeriesId");
@@ -288,6 +300,8 @@ namespace MovieProject.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Banner");
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -314,6 +328,8 @@ namespace MovieProject.Migrations
                     b.Property<string>("OfficialSite");
 
                     b.Property<string>("OriginalLanguage");
+
+                    b.Property<string>("Poster");
 
                     b.Property<string>("Slug");
 

@@ -83,6 +83,7 @@ namespace MovieProject.Controllers
                 person.Surname = editPersonViewModel.Surname;
                 person.BirthDate = editPersonViewModel.BirthDate;
                 person.DeathDate = editPersonViewModel.DeathDate;
+                person.UpdatedAt = DateTime.Now;
 
                 _context.SaveChanges();
 

@@ -70,6 +70,7 @@ namespace MovieProject.Controllers
             // Change amount of seasons in series
             _context.Series.Attach(series);
             series.NumberOfSeasons = series.Seasons.Count;
+            series.UpdatedAt = DateTime.Now;
 
             _context.SaveChanges();
 
@@ -97,6 +98,7 @@ namespace MovieProject.Controllers
                 season.Name = editSeasonViewModel.Name;
                 season.Description = editSeasonViewModel.Description;
                 season.AirDate = editSeasonViewModel.AirDate;
+                season.UpdatedAt = DateTime.Now;
 
                 _context.SaveChanges();
 
@@ -118,6 +120,7 @@ namespace MovieProject.Controllers
                 _context.Attach(series);
                 series.NumberOfSeasons--;
                 series.NumberOfEpisodes = series.NumberOfEpisodes - season.EpisodeCount;
+                series.UpdatedAt = DateTime.Now;
 
                 _context.Seasons.Remove(season);
                 await _context.SaveChangesAsync();

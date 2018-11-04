@@ -9,16 +9,22 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MovieProject.Infrastructure;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 
 namespace MovieProject.Controllers
 {
     public class MovieController : Controller
     {
         private readonly MovieContext _context;
+        private readonly IHostingEnvironment _environment;
 
-        public MovieController(MovieContext context)
+        public MovieController(MovieContext context, IHostingEnvironment hostingEnvironment)
         {
             _context = context;
+            _environment = hostingEnvironment;
+
         }
 
         [HttpGet("movies")]
@@ -60,10 +66,31 @@ namespace MovieProject.Controllers
         [HttpPost("movies/create")]
         public IActionResult Create(Movie movie)
         {
+            System.Console.WriteLine(movie.Id);
             var slug = UrlEncoder.ToFriendlyUrl(Request.Form["Name"]);
             movie.Slug = slug;
-
             _context.Movies.Add(movie);
+            _context.SaveChanges();
+       
+            var lastMovie = _context.Movies.Last(); 
+
+            var poster = HttpContext.Request.Form.Files["Poster"];
+
+            if (poster != null && poster.Length > 0)
+            {
+                var fileName = Path.GetFileName(poster.FileName);
+                
+                var extension = System.IO.Path.GetExtension(fileName);
+                var newMovieId = lastMovie.Id;
+                var newFileName = newMovieId + "" + extension;
+                var path = Path.Combine(_environment.WebRootPath, "images\\movie\\poster\\") + newFileName;
+                
+                using (FileStream fs = System.IO.File.Create(path))
+                {
+                    poster.CopyTo(fs);
+                    fs.Flush();
+                }
+            }
 
             foreach (var item in Request.Form["Genre"])
             {
@@ -106,6 +133,7 @@ namespace MovieProject.Controllers
                 movie.Name = movieViewModel.Name;
                 movie.Description = movieViewModel.Description;
                 movie.ReleaseDate = movieViewModel.ReleaseDate;
+                movie.UpdatedAt = DateTime.Now;
 
                 _context.SaveChanges();
 

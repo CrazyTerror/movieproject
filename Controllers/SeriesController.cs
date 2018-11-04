@@ -99,6 +99,7 @@ namespace MovieProject.Controllers
                 series.Name = seriesViewModel.Name;
                 series.Description = seriesViewModel.Description;
                 series.FirstAirDate = seriesViewModel.FirstAirDate;
+                series.UpdatedAt = DateTime.Now;
 
                 _context.SaveChanges();
 

@@ -60,6 +60,8 @@ namespace MovieProject.Migrations
                     Twitter = table.Column<string>(nullable: true),
                     Facebook = table.Column<string>(nullable: true),
                     Instagram = table.Column<string>(nullable: true),
+                    Poster = table.Column<string>(nullable: true),
+                    Banner = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false)
                 },
@@ -88,6 +90,8 @@ namespace MovieProject.Migrations
                     Facebook = table.Column<string>(nullable: true),
                     Instagram = table.Column<string>(nullable: true),
                     Slug = table.Column<string>(nullable: true),
+                    Poster = table.Column<string>(nullable: true),
+                    Banner = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false)
                 },
@@ -121,6 +125,8 @@ namespace MovieProject.Migrations
                     Facebook = table.Column<string>(nullable: true),
                     Instagram = table.Column<string>(nullable: true),
                     Slug = table.Column<string>(nullable: true),
+                    Poster = table.Column<string>(nullable: true),
+                    Banner = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false)
                 },
@@ -200,6 +206,7 @@ namespace MovieProject.Migrations
                     IMDB = table.Column<string>(nullable: true),
                     TMDB = table.Column<string>(nullable: true),
                     Wikipedia = table.Column<string>(nullable: true),
+                    Poster = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
                     SeriesId = table.Column<int>(nullable: false)
@@ -260,6 +267,7 @@ namespace MovieProject.Migrations
                     IMDB = table.Column<string>(nullable: true),
                     TMDB = table.Column<string>(nullable: true),
                     Wikipedia = table.Column<string>(nullable: true),
+                    Banner = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
                     SeasonId = table.Column<int>(nullable: false)
