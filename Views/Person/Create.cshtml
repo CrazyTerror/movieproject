@@ -1,0 +1,31 @@
+@{
+    ViewData["Title"] = "Add Person";
+}
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label>First Name</label>
+        <div><span class="text-danger"></span></div>
+        <input name="FirstName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Surname</label>
+        <div><span class="text-danger"></span></div>
+        <input name="Surname" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Birth Date</label>
+        <div><span class="text-danger"></span></div>
+        <input type="date" name="BirthDate" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Death Date</label>
+        <div><span class="text-danger"></span></div>
+        <input type="date" name="DeathDate" class="form-control" />
+    </div>
+    <div class="text-center">
+        <button class="btn btn-primary" type="submit">Save</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>

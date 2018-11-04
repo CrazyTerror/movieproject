@@ -5,6 +5,14 @@
 }
 
 <div class="container"></div>
+    <form asp-action="Delete" method="post">
+        <a asp-action="Edit" class="btn btn-sm btn-warning">
+            Edit Season
+        </a>
+        <button type="submit" class="btn btn-danger btn-sm">
+            Delete Season
+        </button>
+    </form>
 
 <text>Season</text>
 @for (var i = 1; i < @ViewBag.SeasonCount + 1; i++)
@@ -33,7 +41,7 @@
 }
 
 <div>
-    @Model.Episodes.Count @(Model.Episodes.Count > 1 ? "Episodes" : "Episode" )
+    @Model.Episodes.Count @(Model.Episodes.Count > 1 || Model.Episodes.Count == 0 ? "Episodes" : "Episode" )
 </div>
 
 <div class="text-center">

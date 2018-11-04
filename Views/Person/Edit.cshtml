@@ -1,0 +1,33 @@
+@model MovieProject.Models.Person
+@{
+    ViewData["Title"] = "Edit: " + @Model.FirstName + " " + @Model.Surname;
+}
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <div class="form-group">
+        <label asp-for="FirstName"></label>
+        <div><span asp-validation-for="FirstName" class="text-danger"></span></div>
+        <input asp-for="FirstName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Surname"></label>
+        <div><span asp-validation-for="Surname" class="text-danger"></span></div>
+        <input asp-for="Surname" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="BirthDate"></label>
+        <div><span asp-validation-for="BirthDate" class="text-danger"></span></div>
+        <input type="date" asp-for="BirthDate" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="DeathDate"></label>
+        <div><span asp-validation-for="DeathDate" class="text-danger"></span></div>
+        <input type="date" asp-for="DeathDate" class="form-control" />
+    </div>
+    <div class="text-center">
+        <button class="btn btn-primary" type="submit">Save</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>

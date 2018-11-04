@@ -9,7 +9,7 @@ using MovieProject.Models;
 namespace MovieProject.Migrations
 {
     [DbContext(typeof(MovieContext))]
-    [Migration("20181102132418_Initial")]
+    [Migration("20181104145600_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,7 +45,9 @@ namespace MovieProject.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<int>("EpisodeNumber");
+                    b.Property<int?>("EpisodeNumber");
+
+                    b.Property<string>("IMDB");
 
                     b.Property<string>("Name");
 
@@ -53,13 +55,17 @@ namespace MovieProject.Migrations
 
                     b.Property<int>("SeasonId");
 
-                    b.Property<int>("SeasonNumber");
+                    b.Property<int?>("SeasonNumber");
+
+                    b.Property<string>("TMDB");
 
                     b.Property<DateTime>("UpdatedAt");
 
-                    b.Property<int?>("VoteAverage");
+                    b.Property<float?>("VoteAverage");
 
                     b.Property<int?>("VoteCount");
+
+                    b.Property<string>("Wikipedia");
 
                     b.HasKey("Id");
 
@@ -119,7 +125,15 @@ namespace MovieProject.Migrations
 
                     b.Property<string>("Description");
 
+                    b.Property<string>("Facebook");
+
+                    b.Property<string>("IMDB");
+
+                    b.Property<string>("Instagram");
+
                     b.Property<string>("Name");
+
+                    b.Property<string>("OfficialSite");
 
                     b.Property<DateTime?>("ReleaseDate");
 
@@ -131,11 +145,17 @@ namespace MovieProject.Migrations
 
                     b.Property<string>("Status");
 
+                    b.Property<string>("TMDB");
+
+                    b.Property<string>("Twitter");
+
                     b.Property<DateTime>("UpdatedAt");
 
-                    b.Property<int?>("VoteAverage");
+                    b.Property<float?>("VoteAverage");
 
                     b.Property<int?>("VoteCount");
+
+                    b.Property<string>("Wikipedia");
 
                     b.HasKey("Id");
 
@@ -193,19 +213,37 @@ namespace MovieProject.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("BirthDate");
+                    b.Property<string>("Biography");
+
+                    b.Property<DateTime?>("BirthDate");
+
+                    b.Property<string>("BirthPlace");
 
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<DateTime?>("DeathDate");
 
+                    b.Property<string>("Facebook");
+
                     b.Property<string>("FirstName");
+
+                    b.Property<string>("Homepage");
+
+                    b.Property<string>("IMDB");
+
+                    b.Property<string>("Instagram");
 
                     b.Property<string>("Slug");
 
                     b.Property<string>("Surname");
 
+                    b.Property<string>("TMDB");
+
+                    b.Property<string>("Twitter");
+
                     b.Property<DateTime>("UpdatedAt");
+
+                    b.Property<string>("Wikipedia");
 
                     b.HasKey("Id");
 
@@ -225,13 +263,19 @@ namespace MovieProject.Migrations
 
                     b.Property<int?>("EpisodeCount");
 
+                    b.Property<string>("IMDB");
+
                     b.Property<string>("Name");
 
-                    b.Property<int>("SeasonNumber");
+                    b.Property<int?>("SeasonNumber");
 
                     b.Property<int>("SeriesId");
 
+                    b.Property<string>("TMDB");
+
                     b.Property<DateTime>("UpdatedAt");
+
+                    b.Property<string>("Wikipedia");
 
                     b.HasKey("Id");
 
@@ -251,7 +295,13 @@ namespace MovieProject.Migrations
 
                     b.Property<int?>("EpisodeRunTime");
 
+                    b.Property<string>("Facebook");
+
                     b.Property<DateTime?>("FirstAirDate");
+
+                    b.Property<string>("IMDB");
+
+                    b.Property<string>("Instagram");
 
                     b.Property<DateTime?>("LastAirDate");
 
@@ -261,17 +311,25 @@ namespace MovieProject.Migrations
 
                     b.Property<int?>("NumberOfSeasons");
 
+                    b.Property<string>("OfficialSite");
+
                     b.Property<string>("OriginalLanguage");
 
                     b.Property<string>("Slug");
 
                     b.Property<string>("Status");
 
+                    b.Property<string>("TMDB");
+
+                    b.Property<string>("Twitter");
+
                     b.Property<DateTime>("UpdatedAt");
 
-                    b.Property<int?>("VoteAverage");
+                    b.Property<float?>("VoteAverage");
 
                     b.Property<int?>("VoteCount");
+
+                    b.Property<string>("Wikipedia");
 
                     b.HasKey("Id");
 

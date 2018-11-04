@@ -75,7 +75,7 @@ namespace MovieProject.Controllers
 
             TempData["message"] = $"{series.Name} has been created";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", "Series", new { Slug = slug});
         }
 
         [HttpGet("series/{Slug}/edit")]

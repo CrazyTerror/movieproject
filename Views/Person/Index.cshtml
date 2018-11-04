@@ -21,11 +21,11 @@
             {
                 <tr>
                     <td>
-                        <a asp-controller="People" asp-action="Details" asp-route-slug="@p.Slug">@p.FirstName @p.Surname</a>
+                        <a asp-controller="Person" asp-action="Details" asp-route-slug="@p.Slug">@p.FirstName @p.Surname</a>
                     </td>
                     <td>
                         <form asp-action="Delete" asp-route-id="@p.Id" method="post">
-                            <a asp-action="Edit" class="btn btn-sm btn-warning" asp-route-id="@p.Id">
+                            <a asp-action="Edit" class="btn btn-sm btn-warning" asp-route-slug="@p.Slug">
                                 Edit
                             </a>
                             <input type="hidden" name="Id" value="@p.Id" />
@@ -41,5 +41,5 @@
 }
 
 <div class="text-center">
-    <a asp-controller="People" asp-action="Create" class="btn btn-primary">Add Season</a>
+    <a asp-controller="Person" asp-action="Create" class="btn btn-primary">Add Person</a>
 </div>

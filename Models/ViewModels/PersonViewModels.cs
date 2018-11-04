@@ -2,7 +2,7 @@ using System;
 
 namespace MovieProject.Models
 {
-    public class EditActorInfoViewModel
+    public class EditPersonInfoViewModel
     {
         public int Id { get; set; }
         public string FirstName { get; set; }

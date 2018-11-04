@@ -13,7 +13,7 @@
 }
 
 <div>
-    @Model.Seasons.Count @(@Model.Seasons.Count > 1 ? "Seasons" : "Season" )
+    @Model.Seasons.Count @(@Model.Seasons.Count > 1 || Model.Seasons.Count == 0 ? "Seasons" : "Season" )
 </div>
 
 <div class="text-center">

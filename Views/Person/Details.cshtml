@@ -4,6 +4,30 @@
 }
 
 <div class="container">
+    <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+        <a asp-action="Edit" class="btn btn-sm btn-warning">
+            Edit Person
+        </a>
+        <button type="submit" class="btn btn-danger btn-sm">
+            Delete
+        </button>
+    </form>
+    <div>
+        Actor: @Model.FirstName @Model.Surname
+    </div>
+    @if (Model.BirthDate != null)
+    {
+        <div>
+            Birth Date: @Model.BirthDate.Value.ToString("dd MMMM yyyy")
+        </div>
+    } 
+    @if (Model.DeathDate != null)
+    {
+        <div>
+            Death Date: @Model.DeathDate.Value.ToString("dd MMMM yyyy")
+        </div>
+    } 
+    
     Played In Movie:
     @foreach (var movie in @Model.MovieCredits)
     {

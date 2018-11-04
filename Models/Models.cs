@@ -1,14 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace MovieProject.Models
 {
-    public enum Status
-    {
-        
-    }
-
     public class Movie
     {
         public int Id { get; set; }
@@ -22,6 +18,13 @@ namespace MovieProject.Models
         public float? VoteAverage { get; set; } = null;
         public string Status { get; set; }
         public string Slug { get; set; }
+        public string OfficialSite { get; set; }
+        public string IMDB { get; set; }
+        public string TMDB { get; set; }
+        public string Wikipedia { get; set; }
+        public string Twitter { get; set; }
+        public string Facebook { get; set; }
+        public string Instagram { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
@@ -34,8 +37,17 @@ namespace MovieProject.Models
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string Surname { get; set; }
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; } = null;
         public DateTime? DeathDate { get; set; } = null;
+        public string BirthPlace { get; set; }
+        public string Biography { get; set; }
+        public string Homepage { get; set; }
+        public string IMDB { get; set; }
+        public string TMDB { get; set; }
+        public string Wikipedia { get; set; }
+        public string Twitter { get; set; }
+        public string Facebook { get; set; }
+        public string Instagram { get; set; }
         public string Slug { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
@@ -77,6 +89,13 @@ namespace MovieProject.Models
         public string Status { get; set; }
         public int? VoteCount { get; set; } = null;
         public float? VoteAverage { get; set; } = null;
+        public string OfficialSite { get; set; }
+        public string IMDB { get; set; }
+        public string TMDB { get; set; }
+        public string Wikipedia { get; set; }
+        public string Twitter { get; set; }
+        public string Facebook { get; set; }
+        public string Instagram { get; set; }
         public string Slug { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
@@ -93,6 +112,9 @@ namespace MovieProject.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime? AirDate { get; set; } = null;
+        public string IMDB { get; set; }
+        public string TMDB { get; set; }
+        public string Wikipedia { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
@@ -113,6 +135,9 @@ namespace MovieProject.Models
         public int? Runtime { get; set; } = null;
         public int? VoteCount { get; set; } = null;
         public float? VoteAverage { get; set; } = null;
+        public string IMDB { get; set; }
+        public string TMDB { get; set; }
+        public string Wikipedia { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
@@ -206,7 +231,17 @@ namespace MovieProject.Models
         public int Id { get; set; }
         public int UserId { get; set; }
         public User User { get; set; }
-        public int Comment { get; set; }
+        public string Comment { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+    }
+
+    public class Comment
+    {
+        public int Id { get; set; }
+        public User User { get; set; }
+        public Review Review { get; set; }
+        public string Comment { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
@@ -241,6 +276,4 @@ namespace MovieProject.Models
     }
 
     */
-
-    //TO DO: Lists, TV Series, TV Episodes, more attributes
 }

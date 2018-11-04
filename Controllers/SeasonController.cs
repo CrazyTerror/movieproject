@@ -58,7 +58,13 @@ namespace MovieProject.Controllers
 
             // Add New Season
             season.SeriesId = series.Id;
-            season.SeasonNumber = series.NumberOfSeasons + 1;
+            if (series.NumberOfEpisodes == null)
+            {
+                season.SeasonNumber = 1;
+            } else 
+            {
+                season.SeasonNumber++;
+            }
             _context.Seasons.Add(season);
 
             // Change amount of seasons in series
@@ -67,7 +73,7 @@ namespace MovieProject.Controllers
 
             _context.SaveChanges();
 
-            return RedirectToAction("Details", "Series", new { Slug = Slug});
+            return RedirectToAction("Details", "Season", new { Slug = Slug, SeasonNumber = season.SeasonNumber});
         }
 
         [HttpGet("series/{Slug}/seasons/{SeasonNumber}/edit")]
@@ -101,10 +107,29 @@ namespace MovieProject.Controllers
             return View(season);
         }
 
-        [HttpGet("series/{Slug}/seasons/{id}/delete")]
-        public IActionResult Delete(Season season)
+        [HttpPost("series/{Slug}/seasons/{SeasonNumber}/delete")]
+        public async Task<IActionResult> Delete(string Slug, int SeasonNumber)
         {
-            return RedirectToAction(nameof(Index));
+            var series = _context.Series.FirstOrDefault(srs => srs.Slug == Slug);
+            var season = _context.Seasons.Where(s => s.SeriesId == series.Id).Where(s => s.SeasonNumber == SeasonNumber).FirstOrDefault();
+            
+            if (season != null)
+            {
+                _context.Attach(series);
+                series.NumberOfSeasons--;
+                series.NumberOfEpisodes = series.NumberOfEpisodes - season.EpisodeCount;
+
+                _context.Seasons.Remove(season);
+                await _context.SaveChangesAsync();
+                
+                TempData["message"] = $"{series.Name} - {season.Name} was deleted";
+
+                return RedirectToAction("Details", "Series", new { Slug = Slug});
+            } else 
+            {
+                
+                return View("Error");
+            }
         }
     }
 }

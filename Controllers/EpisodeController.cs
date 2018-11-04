@@ -63,25 +63,29 @@ namespace MovieProject.Controllers
             var series = _context.Series.Include(s => s.Seasons).ThenInclude(s => s.Episodes).FirstOrDefault(srs => srs.Slug == Slug);
             var season = _context.Seasons.Where(s => s.SeriesId == series.Id).Where(s => s.SeasonNumber == SeasonNumber).FirstOrDefault(); 
             
+            _context.Series.Attach(series);
+            _context.Seasons.Attach(season);
+            if (season.EpisodeCount == null)
+            {
+                season.EpisodeCount = 1;
+            } else 
+            {
+                season.EpisodeCount++;
+            }
+
+            if (series.NumberOfEpisodes == null)
+            {
+                series.NumberOfEpisodes = 1;
+            } else
+            {
+                series.NumberOfEpisodes++;
+            }
+            
             // Add new Episode
             episode.SeasonId = season.Id;
             episode.SeasonNumber = season.SeasonNumber;
-            episode.EpisodeNumber = season.EpisodeCount + 1;
+            episode.EpisodeNumber = season.EpisodeCount;
             _context.Episodes.Add(episode);
-
-            // Change episode count in series
-            var allSeasons = series.Seasons.ToList();
-            var seriesEpisodeCount = 0;
-            foreach (var perSeason in allSeasons)
-            {
-                seriesEpisodeCount += perSeason.Episodes.Count;
-            }
-            _context.Series.Attach(series);
-            series.NumberOfEpisodes = seriesEpisodeCount;
-
-            // Change episode count in season
-            _context.Seasons.Attach(season);
-            season.EpisodeCount = season.Episodes.Count;
 
             _context.SaveChanges();
 
@@ -121,10 +125,32 @@ namespace MovieProject.Controllers
             return View(episode);
         }
 
-        [HttpGet("series/{Slug}/seasons/{seasonId}/episodes/{episodeId}/delete")]
-        public IActionResult Delete(Season season)
+        [HttpPost("series/{Slug}/seasons/{SeasonNumber}/episodes/{EpisodeNumber}/delete")]
+        public IActionResult Delete(string Slug, int SeasonNumber, int Id)
         {
-            return RedirectToAction(nameof(Index));
+            System.Console.WriteLine("-------------" + Id);
+            var series = _context.Series.FirstOrDefault(srs => srs.Slug == Slug);
+            var season = _context.Seasons.Where(s => s.SeriesId == series.Id).Where(s => s.SeasonNumber == SeasonNumber).FirstOrDefault();
+            var episode = _context.Episodes.FirstOrDefault(s => s.Id == Id);
+
+            if (episode != null)
+            {
+                _context.Attach(series);
+                series.NumberOfEpisodes--;
+
+                _context.Attach(season);
+                season.EpisodeCount--;
+
+                _context.Episodes.Remove(episode);
+                _context.SaveChanges();
+
+                TempData["message"] = $"Episode {episode.EpisodeNumber} - {episode.Name} from {series.Name} - {season.Name} was deleted";
+
+                return RedirectToAction("Details", "Season", new { Slug = Slug, SeasonNumber = SeasonNumber});
+            } else 
+            {
+                return RedirectToAction("Details", "Season", new { Slug = Slug, SeasonNumber = SeasonNumber});
+            }
         }
     }
 }

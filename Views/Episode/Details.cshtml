@@ -14,9 +14,15 @@
     }
 </ul>
 
-<div class="text-center">
-    <a asp-controller="Episode" asp-action="Edit" class="btn btn-warning">Edit Episode</a>
-</div>
+<form asp-action="Delete" method="post">
+    <a asp-action="Edit" class="btn btn-sm btn-warning">
+        Edit Episode
+    </a>
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <button type="submit" class="btn btn-danger btn-sm">
+        Delete Episode
+    </button>
+</form>
 
 <div class="row">
     <img src="/images/episode/@(Model.Id).jpg" onerror="this.src='/images/episode/template.jpg';this.onerror='';" alt="@Model.Name" width="100%" />

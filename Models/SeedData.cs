@@ -186,7 +186,7 @@ namespace MovieProject.Models
                     Name = "Season 1",
                     AirDate = new System.DateTime(2011, 4, 17),
                     SeasonNumber = 1,
-                    EpisodeCount = 10
+                    EpisodeCount = 2
                 };
 
                 Season se2 = new Season()
@@ -195,7 +195,7 @@ namespace MovieProject.Models
                     Name = "Season 2",
                     AirDate = new System.DateTime(2012, 4, 1),
                     SeasonNumber = 2,
-                    EpisodeCount = 10
+                    EpisodeCount = 2
                 };
 
                 context.Add(se1);
