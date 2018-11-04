@@ -95,7 +95,7 @@ namespace MovieProject.Controllers
 
         [HttpPost("movies/{Slug}/edit")]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(EditMovieViewModel movieViewModel)
+        public IActionResult Edit(EditMovieInfoViewModel movieViewModel)
         {
             var movie = _context.Movies.FirstOrDefault(m => m.Id == movieViewModel.Id);
             

@@ -48,7 +48,6 @@ namespace MovieProject
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             
-            services.AddTransient<IMovieRepository, EFMovieRepository>();
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddJsonOptions(

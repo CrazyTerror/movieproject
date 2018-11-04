@@ -88,7 +88,7 @@ namespace MovieProject.Controllers
 
         [HttpPost("series/{Slug}/edit")]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(string Slug, EditSeriesViewModel seriesViewModel)
+        public IActionResult Edit(string Slug, EditSeriesInfoViewModel seriesViewModel)
         {
             var series = _context.Series.FirstOrDefault(m => m.Id == seriesViewModel.Id);
             

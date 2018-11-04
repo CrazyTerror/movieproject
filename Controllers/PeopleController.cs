@@ -61,7 +61,7 @@ namespace MovieProject.Controllers
 
         [HttpPost("people/{Slug}/edit")]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(EditMovieViewModel movieViewModel)
+        public IActionResult Edit(EditPersonInfoViewModel editPersonViewModel)
         {
             
             return View();

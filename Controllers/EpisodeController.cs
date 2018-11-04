@@ -99,7 +99,7 @@ namespace MovieProject.Controllers
         }
 
         [HttpPost("series/{Slug}/seasons/{SeasonNumber}/episodes/{EpisodeNumber}/edit")]
-        public IActionResult Edit(EditEpisodeViewModel editEpisodeViewModel, int EpisodeNumber)
+        public IActionResult Edit(EditEpisodeInfoViewModel editEpisodeViewModel, int EpisodeNumber)
         {
             var episode = _context.Episodes.FirstOrDefault(s => s.Id == editEpisodeViewModel.Id);
             
