@@ -167,6 +167,8 @@ namespace MovieProject.Controllers
                 _context.Episodes.Remove(episode);
                 _context.SaveChanges();
 
+                Images.DeleteAssetImage(_context, _env, "filmItem", episode.Id);
+
                 TempData["message"] = $"Episode {episode.Episode_EpisodeNumber} - {episode.Name} from {series.Name} - {season.Name} was deleted";
 
                 return RedirectToAction("Details", "Season", new { Slug = Slug, SeasonNumber = SeasonNumber});

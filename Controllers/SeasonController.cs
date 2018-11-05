@@ -61,12 +61,12 @@ namespace MovieProject.Controllers
 
             // Add New Season
             season.SeriesId = series.Id;
-            if (series.Series_EpisodeCount == null)
+            if (series.Series_SeasonCount == null)
             {
                 season.Season_SeasonNumber = 1;
             } else 
             {
-                season.Season_SeasonNumber++;
+                season.Season_SeasonNumber = series.Series_SeasonCount + 1;
             }
             _context.Seasons.Add(season);
             _context.SaveChanges();
@@ -84,7 +84,7 @@ namespace MovieProject.Controllers
 
             _context.SaveChanges();
 
-            return RedirectToAction("Details", "Season", new { Slug = Slug, SeasonNumber = season.Season_SeasonNumber});
+            return RedirectToAction("Details", "Series", new { Slug = Slug});
         }
 
         [HttpGet("series/{Slug}/seasons/{SeasonNumber}/edit")]
@@ -129,7 +129,7 @@ namespace MovieProject.Controllers
         public IActionResult Delete(string Slug, int SeasonNumber)
         {
             var series = _context.Series.FirstOrDefault(srs => srs.Slug == Slug);
-            var season = _context.Seasons.Where(s => s.SeriesId == series.Id).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
+            var season = _context.Seasons.Include(e => e.Episodes).Where(s => s.SeriesId == series.Id).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
             
             if (season != null)
             {
@@ -137,6 +137,8 @@ namespace MovieProject.Controllers
                 series.Series_SeasonCount--;
                 series.Series_EpisodeCount = series.Series_EpisodeCount - season.Season_EpisodeCount;
                 series.UpdatedAt = DateTime.Now;
+
+                DeleteImagesBelongingToSeason(season);
 
                 _context.Seasons.Remove(season);
                 _context.SaveChanges();
@@ -148,6 +150,22 @@ namespace MovieProject.Controllers
             {
                 
                 return View("Error");
+            }
+        }
+
+        public void DeleteImagesBelongingToSeason(Season season)
+        {
+            var filmItemIds = new List<int>();
+            filmItemIds.Add(season.Id);
+
+            foreach (var episode in season.Episodes)
+            {
+                filmItemIds.Add(episode.Id);
+            }
+
+            foreach (var filmItem in filmItemIds)
+            {
+                Images.DeleteAssetImage(_context, _env, "filmitem", filmItem);
             }
         }
     }

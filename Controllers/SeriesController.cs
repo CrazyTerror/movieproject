@@ -132,10 +132,11 @@ namespace MovieProject.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
-            var series = _context.Series.FirstOrDefault(s => s.Id == id);
+            var series = _context.Series.Include(s => s.Seasons).ThenInclude(e => e.Episodes).FirstOrDefault(s => s.Id == id);
 
             if (series != null)
             {
+                DeleteImagesBelongingToSeries(series);
                 _context.Series.Remove(series);
                 _context.SaveChanges();
 
@@ -145,6 +146,26 @@ namespace MovieProject.Controllers
             } else 
             {
                 return View(nameof(Index));
+            }
+        }
+
+        public void DeleteImagesBelongingToSeries(Series series)
+        {
+            var filmItemIds = new List<int>();
+            filmItemIds.Add(series.Id);
+
+            foreach (var season in series.Seasons)
+            {
+                filmItemIds.Add(season.Id);
+                foreach (var episode in season.Episodes)
+                {
+                    filmItemIds.Add(episode.Id);
+                }
+            }
+
+            foreach (var filmItem in filmItemIds)
+            {
+                Images.DeleteAssetImage(_context, _env, "filmitem", filmItem);
             }
         }
     }
