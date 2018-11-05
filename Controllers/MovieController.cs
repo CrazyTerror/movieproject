@@ -138,14 +138,16 @@ namespace MovieProject.Controllers
 
         [HttpPost("movies/{id}/Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public IActionResult Delete(int id)
         {
-            var movie = await _context.Movies.FindAsync(id);
+            var movie = _context.Movies.Find(id);
             
             if (movie != null)
             {
-                var deletedProduct = _context.Movies.Remove(movie);
-                await _context.SaveChangesAsync();
+                Images.DeleteAssetImage(_context, _env, "filmitem", movie.Id);
+
+                _context.Movies.Remove(movie);
+                _context.SaveChanges();
 
                 TempData["message"] = $"{movie.Name} was deleted";
 

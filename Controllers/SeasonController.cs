@@ -126,7 +126,7 @@ namespace MovieProject.Controllers
         }
 
         [HttpPost("series/{Slug}/seasons/{SeasonNumber}/delete")]
-        public async Task<IActionResult> Delete(string Slug, int SeasonNumber)
+        public IActionResult Delete(string Slug, int SeasonNumber)
         {
             var series = _context.Series.FirstOrDefault(srs => srs.Slug == Slug);
             var season = _context.Seasons.Where(s => s.SeriesId == series.Id).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
@@ -139,7 +139,7 @@ namespace MovieProject.Controllers
                 series.UpdatedAt = DateTime.Now;
 
                 _context.Seasons.Remove(season);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
                 
                 TempData["message"] = $"{series.Name} - {season.Name} was deleted";
 

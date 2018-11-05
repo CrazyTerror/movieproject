@@ -117,8 +117,10 @@ namespace MovieProject.Controllers
             
             if (person != null)
             {
-                var deletedProduct = _context.Persons.Remove(person);
-                _context.SaveChangesAsync();
+                Images.DeleteAssetImage(_context, _env, "person", person.Id);
+
+                _context.Persons.Remove(person);
+                _context.SaveChanges();
 
                 TempData["message"] = $"{person.FirstName} {person.Surname} was deleted";
 

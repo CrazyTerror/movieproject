@@ -66,9 +66,19 @@ namespace MovieProject.Infrastructure
             }
         }
 
-        public static void DeleteAssetImage(MovieContext _context, IHostingEnvironment _env, int id)
+        public static void DeleteAssetImage(MovieContext _context, IHostingEnvironment _env, string type, int id)
         {
-            // TO DO
+            FileInfo poster = new FileInfo(Path.Combine(_env.WebRootPath, "images\\" + type + "\\poster\\") + id + ".jpg");
+            FileInfo banner = new FileInfo(Path.Combine(_env.WebRootPath, "images\\" + type + "\\") + id + ".jpg");
+            
+            if (poster.Exists)
+            {
+                poster.Delete();
+            }
+            if (banner.Exists)
+            {
+                banner.Delete();
+            }
         }
     }
 }
