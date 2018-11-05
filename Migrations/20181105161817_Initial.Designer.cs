@@ -9,7 +9,7 @@ using MovieProject.Models;
 namespace MovieProject.Migrations
 {
     [DbContext(typeof(MovieContext))]
-    [Migration("20181105080205_Initial")]
+    [Migration("20181105161817_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -128,6 +128,8 @@ namespace MovieProject.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<string>("Slug");
+
                     b.Property<DateTime>("UpdatedAt");
 
                     b.HasKey("Id");
@@ -195,6 +197,70 @@ namespace MovieProject.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Persons");
+                });
+
+            modelBuilder.Entity("MovieProject.Models.Photo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("Description");
+
+                    b.Property<int>("FilmItemId");
+
+                    b.Property<string>("Path");
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FilmItemId");
+
+                    b.ToTable("Photos");
+                });
+
+            modelBuilder.Entity("MovieProject.Models.Trivia", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("Description");
+
+                    b.Property<int>("FilmItemId");
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FilmItemId");
+
+                    b.ToTable("Trivia");
+                });
+
+            modelBuilder.Entity("MovieProject.Models.Video", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("Description");
+
+                    b.Property<int>("FilmItemId");
+
+                    b.Property<string>("Path");
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FilmItemId");
+
+                    b.ToTable("Videos");
                 });
 
             modelBuilder.Entity("MovieProject.Models.Episode", b =>
@@ -297,6 +363,30 @@ namespace MovieProject.Migrations
                     b.HasOne("MovieProject.Models.Person", "Person")
                         .WithMany()
                         .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MovieProject.Models.Photo", b =>
+                {
+                    b.HasOne("MovieProject.Models.FilmItem", "FilmItem")
+                        .WithMany("Photos")
+                        .HasForeignKey("FilmItemId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MovieProject.Models.Trivia", b =>
+                {
+                    b.HasOne("MovieProject.Models.FilmItem", "FilmItem")
+                        .WithMany("Trivia")
+                        .HasForeignKey("FilmItemId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MovieProject.Models.Video", b =>
+                {
+                    b.HasOne("MovieProject.Models.FilmItem", "FilmItem")
+                        .WithMany("Videos")
+                        .HasForeignKey("FilmItemId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

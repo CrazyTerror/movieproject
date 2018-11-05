@@ -126,6 +126,8 @@ namespace MovieProject.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<string>("Slug");
+
                     b.Property<DateTime>("UpdatedAt");
 
                     b.HasKey("Id");
@@ -214,7 +216,7 @@ namespace MovieProject.Migrations
 
                     b.HasIndex("FilmItemId");
 
-                    b.ToTable("Photo");
+                    b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("MovieProject.Models.Trivia", b =>
@@ -256,7 +258,7 @@ namespace MovieProject.Migrations
 
                     b.HasIndex("FilmItemId");
 
-                    b.ToTable("Video");
+                    b.ToTable("Videos");
                 });
 
             modelBuilder.Entity("MovieProject.Models.Episode", b =>

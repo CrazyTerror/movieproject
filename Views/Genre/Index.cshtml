@@ -1,0 +1,44 @@
+@model List<MovieProject.Models.Genre>
+
+@{
+    ViewData["Title"] = "About Genres";
+}
+<h2>@ViewData["Title"]</h2>
+
+@if (Model.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Genre</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Genre g in Model)
+            {
+                <tr>
+                    <td>
+                        <text>@g.Name</text>
+                    </td>
+                    <td>
+                        <form asp-action="Delete" asp-route-id="@g.Id" method="post">
+                            <a asp-action="Edit" class="btn btn-sm btn-warning" asp-route-slug="@g.Slug">
+                                Edit
+                            </a>
+                            <input type="hidden" name="Id" value="@g.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<div class="text-center">
+    <a asp-controller="Genre" asp-action="Create" class="btn btn-primary">Add Genre</a>
+</div>

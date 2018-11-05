@@ -49,7 +49,7 @@ namespace MovieProject.Controllers
             
             if (movie == null)
             {
-                return View("Index");
+                return View(nameof(Index));
             }
 
             return View(movie);
@@ -60,7 +60,7 @@ namespace MovieProject.Controllers
         {
             ViewBag.Genres = new SelectList((_context.Genres), "Id", "Name");
 
-            return View("Create");
+            return View();
         }
 
         [HttpPost("movies/create")]

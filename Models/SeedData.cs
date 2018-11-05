@@ -75,19 +75,24 @@ namespace MovieProject.Models
                 context.Add(a5);
 
                 Genre g1 = new Genre {
-                    Name = "Adventure"
+                    Name = "Adventure",
+                    Slug = "adventure"
                 };
                 Genre g2 = new Genre {
-                    Name = "Drama"
+                    Name = "Drama",
+                    Slug = "drama"
                 };
                 Genre g3 = new Genre {
-                    Name = "Fantasy"
+                    Name = "Fantasy",
+                    Slug = "fantasy"
                 };
                 Genre g4 = new Genre {
-                    Name = "Action"
+                    Name = "Action",
+                    Slug = "action"
                 };
                 Genre g5 = new Genre {
-                    Name = "Crime"
+                    Name = "Crime",
+                    Slug = "crime"
                 };
                 
                 context.Add(g1);
@@ -152,6 +157,7 @@ namespace MovieProject.Models
                     Description = "Nine noble families fight for control over the mythical lands of Westeros, while an ancient enemy returns after being dormant for thousands of years. ",
                     Series_SeasonCount = 2,
                     Series_EpisodeCount = 4,
+                    ReleaseDate = new System.DateTime(2011, 4, 17),
                     FirstAirDate = new System.DateTime(2011, 4, 17),
                     LastAirDate = new System.DateTime(2017, 8, 27),
                     OriginalLanguage = "English",
