@@ -37,7 +37,7 @@
     <div class="form-group">
         <label>Status</label>
         <div><span class="text-danger"></span></div>
-        <input type="text" name="Status" class="form-control" />
+        <select name="Status" class="form-control" asp-items="@(Html.GetEnumSelectList<Status>())"></select>
     </div>
     <div class="form-group">
         <label>Upload Poster using this form:</label>

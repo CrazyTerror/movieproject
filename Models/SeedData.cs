@@ -20,7 +20,7 @@ namespace MovieProject.Models
                     Description = "A meek Hobbit from the Shire and eight companions set out on a journey to destroy the powerful One Ring and save Middle-earth from the Dark Lord Sauron. ",
                     Budget = 93000000,
                     Revenue = 871530324,
-                    Status = "Released",
+                    Status = Status.Released,
                     Slug = "the-lord-of-the-rings-the-fellowship-of-the-ring"
                 };
                 Movie m2 = new Movie { 
@@ -30,7 +30,7 @@ namespace MovieProject.Models
                     Description = "T'Challa, heir to the hidden but advanced kingdom of Wakanda, must step forward to lead his people into a new future and must confront a challenger from his country's past. ",
                     Budget = 200000000,
                     Revenue = 1347071259,
-                    Status = "Released",
+                    Status = Status.Released,
                     Slug = "black-panther"
                 };
                 
@@ -41,31 +41,36 @@ namespace MovieProject.Models
                     FirstName = "Elijah", 
                     Surname = "Wood",
                     BirthDate = new System.DateTime(1981, 1, 28),
-                    Slug = "elijah-wood" 
+                    Slug = "elijah-wood",
+                    Gender = Gender.Male 
                 };
                 Person a2 = new Person { 
                     FirstName = "Andy", 
                     Surname = "Serkis",
                     BirthDate = new System.DateTime(1964, 4, 20),
-                    Slug = "andy-serkis"  
+                    Slug = "andy-serkis",
+                    Gender = Gender.Male   
                 };
                 Person a3 = new Person { 
                     FirstName = "Chadwick", 
                     Surname = "Boseman", 
                     BirthDate = new System.DateTime(1977, 11, 29),
-                    Slug = "chadwick-boseman"  
+                    Slug = "chadwick-boseman",
+                    Gender = Gender.Male   
                 };
                 Person a4 = new Person { 
                     FirstName = "Peter", 
                     Surname = "Dinklage", 
                     BirthDate = new System.DateTime(1969, 6, 11),
-                    Slug = "peter-dinklage"  
+                    Slug = "peter-dinklage",
+                    Gender = Gender.Male   
                 };
                 Person a5 = new Person { 
                     FirstName = "Emilia", 
                     Surname = "Clarke", 
                     BirthDate = new System.DateTime(1986, 10, 23),
-                    Slug = "emilia-clarke" 
+                    Slug = "emilia-clarke",
+                    Gender = Gender.Female  
                 };
                 
                 context.Add(a1);
@@ -161,7 +166,7 @@ namespace MovieProject.Models
                     FirstAirDate = new System.DateTime(2011, 4, 17),
                     LastAirDate = new System.DateTime(2017, 8, 27),
                     OriginalLanguage = "English",
-                    Status = "Running",
+                    Status = Status.Running,
                     Slug = "game-of-thrones"
                 };
 
@@ -191,7 +196,8 @@ namespace MovieProject.Models
                     Name = "Season 1",
                     ReleaseDate = new System.DateTime(2011, 4, 17),
                     Season_SeasonNumber = 1,
-                    Season_EpisodeCount = 2
+                    Season_EpisodeCount = 2,
+                    Status = Status.Released,
                 };
 
                 Season se2 = new Season()
@@ -200,7 +206,8 @@ namespace MovieProject.Models
                     Name = "Season 2",
                     ReleaseDate = new System.DateTime(2012, 4, 1),
                     Season_SeasonNumber = 2,
-                    Season_EpisodeCount = 2
+                    Season_EpisodeCount = 2,
+                    Status = Status.Released,
                 };
 
                 context.Add(se1);
@@ -214,7 +221,8 @@ namespace MovieProject.Models
                     Description = "Jon Arryn, the Hand of the King, is dead. King Robert Baratheon plans to ask his oldest friend, Eddard Stark, to take Jon's place. Across the sea, Viserys Targaryen plans to wed his sister to a nomadic warlord in exchange for an army. ",
                     Episode_SeasonNumber = 1,
                     Episode_EpisodeNumber = 1,
-                    Runtime = 61
+                    Runtime = 61,
+                    Status = Status.Released,
                 };
                 Episode ep2 = new Episode()
                 {
@@ -224,7 +232,8 @@ namespace MovieProject.Models
                     Description = "While Bran recovers from his fall, Ned takes only his daughters to King's Landing. Jon Snow goes with his uncle Benjen to the Wall. Tyrion joins them. ",
                     Episode_SeasonNumber = 1,
                     Episode_EpisodeNumber = 2,
-                    Runtime = 55
+                    Runtime = 55,
+                    Status = Status.Released,
                 };
                 Episode ep11 = new Episode()
                 {
@@ -234,7 +243,8 @@ namespace MovieProject.Models
                     Description = "Tyrion arrives at King's Landing to take his father's place as Hand of the King. Stannis Baratheon plans to take the Iron Throne for his own. Robb tries to decide his next move in the war. The Night's Watch arrive at the house of Craster. ",
                     Episode_SeasonNumber = 2,
                     Episode_EpisodeNumber = 1,
-                    Runtime = 52
+                    Runtime = 52,
+                    Status = Status.Released,
                 };
                 Episode ep12 = new Episode()
                 {
@@ -244,7 +254,8 @@ namespace MovieProject.Models
                     Description = "Arya makes friends with Gendry. Tyrion tries to take control of the Small Council. Theon arrives at his home, Pyke, in order to persuade his father into helping Robb with the war. Jon tries to investigate Craster's secret. ",
                     Episode_SeasonNumber = 2,
                     Episode_EpisodeNumber = 2,
-                    Runtime = 53
+                    Runtime = 53,
+                    Status = Status.Released,
                 };
                 
                 context.Add(ep1);

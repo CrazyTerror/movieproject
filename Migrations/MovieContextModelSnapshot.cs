@@ -54,7 +54,7 @@ namespace MovieProject.Migrations
 
                     b.Property<string>("Slug");
 
-                    b.Property<string>("Status");
+                    b.Property<int?>("Status");
 
                     b.Property<DateTime>("UpdatedAt");
 
@@ -185,6 +185,8 @@ namespace MovieProject.Migrations
                     b.Property<DateTime?>("DeathDate");
 
                     b.Property<string>("FirstName");
+
+                    b.Property<int?>("Gender");
 
                     b.Property<string>("Slug");
 

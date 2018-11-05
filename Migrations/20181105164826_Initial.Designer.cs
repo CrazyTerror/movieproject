@@ -9,7 +9,7 @@ using MovieProject.Models;
 namespace MovieProject.Migrations
 {
     [DbContext(typeof(MovieContext))]
-    [Migration("20181105161817_Initial")]
+    [Migration("20181105164826_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,7 +56,7 @@ namespace MovieProject.Migrations
 
                     b.Property<string>("Slug");
 
-                    b.Property<string>("Status");
+                    b.Property<int?>("Status");
 
                     b.Property<DateTime>("UpdatedAt");
 
@@ -187,6 +187,8 @@ namespace MovieProject.Migrations
                     b.Property<DateTime?>("DeathDate");
 
                     b.Property<string>("FirstName");
+
+                    b.Property<int?>("Gender");
 
                     b.Property<string>("Slug");
 

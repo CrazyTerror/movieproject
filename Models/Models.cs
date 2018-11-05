@@ -11,7 +11,8 @@ namespace MovieProject.Models
         public string Name { get; set; }
         public DateTime? ReleaseDate { get; set; } = null;
         public int? Runtime { get; set; } = null;
-        public string Status { get; set; } //Enum??
+        [EnumDataType(typeof(Status))]
+        public Status? Status { get; set; } = null;
         public string Description { get; set; }
         public string OriginalLanguage { get; set; }
         public int? VoteCount { get; set; } = null;
@@ -89,6 +90,8 @@ namespace MovieProject.Models
         public DateTime? BirthDate { get; set; } = null;
         public DateTime? DeathDate { get; set; } = null;
         public string BirthPlace { get; set; }
+        [EnumDataType(typeof(Gender))]
+        public Gender? Gender { get; set; } = null;
         public string Biography { get; set; }
         public string Slug { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
