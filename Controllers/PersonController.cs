@@ -59,18 +59,9 @@ namespace MovieProject.Controllers
             _context.SaveChanges();
 
             var images = HttpContext.Request.Form.Files;
-            if (images != null)
+            if (images.Count > 0)
             {
-                var poster = images["Poster"];
-                var banner = images["Banner"];
-                if (poster != null && poster.Length > 0)
-                {
-                    Images.UploadAssetImage(_context, _env, poster, Path.GetFileName(poster.FileName), true, "person");
-                } 
-                if (banner != null && banner.Length > 0)
-                {
-                    Images.UploadAssetImage(_context, _env, banner, Path.GetFileName(poster.FileName), false, "person");
-                }
+                Images.ReadImages(_context, _env, images, "person");
             }
 
             TempData["message"] = $"{person.FirstName} {person.Surname} has been created";

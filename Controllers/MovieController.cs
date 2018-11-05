@@ -18,12 +18,12 @@ namespace MovieProject.Controllers
     public class MovieController : Controller
     {
         private readonly MovieContext _context;
-        private readonly IHostingEnvironment _environment;
+        private readonly IHostingEnvironment _env;
 
-        public MovieController(MovieContext context, IHostingEnvironment hostingEnvironment)
+        public MovieController(MovieContext context, IHostingEnvironment env)
         {
             _context = context;
-            _environment = hostingEnvironment;
+            _env = env;
 
         }
 
@@ -72,18 +72,9 @@ namespace MovieProject.Controllers
             _context.SaveChanges();
 
             var images = HttpContext.Request.Form.Files;
-            if (images != null)
+            if (images.Count > 0)
             {
-                var poster = images["Poster"];
-                var banner = images["Banner"];
-                if (poster != null && poster.Length > 0)
-                {
-                    Images.UploadAssetImage(_context, _environment, poster, Path.GetFileName(poster.FileName), true, "filmitem");
-                } 
-                if (banner != null && banner.Length > 0)
-                {
-                    Images.UploadAssetImage(_context, _environment, banner, Path.GetFileName(poster.FileName), false, "filmitem");
-                }
+                Images.ReadImages(_context, _env, images, "filmitem");
             }
 
             foreach (var item in Request.Form["Genre"])

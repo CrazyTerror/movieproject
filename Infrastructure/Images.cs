@@ -8,9 +8,22 @@ namespace MovieProject.Infrastructure
 {
     public class Images
     {
+        public static void ReadImages(MovieContext _context, IHostingEnvironment _env, IFormFileCollection images, string type)
+        {
+            var poster = images["Poster"];
+            var banner = images["Banner"];
+            if (poster != null && poster.Length > 0)
+            {
+                Images.UploadAssetImage(_context, _env, poster, Path.GetFileName(poster.FileName), true, type);
+            } 
+            if (banner != null && banner.Length > 0)
+            {
+                Images.UploadAssetImage(_context, _env, banner, Path.GetFileName(poster.FileName), false, type);
+            }
+        }
         public static void UploadAssetImage(MovieContext _context, IHostingEnvironment _env, IFormFile image, string fileName, bool poster, string type)
         {
-            int lastAssetId = 0;
+            int? lastAssetId = null;
             
             switch (type)
             {
