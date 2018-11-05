@@ -9,6 +9,7 @@ namespace MovieProject.Models
         public MovieContext(DbContextOptions<MovieContext> options)
             : base(options) { }
 
+        public DbSet<FilmItem> FilmItem { get; set; }
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Series> Series { get; set; }
         public DbSet<Season> Seasons { get; set; }

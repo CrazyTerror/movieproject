@@ -9,16 +9,20 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MovieProject.Infrastructure;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace MovieProject.Controllers
 {
     public class PersonController : Controller
     {
         private readonly MovieContext _context;
+        private readonly IHostingEnvironment _env;
 
-        public PersonController(MovieContext context)
+        public PersonController(MovieContext context, IHostingEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         [HttpGet("person")]
@@ -53,6 +57,21 @@ namespace MovieProject.Controllers
 
             _context.Persons.Add(person);
             _context.SaveChanges();
+
+            var images = HttpContext.Request.Form.Files;
+            if (images != null)
+            {
+                var poster = images["Poster"];
+                var banner = images["Banner"];
+                if (poster != null && poster.Length > 0)
+                {
+                    Images.UploadAssetImage(_context, _env, poster, Path.GetFileName(poster.FileName), true, "person");
+                } 
+                if (banner != null && banner.Length > 0)
+                {
+                    Images.UploadAssetImage(_context, _env, banner, Path.GetFileName(poster.FileName), false, "person");
+                }
+            }
 
             TempData["message"] = $"{person.FirstName} {person.Surname} has been created";
 

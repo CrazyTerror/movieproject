@@ -54,7 +54,10 @@ namespace MovieProject.Controllers
         public IActionResult Create(Series series)
         {
             var slug = UrlEncoder.ToFriendlyUrl(Request.Form["Name"]);
+            var firstAirDate = DateTime.Parse(Request.Form["ReleaseDate"]);
+
             series.Slug = slug;
+            series.FirstAirDate = firstAirDate;
 
             _context.Series.Add(series);
 
