@@ -1,4 +1,5 @@
 using System;
+using Microsoft.AspNetCore.Http;
 
 namespace MovieProject.Models
 {
@@ -9,5 +10,7 @@ namespace MovieProject.Models
         public string Surname { get; set; }
         public DateTime? BirthDate { get; set; }
         public DateTime? DeathDate { get; set; }
+        public IFormFile Poster { get; set; }
+        public IFormFile Banner { get; set; }
     }
 }

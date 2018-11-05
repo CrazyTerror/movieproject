@@ -96,6 +96,12 @@ namespace MovieProject.Controllers
 
                 _context.SaveChanges();
 
+                var images = HttpContext.Request.Form.Files;
+                if (images.Count > 0)
+                {
+                    Images.ReadImages(_context, _env, images, "person");
+                }
+
                 TempData["message"] = $"{person.FirstName} {person.Surname} has been changed";
 
                 return RedirectToAction("Details", "Person", new { Slug = Slug });

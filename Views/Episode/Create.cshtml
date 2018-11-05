@@ -3,7 +3,7 @@
 }
 <h2>@ViewData["Title"]</h2>
 
-<form asp-action="Create" method="post">
+<form asp-action="Create" enctype="multipart/form-data" method="post">
     <div class="form-group">
         <label>Name</label>
         <div><span class="text-danger"></span></div>
@@ -18,6 +18,16 @@
         <label>Air Date</label>
         <div><span class="text-danger"></span></div>
         <input type="date" name="ReleaseDate" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Upload Poster using this form:</label>
+        <div><span class="text-danger"></span></div>
+        <input type="file" id="Poster" name="Poster" />
+    </div>
+    <div class="form-group">
+        <label>Upload Banner using this form:</label>
+        <div><span class="text-danger"></span></div>
+        <input type="file" id="Banner" name="Banner" />
     </div>
     <div class="text-center">
         <button class="btn btn-primary" type="submit">Create</button>

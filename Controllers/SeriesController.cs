@@ -9,16 +9,19 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MovieProject.Infrastructure;
+using Microsoft.AspNetCore.Hosting;
 
 namespace MovieProject.Controllers
 {
     public class SeriesController : Controller
     {
         private readonly MovieContext _context;
+        private readonly IHostingEnvironment _env;
 
-        public SeriesController(MovieContext context)
+        public SeriesController(MovieContext context, IHostingEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         [HttpGet("series")]
@@ -58,8 +61,14 @@ namespace MovieProject.Controllers
 
             series.Slug = slug;
             series.FirstAirDate = firstAirDate;
-
             _context.Series.Add(series);
+            _context.SaveChanges();
+
+            var images = HttpContext.Request.Form.Files; 
+            if (images.Count > 0)
+            {
+                Images.ReadImages(_context, _env, images, "filmitem");
+            }
 
             foreach (var item in Request.Form["Genre"])
             {
@@ -103,6 +112,12 @@ namespace MovieProject.Controllers
                 series.Description = seriesViewModel.Description;
                 series.FirstAirDate = seriesViewModel.FirstAirDate;
                 series.UpdatedAt = DateTime.Now;
+
+                var images = HttpContext.Request.Form.Files; 
+                if (images.Count > 0)
+                {
+                    Images.ReadImages(_context, _env, images, "filmitem", series.Id);
+                }
 
                 _context.SaveChanges();
 

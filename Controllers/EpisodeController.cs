@@ -9,16 +9,19 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MovieProject.Infrastructure;
+using Microsoft.AspNetCore.Hosting;
 
 namespace MovieProject.Controllers
 {
     public class EpisodeController : Controller
     {
         private readonly MovieContext _context;
+        private readonly IHostingEnvironment _env;
 
-        public EpisodeController(MovieContext context)
+        public EpisodeController(MovieContext context, IHostingEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         [HttpGet("series/{Slug}/seasons/{SeasonNumber}/episodes")]
@@ -84,7 +87,7 @@ namespace MovieProject.Controllers
                 season.Season_EpisodeCount++;
             }
             season.UpdatedAt = DateTime.Now;
-       
+
             // Add new Episode
             episode.SeasonId = season.Id;
             episode.Episode_SeasonNumber = season.Season_SeasonNumber;
@@ -93,6 +96,12 @@ namespace MovieProject.Controllers
             _context.Episodes.Add(episode);
 
             _context.SaveChanges();
+
+            var images = HttpContext.Request.Form.Files; 
+            if (images.Count > 0)
+            {
+                Images.ReadImages(_context, _env, images, "filmitem");
+            }
 
             return RedirectToAction("Details", "Season", new { SeasonNumber = SeasonNumber});
         }
@@ -121,6 +130,12 @@ namespace MovieProject.Controllers
                 episode.ReleaseDate = editEpisodeViewModel.AirDate;
                 episode.Runtime = editEpisodeViewModel.Runtime;
                 episode.UpdatedAt = DateTime.Now;
+                
+                var images = HttpContext.Request.Form.Files; 
+                if (images.Count > 0)
+                {
+                    Images.ReadImages(_context, _env, images, "filmitem", episode.Id);
+                }
 
                 _context.SaveChanges();
 

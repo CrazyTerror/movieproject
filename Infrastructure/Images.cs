@@ -12,13 +12,14 @@ namespace MovieProject.Infrastructure
         {
             var poster = images["Poster"];
             var banner = images["Banner"];
-            if (poster != null && poster.Length > 0)
+            
+            if (poster != null)
             {
                 Images.UploadAssetImage(_context, _env, poster, Path.GetFileName(poster.FileName), true, type, id);
             } 
-            if (banner != null && banner.Length > 0)
+            if (banner != null)
             {
-                Images.UploadAssetImage(_context, _env, banner, Path.GetFileName(poster.FileName), false, type, id);
+                Images.UploadAssetImage(_context, _env, banner, Path.GetFileName(banner.FileName), false, type, id);
             }
         }
 
@@ -56,6 +57,7 @@ namespace MovieProject.Infrastructure
             {
                 path = Path.Combine(_env.WebRootPath, "images\\" + type + "\\") + newFileName;
             }
+            System.Console.WriteLine(path);
             
             using (FileStream fs = System.IO.File.Create(path))
             {

@@ -9,16 +9,19 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MovieProject.Infrastructure;
+using Microsoft.AspNetCore.Hosting;
 
 namespace MovieProject.Controllers
 {
     public class SeasonController : Controller
     {
         private readonly MovieContext _context;
+        private readonly IHostingEnvironment _env;
 
-        public SeasonController(MovieContext context)
+        public SeasonController(MovieContext context, IHostingEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         [HttpGet("series/{Slug}/seasons")]
@@ -66,6 +69,13 @@ namespace MovieProject.Controllers
                 season.Season_SeasonNumber++;
             }
             _context.Seasons.Add(season);
+            _context.SaveChanges();
+
+            var images = HttpContext.Request.Form.Files; 
+            if (images.Count > 0)
+            {
+                Images.ReadImages(_context, _env, images, "filmitem");
+            }
 
             // Change amount of seasons in series
             _context.Series.Attach(series);
@@ -99,6 +109,12 @@ namespace MovieProject.Controllers
                 season.Description = editSeasonViewModel.Description;
                 season.ReleaseDate = editSeasonViewModel.AirDate;
                 season.UpdatedAt = DateTime.Now;
+
+                var images = HttpContext.Request.Form.Files; 
+                if (images.Count > 0)
+                {
+                    Images.ReadImages(_context, _env, images, "filmitem", season.Id);
+                }
 
                 _context.SaveChanges();
 
