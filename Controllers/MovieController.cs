@@ -119,8 +119,15 @@ namespace MovieProject.Controllers
                 movie.Description = movieViewModel.Description;
                 movie.ReleaseDate = movieViewModel.ReleaseDate;
                 movie.UpdatedAt = DateTime.Now;
+                
+                var images = HttpContext.Request.Form.Files; 
+                if (images.Count > 0)
+                {
+                    Images.ReadImages(_context, _env, images, "filmitem", movie.Id);
+                }
 
                 _context.SaveChanges();
+                
 
                 TempData["message"] = $"{movie.Name} has been changed";
 
