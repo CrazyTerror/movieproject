@@ -24,7 +24,7 @@
 {
     <div class="row">
         <a asp-action="Details" asp-controller="Episode" asp-route-episodenumber="@episode.Episode_EpisodeNumber">
-            <img src="/images/episode/@(episode.Id).jpg" onerror="this.src='/images/episode/template.jpg';this.onerror='';" alt="@episode.Name" height="170px" width="300px" />
+            <img src="/images/filmitem/@(episode.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@episode.Name" height="170px" width="300px" />
         </a>    
         <div>
             @if(@episode.Episode_EpisodeNumber < 10)
@@ -53,10 +53,10 @@
 
 <div class="row">
     Series Background:
-    <img src="/images/series/@(Model.SeriesId).jpg" onerror="this.src='/images/series/template.jpg';this.onerror='';" alt="@Model.Name" width="100%" />
+    <img src="/images/filmitem/@(Model.SeriesId).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@Model.Name" width="100%" />
 </div>
 
 <div class="row">
     Season Poster:
-    <img src="/images/season/@(Model.Id).jpg" onerror="this.src='/images/season/template.jpg';this.onerror='';" alt="@Model.Name" />
+    <img src="/images/filmitem/poster/@(Model.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@Model.Name" />
 </div>

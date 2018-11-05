@@ -7,7 +7,7 @@
 {
     <div>
         <a asp-action="Details" asp-controller="Season" asp-route-seasonnumber="@season.Season_SeasonNumber">
-            <img src="/images/season/@(season.Id).jpg" onerror="this.src='/images/season/template.jpg';this.onerror='';" alt="@season.Name" />
+            <img src="/images/filmitem/@(season.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@season.Name" width="300px" height="180px"/>
         </a>
     </div>
 }
@@ -21,9 +21,9 @@
 </div>
 
 <div class="row">
-    <img src="/images/series/@(Model.Id).jpg" onerror="this.src='/images/series/template.jpg';this.onerror='';" alt="@Model.Name" width="100%">
+    <img src="/images/filmitem/@(Model.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@Model.Name" width="100%">
 </div>
 
 <div>
-    <img src="/images/series/poster/@(Model.Id).jpg" onerror="this.src='/images/series/poster/template.jpg';this.onerror='';" alt="@Model.Name">
+    <img src="/images/filmitem/poster/@(Model.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@Model.Name">
 </div>
