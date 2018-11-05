@@ -17,22 +17,22 @@
 <text>Season</text>
 @for (var i = 1; i < @ViewBag.SeasonCount + 1; i++)
 {
-    <a style="@(i == @Model.SeasonNumber ? @selected : null )" asp-action="Details" asp-controller="Season" asp-route-seasonnumber="@i">@i </a>
+    <a style="@(i == @Model.Season_SeasonNumber ? @selected : null )" asp-action="Details" asp-controller="Season" asp-route-seasonnumber="@i">@i </a>
 }
 
-@foreach (var episode in @Model.Episodes.OrderBy(ob => ob.EpisodeNumber))
+@foreach (var episode in @Model.Episodes.OrderBy(ob => ob.Episode_EpisodeNumber))
 {
     <div class="row">
-        <a asp-action="Details" asp-controller="Episode" asp-route-episodenumber="@episode.EpisodeNumber">
+        <a asp-action="Details" asp-controller="Episode" asp-route-episodenumber="@episode.Episode_EpisodeNumber">
             <img src="/images/episode/@(episode.Id).jpg" onerror="this.src='/images/episode/template.jpg';this.onerror='';" alt="@episode.Name" height="170px" width="300px" />
         </a>    
         <div>
-            @if(@episode.EpisodeNumber < 10)
+            @if(@episode.Episode_EpisodeNumber < 10)
             { 
-                <text>@(episode.SeasonNumber + "x0" + @episode.EpisodeNumber)</text>
+                <text>@(episode.Episode_SeasonNumber + "x0" + @episode.Episode_EpisodeNumber)</text>
             } else
             {
-                <text>@(episode.SeasonNumber + "x" + @episode.EpisodeNumber)</text>
+                <text>@(episode.Episode_SeasonNumber + "x" + @episode.Episode_EpisodeNumber)</text>
             }
             <text>@(episode.Name + " " + episode.Runtime + " mins")</text>
             <p>@episode.Description</p>

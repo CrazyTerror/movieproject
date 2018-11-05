@@ -30,8 +30,8 @@ namespace MovieProject.Controllers
         {
             ViewData["Message"] = "Your application description page.";
 
-            var srs = _context.Series.Include(series => series.Seasons).ThenInclude(seasons => seasons.Episodes).ThenInclude(episodes => episodes.EpisodeCredits).ThenInclude(credit => credit.Person)
-                                     .Include(series => series.SeriesGenre).ThenInclude(genre => genre.Genre)
+            var srs = _context.Series.Include(series => series.Seasons).ThenInclude(seasons => seasons.Episodes).ThenInclude(episodes => episodes.FilmItemCredits).ThenInclude(credit => credit.Person)
+                                     .Include(series => series.FilmItemGenres).ThenInclude(genre => genre.Genre)
                                      .ToList();
 
             return View(srs);
@@ -42,8 +42,8 @@ namespace MovieProject.Controllers
         {
             ViewData["Message"] = "Your contact page.";
             //var a = _context.Movies;
-            var xy = _context.Movies.Include(movie => movie.MovieCredits).ThenInclude(movieCast => movieCast.Person)
-                                    .Include(movie => movie.MovieGenre).ThenInclude(movieGenre => movieGenre.Genre)
+            var xy = _context.Movies.Include(movie => movie.FilmItemCredits).ThenInclude(movieCast => movieCast.Person)
+                                    .Include(movie => movie.FilmItemGenres).ThenInclude(movieGenre => movieGenre.Genre)
                                     .ToList();
             
             return View(xy);

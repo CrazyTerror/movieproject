@@ -1,7 +1,7 @@
 @model MovieProject.Models.Movie
 @{
     ViewData["Title"] = @Model.Name + " (" + ViewBag.Year + ")";
-    var genres = @Model.MovieGenre.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();
+    var genres = @Model.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();
 }
 
 
@@ -55,9 +55,9 @@
 
 <div class="row">
     <h2>Actors</h2>
-        @foreach (var actor in @Model.MovieCredits)
+        @foreach (var actor in @Model.FilmItemCredits)
         {
-            <a asp-action="Details" asp-controller="People" asp-route-slug="@actor.Person.Slug">
+            <a asp-action="Details" asp-controller="Person" asp-route-slug="@actor.Person.Slug">
                 <img src="/images/person/poster/@(actor.Person.Id).jpg" onerror="this.src='/images/person/poster/template.jpg';this.onerror='';" alt="@actor.Person.FirstName @actor.Person.Surname" height="127px" width="84px" />
             </a>
             <div>@actor.Person.FirstName @actor.Person.Surname - @actor.Character</div>

@@ -32,8 +32,7 @@ namespace MovieProject.Controllers
         [HttpGet("person/{Slug}")]
         public ViewResult Details(string Slug)
         {
-            var person = _context.Persons.Include(mc => mc.MovieCredits).ThenInclude(c => c.Movie)
-                                         .Include(ec => ec.EpisodeCredits).ThenInclude(ep => ep.Episode).ThenInclude(s => s.Season).ThenInclude(srs => srs.Series)
+            var person = _context.Persons.Include(mc => mc.FilmItemCredits).ThenInclude(c => c.FilmItem)
                                          .FirstOrDefault(p => p.Slug == Slug);
 
             return View(person);

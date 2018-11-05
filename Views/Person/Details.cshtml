@@ -28,39 +28,11 @@
         </div>
     } 
     
-    Played In Movie:
-    @foreach (var movie in @Model.MovieCredits)
+    Actor:
+    @foreach (var movie in @Model.FilmItemCredits)
     {
-        <div class="row">
-            <a asp-action="Details" asp-controller="Movie" asp-route-slug="@movie.Movie.Slug">
-                <img src="/images/movie/poster/@(movie.Id).jpg" onerror="this.src='/images/movie/poster/template.jpg';this.onerror='';" alt="@movie.Movie.Name" />
-            </a>
-            <ul>
-                <li>@movie.Movie.Name</li>
-                @if (@movie.Movie.ReleaseDate.HasValue)
-                {
-                    <li>@movie.Movie.ReleaseDate.Value.ToString("yyyy")</li>
-                } else
-                {
-                    <li>Unknown</li>
-                }
-                <li>@movie.Character</li>
-            </ul>
-        </div>
+        
     }
-</div>
-
-<div class="container">
-    Played In Series:
-    @foreach (var series in @Model.EpisodeCredits.Select(s => s.Episode.Season.Series).Distinct())
-    {
-        <div class="row">
-            <a asp-action="Details" asp-controller="Series" asp-route-slug="@series.Slug">
-                <img src="/images/series/poster/@(series.Id).jpg" onerror="this.src='/images/series/poster/template.jpg';this.onerror='';" alt="@series.Name" />
-            </a>
-        </div>
-    }
-</div>
 
 
 <div class="row">

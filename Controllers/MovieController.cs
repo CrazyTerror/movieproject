@@ -38,8 +38,8 @@ namespace MovieProject.Controllers
         [HttpGet("movies/{Slug}")]
         public ViewResult Details(string Slug)
         {
-            var movie = _context.Movies.Include(mg => mg.MovieGenre).ThenInclude(g => g.Genre)
-                                       .Include(mc => mc.MovieCredits).ThenInclude(p => p.Person)
+            var movie = _context.Movies.Include(mg => mg.FilmItemGenres).ThenInclude(g => g.Genre)
+                                       .Include(mc => mc.FilmItemCredits).ThenInclude(p => p.Person)
                                        .FirstOrDefault(m => m.Slug == Slug);
 
             var year = (movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("yyyy") : "");
@@ -97,13 +97,13 @@ namespace MovieProject.Controllers
                 var selectedGenre = Int32.Parse(item);
                 Genre genre = _context.Genres.Find(selectedGenre);
                 
-                MovieGenre mvg = new MovieGenre()
+                FilmItemGenre mvg = new FilmItemGenre()
                 {
-                    Movie = movie,
+                    FilmItem = movie,
                     Genre = genre
                 };
 
-                _context.MovieGenre.Add(mvg);
+                _context.FilmItemGenres.Add(mvg);
             }
             _context.SaveChanges();
 
@@ -115,7 +115,7 @@ namespace MovieProject.Controllers
         [HttpGet("movies/{Slug}/edit")]
         public ViewResult Edit(string Slug)
         {
-            var movie = _context.Movies.Include(mg => mg.MovieGenre).ThenInclude(g => g.Genre).FirstOrDefault(m => m.Slug == Slug);
+            var movie = _context.Movies.Include(mg => mg.FilmItemGenres).ThenInclude(g => g.Genre).FirstOrDefault(m => m.Slug == Slug);
 
             return View(movie);
         }

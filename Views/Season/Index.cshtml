@@ -21,7 +21,7 @@
             {
                 <tr>
                     <td>
-                        <a asp-controller="Season" asp-action="Details" asp-route-seasonnumber="@s.SeasonNumber">@s.Name</a>
+                        <a asp-controller="Season" asp-action="Details" asp-route-seasonnumber="@s.Season_SeasonNumber">@s.Name</a>
                     </td>
                     <td>
                         <form asp-action="Delete" asp-route-id="@s.Id" method="post">

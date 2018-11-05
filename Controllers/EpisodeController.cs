@@ -25,7 +25,7 @@ namespace MovieProject.Controllers
         public ViewResult Index(string Slug, int SeasonNumber)
         {
             var series = _context.Series.FirstOrDefault(s => s.Slug == Slug);
-            var seasons = _context.Seasons.FirstOrDefault(s => s.SeasonNumber == SeasonNumber);
+            var seasons = _context.Seasons.FirstOrDefault(s => s.Season_SeasonNumber == SeasonNumber);
             var episodes = _context.Episodes.Where(e => e.SeasonId == seasons.Id).ToList();
 
             return View(episodes);
@@ -35,18 +35,18 @@ namespace MovieProject.Controllers
         public ViewResult Details(string Slug, int SeasonNumber, int EpisodeNumber)
         {
             var series = _context.Series.FirstOrDefault(s => s.Slug == Slug);
-            var season = _context.Seasons.Where(srs => srs.SeriesId == series.Id).Where(s => s.SeasonNumber == SeasonNumber).FirstOrDefault();
-            var episode = _context.Episodes.Where(s => s.SeasonId == season.Id).Where(ep => ep.EpisodeNumber == EpisodeNumber).FirstOrDefault();
+            var season = _context.Seasons.Where(srs => srs.SeriesId == series.Id).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
+            var episode = _context.Episodes.Where(s => s.SeasonId == season.Id).Where(ep => ep.Episode_EpisodeNumber == EpisodeNumber).FirstOrDefault();
 
-            if (episode.EpisodeNumber < 10)
+            if (episode.Episode_EpisodeNumber < 10)
             {
-                ViewBag.Episode = "0" + episode.EpisodeNumber;
+                ViewBag.Episode = "0" + episode.Episode_EpisodeNumber;
             } else
             {
-                ViewBag.Episode = episode.EpisodeNumber;
+                ViewBag.Episode = episode.Episode_EpisodeNumber;
             }
             ViewBag.Series = series.Name;
-            ViewBag.EpisodeCount = season.EpisodeCount;
+            ViewBag.EpisodeCount = season.Season_EpisodeCount;
 
             return View(episode);
         }
@@ -61,34 +61,34 @@ namespace MovieProject.Controllers
         public IActionResult Create(string Slug, int SeasonNumber, Episode episode)
         {
             var series = _context.Series.Include(s => s.Seasons).ThenInclude(s => s.Episodes).FirstOrDefault(srs => srs.Slug == Slug);
-            var season = _context.Seasons.Where(s => s.SeriesId == series.Id).Where(s => s.SeasonNumber == SeasonNumber).FirstOrDefault(); 
+            var season = _context.Seasons.Where(s => s.SeriesId == series.Id).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault(); 
             
             // Change episode count in series
             _context.Series.Attach(series);
-            if (series.NumberOfEpisodes == null)
+            if (series.Series_EpisodeCount == null)
             {
-                series.NumberOfEpisodes = 1;
+                series.Series_EpisodeCount = 1;
             } else
             {
-                series.NumberOfEpisodes++;
+                series.Series_EpisodeCount++;
             }
             series.UpdatedAt = DateTime.Now;
 
             // Change episode count in season
             _context.Seasons.Attach(season);
-            if (season.EpisodeCount == null)
+            if (season.Season_EpisodeCount == null)
             {
-                season.EpisodeCount = 1;
+                season.Season_EpisodeCount = 1;
             } else 
             {
-                season.EpisodeCount++;
+                season.Season_EpisodeCount++;
             }
             season.UpdatedAt = DateTime.Now;
        
             // Add new Episode
             episode.SeasonId = season.Id;
-            episode.SeasonNumber = season.SeasonNumber;
-            episode.EpisodeNumber = season.EpisodeCount;
+            episode.Episode_SeasonNumber = season.Season_SeasonNumber;
+            episode.Episode_EpisodeNumber = season.Season_EpisodeCount;
             episode.UpdatedAt = DateTime.Now;
             _context.Episodes.Add(episode);
 
@@ -101,8 +101,8 @@ namespace MovieProject.Controllers
         public ViewResult Edit(string Slug, int SeasonNumber, int EpisodeNumber)
         {
             var series = _context.Series.FirstOrDefault(m => m.Slug == Slug);
-            var season = _context.Seasons.Where(s => s.SeriesId == series.Id).Where(s => s.SeasonNumber == SeasonNumber).FirstOrDefault();
-            var episode = _context.Episodes.Where(e => e.SeasonId == season.Id).Where(e => e.EpisodeNumber == EpisodeNumber).FirstOrDefault();
+            var season = _context.Seasons.Where(s => s.SeriesId == series.Id).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
+            var episode = _context.Episodes.Where(e => e.SeasonId == season.Id).Where(e => e.Episode_EpisodeNumber == EpisodeNumber).FirstOrDefault();
 
             return View(episode);
         }
@@ -118,7 +118,7 @@ namespace MovieProject.Controllers
 
                 episode.Name = editEpisodeViewModel.Name;
                 episode.Description = editEpisodeViewModel.Description;
-                episode.AirDate = editEpisodeViewModel.AirDate;
+                episode.ReleaseDate = editEpisodeViewModel.AirDate;
                 episode.Runtime = editEpisodeViewModel.Runtime;
                 episode.UpdatedAt = DateTime.Now;
 
@@ -136,23 +136,23 @@ namespace MovieProject.Controllers
         {
             System.Console.WriteLine("-------------" + Id);
             var series = _context.Series.FirstOrDefault(srs => srs.Slug == Slug);
-            var season = _context.Seasons.Where(s => s.SeriesId == series.Id).Where(s => s.SeasonNumber == SeasonNumber).FirstOrDefault();
+            var season = _context.Seasons.Where(s => s.SeriesId == series.Id).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
             var episode = _context.Episodes.FirstOrDefault(s => s.Id == Id);
 
             if (episode != null)
             {
                 _context.Attach(series);
-                series.NumberOfEpisodes--;
+                series.Series_EpisodeCount--;
                 series.UpdatedAt = DateTime.Now;
 
                 _context.Attach(season);
-                season.EpisodeCount--;
+                season.Season_EpisodeCount--;
                 season.UpdatedAt = DateTime.Now;
 
                 _context.Episodes.Remove(episode);
                 _context.SaveChanges();
 
-                TempData["message"] = $"Episode {episode.EpisodeNumber} - {episode.Name} from {series.Name} - {season.Name} was deleted";
+                TempData["message"] = $"Episode {episode.Episode_EpisodeNumber} - {episode.Name} from {series.Name} - {season.Name} was deleted";
 
                 return RedirectToAction("Details", "Season", new { Slug = Slug, SeasonNumber = SeasonNumber});
             } else 

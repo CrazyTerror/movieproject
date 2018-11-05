@@ -15,7 +15,7 @@
         <thead>
             <tr>
                 <th colspan="2">@s.Name</th>
-                <td>Genres: @String.Join(", ", s.SeriesGenre.Select(g => g.Genre.Name).ToArray())</td>
+                <td>Genres: @String.Join(", ", s.FilmItemGenres.Select(g => g.Genre.Name).ToArray())</td>
             </tr>
         </thead>
         
@@ -25,15 +25,15 @@
             <tr>
                 <th scope="row">Season</th>
                 <td>@season.Name</td>
-                <td>Episodes: @season.EpisodeCount</td>
+                <td>Episodes: @season.Season_EpisodeCount</td>
             </tr>
             @foreach (var episode in season.Episodes)
             {
                 <tr>
                     <th scope="row">Episode</th>
-                    <td>@episode.EpisodeNumber</td>
+                    <td>@episode.Episode_EpisodeNumber</td>
                     <td>@episode.Name</td>
-                    @foreach (var person in episode.EpisodeCredits)
+                    @foreach (var person in episode.FilmItemCredits)
                     {
                         <td>Actor: @person.Person.FirstName @person.Person.Surname (Character: @person.Character)</td>
                     }

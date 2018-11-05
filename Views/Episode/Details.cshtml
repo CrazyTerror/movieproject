@@ -1,6 +1,6 @@
 @model MovieProject.Models.Episode
 @{
-    ViewData["Title"] = @ViewBag.Series + " " + @Model.SeasonNumber + "x" + @ViewBag.Episode + " \"" +  @Model.Name + "\"";
+    ViewData["Title"] = @ViewBag.Series + " " + @Model.Episode_SeasonNumber + "x" + @ViewBag.Episode + " \"" +  @Model.Name + "\"";
     string selected = "color:red;";
 }
 
@@ -9,7 +9,7 @@
     @for (var i = 1; i < @ViewBag.EpisodeCount + 1; i++)
     {
         <li>
-            <a style="@(i == @Model.EpisodeNumber ? @selected : null )" asp-action="Details" asp-controller="Episode" asp-route-episodenumber="@i">@i</a>
+            <a style="@(i == @Model.Episode_EpisodeNumber ? @selected : null )" asp-action="Details" asp-controller="Episode" asp-route-episodenumber="@i">@i</a>
         </li>
     }
 </ul>

@@ -32,7 +32,7 @@ namespace MovieProject.Controllers
         [HttpGet("series/{slug}")]
         public ViewResult Details(string Slug)
         {
-            var series = _context.Series.Include(sg => sg.SeriesGenre).ThenInclude(g => g.Genre)
+            var series = _context.Series.Include(sg => sg.FilmItemGenres).ThenInclude(g => g.Genre)
                                         .Include(s => s.Seasons).ThenInclude(e => e.Episodes)
                                         .FirstOrDefault(s => s.Slug == Slug);
 
@@ -63,13 +63,13 @@ namespace MovieProject.Controllers
                 var selectedGenre = Int32.Parse(item);
                 Genre genre = _context.Genres.Find(selectedGenre);
                 
-                SeriesGenre sg = new SeriesGenre()
+                FilmItemGenre sg = new FilmItemGenre()
                 {
-                    Series = series,
+                    FilmItem = series,
                     Genre = genre
                 };
 
-                _context.SeriesGenre.Add(sg);
+                _context.FilmItemGenres.Add(sg);
             }
             _context.SaveChanges();
 
@@ -81,7 +81,7 @@ namespace MovieProject.Controllers
         [HttpGet("series/{Slug}/edit")]
         public ViewResult Edit(string Slug)
         {
-            var series = _context.Series.Include(sg => sg.SeriesGenre).ThenInclude(g => g.Genre).FirstOrDefault(m => m.Slug == Slug);
+            var series = _context.Series.Include(sg => sg.FilmItemGenres).ThenInclude(g => g.Genre).FirstOrDefault(m => m.Slug == Slug);
 
             return View(series);
         }

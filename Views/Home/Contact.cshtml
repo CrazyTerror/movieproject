@@ -16,7 +16,7 @@
                 <th colspan="4">@m.Name</th>
             </tr>
         </thead>
-        @foreach (var item in m.MovieCredits.Select(p => p.Person))
+        @foreach (var item in m.FilmItemCredits.Select(p => p.Person))
         {
             <tbody class="table-striped">
                 <tr>
@@ -31,7 +31,7 @@
                 
             </tbody>
         }
-        @foreach (var item in m.MovieGenre.Select(g => g.Genre))
+        @foreach (var item in m.FilmItemGenres.Select(g => g.Genre))
         {
             <tbody class="table-striped">
                 <tr>

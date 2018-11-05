@@ -3,10 +3,10 @@
     ViewData["Title"] = @Model.Name + " (" + ViewBag.Year + ")";
 }
 
-@foreach (var season in @Model.Seasons.OrderBy(s => s.SeasonNumber))
+@foreach (var season in @Model.Seasons.OrderBy(s => s.Season_SeasonNumber))
 {
     <div>
-        <a asp-action="Details" asp-controller="Season" asp-route-seasonnumber="@season.SeasonNumber">
+        <a asp-action="Details" asp-controller="Season" asp-route-seasonnumber="@season.Season_SeasonNumber">
             <img src="/images/season/@(season.Id).jpg" onerror="this.src='/images/season/template.jpg';this.onerror='';" alt="@season.Name" />
         </a>
     </div>
