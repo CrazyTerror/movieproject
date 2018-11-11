@@ -12,4 +12,12 @@ namespace MovieProject.Models
         public IFormFile Poster { get; set; }
         public IFormFile Banner { get; set; }
     }
+
+    public class PeopleOnSeries
+    {
+        public string FirstName { get; set; }
+        public string Surname { get; set; }
+        public string CharacterName { get; set; }
+        public int EpisodeCount { get; set; }
+    }
 }

@@ -12,6 +12,7 @@ using MovieProject.Infrastructure;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
+using Newtonsoft.Json.Linq;
 
 namespace MovieProject.Controllers
 {

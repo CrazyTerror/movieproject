@@ -12,6 +12,13 @@
     </div>
 }
 
+<text>------------People------------</text>
+@foreach (var item in ViewBag.People)
+{
+    <div>@item.FirstName @item.Surname</div>
+    <div>@item.CharacterName</div><br />
+}
+
 <div>
     @Model.Seasons.Count @(@Model.Seasons.Count > 1 || Model.Seasons.Count == 0 ? "Seasons" : "Season" )
 </div>

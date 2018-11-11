@@ -39,6 +39,18 @@ namespace MovieProject.Controllers
                                         .Include(s => s.Seasons).ThenInclude(e => e.Episodes)
                                         .FirstOrDefault(s => s.Slug == Slug);
 
+            var people = from p in _context.Persons
+                         join fc in _context.FilmItemCredits on p.Id equals fc.PersonId
+                         join f in _context.FilmItem on fc.FilmItemId equals f.Id
+                         where f.Slug == Slug
+                         orderby p.Surname
+                         select new PeopleOnSeries {
+                            FirstName = p.FirstName,
+                            Surname = p.Surname,
+                            CharacterName = fc.Character
+                         };
+
+            ViewBag.People = people;
             var year = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("yyyy") : "");
             ViewBag.Year = year;
 

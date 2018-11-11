@@ -9,8 +9,8 @@ using MovieProject.Models;
 namespace MovieProject.Migrations
 {
     [DbContext(typeof(MovieContext))]
-    [Migration("20181105164826_Initial")]
-    partial class Initial
+    [Migration("20181107160022_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -81,8 +81,6 @@ namespace MovieProject.Migrations
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<int>("FilmItemId");
-
-                    b.Property<string>("PartType");
 
                     b.Property<int>("PersonId");
 

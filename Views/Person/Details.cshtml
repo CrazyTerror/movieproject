@@ -28,10 +28,20 @@
         </div>
     } 
     
-    Actor:
-    @foreach (var movie in @Model.FilmItemCredits)
+    ------------Actor------------:
+    @foreach (var item in Model.FilmItemCredits)
     {
-        
+        <div>@item.Person.FirstName @item.Person.Surname</div>
+        <div>@item.FilmItem.ReleaseDate.Value.ToString("yyyy")</div>
+        <div>@item.Character</div><br />
+    }
+
+    ------------FilmItems------------
+    @foreach (var item in ViewBag.FilmItems)
+    {
+        <div>@item.Name</div>
+        <div>@item.ReleaseDate.ToString("yyyy")</div>
+        <div>@item.Character</div><br />
     }
 
 

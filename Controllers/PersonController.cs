@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MovieProject.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using System.Data.SqlClient;
 
 namespace MovieProject.Controllers
 {
@@ -38,6 +39,21 @@ namespace MovieProject.Controllers
         {
             var person = _context.Persons.Include(mc => mc.FilmItemCredits).ThenInclude(c => c.FilmItem)
                                          .FirstOrDefault(p => p.Slug == Slug);
+            
+            var filmItems = from f in _context.FilmItem
+                            join fc in _context.FilmItemCredits on f.Id equals fc.FilmItemId
+                            join p in _context.Persons on fc.PersonId equals p.Id
+                            where p.Slug == Slug
+                            where f.Discriminator == "Series" || f.Discriminator == "Movie"
+                            orderby f.ReleaseDate descending
+                            select new FilmItemRelease {
+                                ReleaseDate = f.ReleaseDate,
+                                Name = f.Name,
+                                Character = fc.Character
+                            };
+
+            
+            ViewBag.FilmItems = filmItems;
 
             return View(person);
         }

@@ -22,4 +22,16 @@ namespace MovieProject.Models
         Female = 2,
         Other = 3,
     }
+
+    public enum PartType
+    {
+        Cast = 1,
+        Composer = 2,
+        [Display(Name = "Costume Designer")]
+        CostumeDesigner = 3,
+        Director = 4,
+        Editor = 5,
+        Producer = 6,
+        Writer = 7,
+    }
 }

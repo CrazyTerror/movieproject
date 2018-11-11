@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MovieProject.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -212,7 +212,6 @@ namespace MovieProject.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     FilmItemId = table.Column<int>(nullable: false),
                     PersonId = table.Column<int>(nullable: false),
-                    PartType = table.Column<string>(nullable: true),
                     Character = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false)

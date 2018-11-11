@@ -80,8 +80,6 @@ namespace MovieProject.Migrations
 
                     b.Property<int>("FilmItemId");
 
-                    b.Property<string>("PartType");
-
                     b.Property<int>("PersonId");
 
                     b.Property<DateTime>("UpdatedAt");

@@ -43,7 +43,7 @@ namespace MovieProject
             services.AddDbContext<MovieContext>(options =>
                 options.UseSqlite(
                     Configuration["Data:MovieDB:ConnectionString"]));
-            
+
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 

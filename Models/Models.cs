@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MovieProject.Models
 {
@@ -18,6 +19,7 @@ namespace MovieProject.Models
         public int? VoteCount { get; set; } = null;
         public float? VoteAverage { get; set; } = null;
         public string Slug { get; set; }
+        public string Discriminator { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
@@ -126,11 +128,20 @@ namespace MovieProject.Models
         public FilmItem FilmItem { get; set; }
         public int PersonId { get; set; }
         public Person Person { get; set; }
-        public string PartType { get; set; } //Enum??
+        //public PartType PartType { get; set; }
         public string Character { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
+
+    /*public class FilmItemCharacter
+    {
+        public int Id { get; set; }
+        public int FilmItemCreditsId { get; set; }
+        public FilmItemCredits FilmItemCredits { get; set; }
+        public string Character { get; set; }
+        public int BillingPosition { get; set; }
+    }*/
 
     public class FilmItemGenre
     {
