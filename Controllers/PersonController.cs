@@ -40,19 +40,28 @@ namespace MovieProject.Controllers
             var person = _context.Persons.Include(mc => mc.FilmItemCredits).ThenInclude(c => c.FilmItem)
                                          .FirstOrDefault(p => p.Slug == Slug);
             
-            var filmItems = from f in _context.FilmItem
-                            join fc in _context.FilmItemCredits on f.Id equals fc.FilmItemId
-                            join p in _context.Persons on fc.PersonId equals p.Id
+            var filmItems = from p in _context.Persons
+                            join fc in _context.FilmItemCredits on p.Id equals fc.PersonId
+                            join f in _context.FilmItem on fc.FilmItemId equals f.Id
                             where p.Slug == Slug
                             where f.Discriminator == "Series" || f.Discriminator == "Movie"
                             orderby f.ReleaseDate descending
                             select new FilmItemRelease {
+                                Id = f.Id,
                                 ReleaseDate = f.ReleaseDate,
+                                Discriminator = f.Discriminator,
+                                Slug = f.Slug,
                                 Name = f.Name,
                                 Character = fc.Character
                             };
 
+            List<int> filmItemIds = new List<int>();
+            foreach (var filmItem in filmItems)
+            {
+                filmItemIds.Add(filmItem.Id);
+            }
             
+            ViewBag.FilmItemIds = filmItemIds;
             ViewBag.FilmItems = filmItems;
 
             return View(person);

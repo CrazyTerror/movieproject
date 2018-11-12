@@ -7,7 +7,7 @@
 {
     <div>
         <a asp-action="Details" asp-controller="Season" asp-route-seasonnumber="@season.Season_SeasonNumber">
-            <img src="/images/filmitem/@(season.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@season.Name" width="300px" height="180px"/>
+            <img src="/images/filmitem/poster/@(season.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@season.Name" width="200px" height="300px"/>
         </a>
     </div>
 }

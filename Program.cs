@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using MovieProject.Models;
+using MovieProject.Infrastructure;
 
 namespace MovieProject
 {
@@ -27,6 +28,8 @@ namespace MovieProject
                     var context = services.GetRequiredService<MovieContext>();
                     //context.Database.EnsureDeleted();
                     context.Database.EnsureCreated();
+                    GetCountries.LoadCountries(context);
+                    GetCountries.LoadLanguages(context);
                     SeedData.EnsurePopulated(context);
                 } catch (Exception ex)
                 {

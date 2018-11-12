@@ -133,6 +133,22 @@ namespace MovieProject.Migrations
                     b.ToTable("Genres");
                 });
 
+            modelBuilder.Entity("MovieProject.Models.Language", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("Name");
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Languages");
+                });
+
             modelBuilder.Entity("MovieProject.Models.Media", b =>
                 {
                     b.Property<int>("Id")

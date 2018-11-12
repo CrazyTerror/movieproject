@@ -1,6 +1,9 @@
 @model MovieProject.Models.Person
 @{
     ViewData["Title"] = @Model.FirstName + " " + @Model.Surname;
+    
+    Random rand = new Random();
+    int randomBackground = rand.Next(ViewBag.FilmItemIds.Count) + 1;
 }
 
 <div class="container">
@@ -27,18 +30,16 @@
             Death Date: @Model.DeathDate.Value.ToString("dd MMMM yyyy")
         </div>
     } 
-    
-    ------------Actor------------:
-    @foreach (var item in Model.FilmItemCredits)
-    {
-        <div>@item.Person.FirstName @item.Person.Surname</div>
-        <div>@item.FilmItem.ReleaseDate.Value.ToString("yyyy")</div>
-        <div>@item.Character</div><br />
-    }
 
     ------------FilmItems------------
+    <a asp-action="Index" asp-controller="FilmItemCredits">
+        Edit
+    </a> <br>
     @foreach (var item in ViewBag.FilmItems)
     {
+        <a asp-action="Details" asp-controller="@item.Discriminator" asp-route-slug="@item.Slug">
+            <img src="/images/filmitem/poster/@(item.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@item.Name" width="200px" height="300px"/>
+        </a>
         <div>@item.Name</div>
         <div>@item.ReleaseDate.ToString("yyyy")</div>
         <div>@item.Character</div><br />
@@ -47,10 +48,10 @@
 
 <div class="row">
     Background:
-    <img src="/images/person/@(Model.Id).jpg" onerror="this.src='/images/person/template.jpg';this.onerror='';" alt="@Model.FirstName @Model.Surname" width="100%">
+    <img src="/images/filmitem/@(randomBackground).jpg" onerror="this.src='/images/person/template.jpg';this.onerror='';" alt="@Model.FirstName @Model.Surname" width="100%">
 </div>
 
 <div class="row">
     Poster:
-    <img src="/images/person/poster/@(Model.Id).jpg" onerror="this.src='/images/person/poster/template.jpg';this.onerror='';" alt="@Model.FirstName @Model.Surname">
+    <img src="/images/person/poster/@(Model.Id).jpg" onerror="this.src='/images/person/poster/template.jpg';this.onerror='';" alt="@Model.FirstName @Model.Surname" width="200px" height="300px">
 </div>

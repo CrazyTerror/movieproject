@@ -39,9 +39,9 @@ namespace MovieProject.Controllers
                                         .Include(s => s.Seasons).ThenInclude(e => e.Episodes)
                                         .FirstOrDefault(s => s.Slug == Slug);
 
-            var people = from p in _context.Persons
-                         join fc in _context.FilmItemCredits on p.Id equals fc.PersonId
-                         join f in _context.FilmItem on fc.FilmItemId equals f.Id
+            var people = from f in _context.FilmItem
+                         join fc in _context.FilmItemCredits on f.Id equals fc.FilmItemId
+                         join p in _context.Persons on fc.PersonId equals p.Id
                          where f.Slug == Slug
                          orderby p.Surname
                          select new PeopleOnSeries {

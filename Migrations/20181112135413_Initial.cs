@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MovieProject.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -37,9 +37,9 @@ namespace MovieProject.Migrations
                     VoteCount = table.Column<int>(nullable: true),
                     VoteAverage = table.Column<float>(nullable: true),
                     Slug = table.Column<string>(nullable: true),
+                    Discriminator = table.Column<string>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
-                    Discriminator = table.Column<string>(nullable: false),
                     Episode_SeasonNumber = table.Column<int>(nullable: true),
                     Episode_EpisodeNumber = table.Column<int>(nullable: true),
                     SeasonId = table.Column<int>(nullable: true),
@@ -84,6 +84,21 @@ namespace MovieProject.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Genres", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Languages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Languages", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -333,6 +348,9 @@ namespace MovieProject.Migrations
 
             migrationBuilder.DropTable(
                 name: "FilmItemGenres");
+
+            migrationBuilder.DropTable(
+                name: "Languages");
 
             migrationBuilder.DropTable(
                 name: "Media");

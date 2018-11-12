@@ -19,6 +19,7 @@ namespace MovieProject.Models
         public DbSet<Genre> Genres { get; set; }
         public DbSet<FilmItemGenre> FilmItemGenres { get; set; }
         public DbSet<Country> Countries { get; set; }
+        public DbSet<Language> Languages { get; set; }
         public DbSet<Media> Media { get; set; }
         public DbSet<Photo> Photos { get; set; }
         public DbSet<Video> Videos { get; set; }

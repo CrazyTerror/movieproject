@@ -10,8 +10,7 @@ namespace MovieProject.Models
     {
         public static void EnsurePopulated(MovieContext context)
         {
-            
-            if (!context.Movies.Any() && !context.Persons.Any() && !context.Genres.Any() && !context.Series.Any())
+            if (!context.Movies.Any() && !context.Persons.Any() && !context.Series.Any() && !context.Genres.Any())
             {
                 Movie m1 = new Movie { 
                     Name = "The Lord of the Rings: The Fellowship of the Ring", 
@@ -34,8 +33,9 @@ namespace MovieProject.Models
                     Slug = "black-panther"
                 };
                 
-                context.Add(m1);
-                context.Add(m2);
+                context.FilmItem.Add(m1);
+                context.FilmItem.Add(m2);
+                context.SaveChanges();
 
                 Person a1 = new Person { 
                     FirstName = "Elijah", 
@@ -73,38 +73,12 @@ namespace MovieProject.Models
                     Gender = Gender.Female  
                 };
                 
-                context.Add(a1);
-                context.Add(a2);
-                context.Add(a3);
-                context.Add(a4);
-                context.Add(a5);
-
-                Genre g1 = new Genre {
-                    Name = "Adventure",
-                    Slug = "adventure"
-                };
-                Genre g2 = new Genre {
-                    Name = "Drama",
-                    Slug = "drama"
-                };
-                Genre g3 = new Genre {
-                    Name = "Fantasy",
-                    Slug = "fantasy"
-                };
-                Genre g4 = new Genre {
-                    Name = "Action",
-                    Slug = "action"
-                };
-                Genre g5 = new Genre {
-                    Name = "Crime",
-                    Slug = "crime"
-                };
-                
-                context.Add(g1);
-                context.Add(g2);
-                context.Add(g3);
-                context.Add(g4);
-                context.Add(g5);
+                context.Persons.Add(a1);
+                context.Persons.Add(a2);
+                context.Persons.Add(a3);
+                context.Persons.Add(a4);
+                context.Persons.Add(a5);
+                context.SaveChanges();
 
                 FilmItemCredits mc1 = new FilmItemCredits();
                 mc1.FilmItem = m1;
@@ -126,22 +100,166 @@ namespace MovieProject.Models
                 mc4.Person = a3;
                 mc4.Character = "T'Challa / Black Panther";
 
-                context.Add(mc1);
-                context.Add(mc2);
-                context.Add(mc3);
-                context.Add(mc4);
+                context.FilmItemCredits.Add(mc1);
+                context.FilmItemCredits.Add(mc2);
+                context.FilmItemCredits.Add(mc3);
+                context.FilmItemCredits.Add(mc4);
+                context.SaveChanges();
+                
+                Genre g1 = new Genre {
+                    Name = "Action",
+                    Slug = "action"
+                };
+                Genre g2 = new Genre {
+                    Name = "Adult",
+                    Slug = "adult"
+                };
+                Genre g3 = new Genre {
+                    Name = "Adventure",
+                    Slug = "adventure"
+                };
+                Genre g4 = new Genre {
+                    Name = "Animation",
+                    Slug = "animation"
+                };
+                Genre g5 = new Genre {
+                    Name = "Biography",
+                    Slug = "biography"
+                };
+                Genre g6 = new Genre {
+                    Name = "Comedy",
+                    Slug = "comedy"
+                };
+                Genre g7 = new Genre {
+                    Name = "Crime",
+                    Slug = "crime"
+                };
+                Genre g8 = new Genre {
+                    Name = "Documentary",
+                    Slug = "documentary"
+                };
+                Genre g9 = new Genre {
+                    Name = "Drama",
+                    Slug = "drama"
+                };
+                Genre g10 = new Genre {
+                    Name = "Family",
+                    Slug = "family"
+                };
+                Genre g11 = new Genre {
+                    Name = "Fantasy",
+                    Slug = "fantasy"
+                };
+                Genre g12 = new Genre {
+                    Name = "Film-Noir",
+                    Slug = "film-noir"
+                };
+                Genre g13 = new Genre {
+                    Name = "Game-Show",
+                    Slug = "game-show"
+                };
+                Genre g14 = new Genre {
+                    Name = "History",
+                    Slug = "history"
+                };
+                Genre g15 = new Genre {
+                    Name = "Horror",
+                    Slug = "horror"
+                };
+                Genre g16 = new Genre {
+                    Name = "Music",
+                    Slug = "music"
+                };
+                Genre g17 = new Genre {
+                    Name = "Musical",
+                    Slug = "musical"
+                };
+                Genre g18 = new Genre {
+                    Name = "Mystery",
+                    Slug = "mystery"
+                };
+                Genre g19 = new Genre {
+                    Name = "News",
+                    Slug = "news"
+                };
+                Genre g20 = new Genre {
+                    Name = "Reality-TV",
+                    Slug = "reality-tv"
+                };
+                Genre g21 = new Genre {
+                    Name = "Romance",
+                    Slug = "romance"
+                };
+                Genre g22 = new Genre {
+                    Name = "Science-Fiction",
+                    Slug = "sci-fi"
+                };
+                Genre g23 = new Genre {
+                    Name = "Short",
+                    Slug = "short"
+                };
+                Genre g24 = new Genre {
+                    Name = "Sport",
+                    Slug = "sport"
+                };
+                Genre g25 = new Genre {
+                    Name = "Talk-Show",
+                    Slug = "talk-show"
+                };
+                Genre g26 = new Genre {
+                    Name = "Thriller",
+                    Slug = "thriller"
+                };
+                Genre g27 = new Genre {
+                    Name = "War",
+                    Slug = "war"
+                };
+                Genre g28 = new Genre {
+                    Name = "Western",
+                    Slug = "western"
+                };
+                
+                context.Genres.Add(g1);
+                context.Genres.Add(g2);
+                context.Genres.Add(g3);
+                context.Genres.Add(g4);
+                context.Genres.Add(g5);
+                context.Genres.Add(g6);
+                context.Genres.Add(g7);
+                context.Genres.Add(g8);
+                context.Genres.Add(g9);
+                context.Genres.Add(g10);
+                context.Genres.Add(g11);
+                context.Genres.Add(g12);
+                context.Genres.Add(g13);
+                context.Genres.Add(g14);
+                context.Genres.Add(g15);
+                context.Genres.Add(g16);
+                context.Genres.Add(g17);
+                context.Genres.Add(g18);
+                context.Genres.Add(g19);
+                context.Genres.Add(g20);
+                context.Genres.Add(g21);
+                context.Genres.Add(g22);
+                context.Genres.Add(g23);
+                context.Genres.Add(g24);
+                context.Genres.Add(g25);
+                context.Genres.Add(g26);
+                context.Genres.Add(g27);
+                context.Genres.Add(g28);
+                context.SaveChanges();
 
                 FilmItemGenre mg1 = new FilmItemGenre();
                 mg1.FilmItem = m1;
-                mg1.Genre = g1;
+                mg1.Genre = g3;
 
                 FilmItemGenre mg2 = new FilmItemGenre();
                 mg2.FilmItem = m1;
-                mg2.Genre = g2;
+                mg2.Genre = g9;
 
                 FilmItemGenre mg3 = new FilmItemGenre();
                 mg3.FilmItem = m1;
-                mg3.Genre = g3;
+                mg3.Genre = g11;
 
                 FilmItemGenre mg4 = new FilmItemGenre();
                 mg4.FilmItem = m2;
@@ -149,13 +267,19 @@ namespace MovieProject.Models
 
                 FilmItemGenre mg5 = new FilmItemGenre();
                 mg5.FilmItem = m2;
-                mg5.Genre = g4;
+                mg5.Genre = g3;
+
+                FilmItemGenre mg6 = new FilmItemGenre();
+                mg6.FilmItem = m2;
+                mg6.Genre = g22;
                 
-                context.Add(mg1);
-                context.Add(mg2);
-                context.Add(mg3);
-                context.Add(mg4);
-                context.Add(mg5);
+                context.FilmItemGenres.Add(mg1);
+                context.FilmItemGenres.Add(mg2);
+                context.FilmItemGenres.Add(mg3);
+                context.FilmItemGenres.Add(mg4);
+                context.FilmItemGenres.Add(mg5);
+                context.FilmItemGenres.Add(mg6);
+                context.SaveChanges();
 
                 Series s1 = new Series() {
                     Name = "Game of Thrones",
@@ -170,9 +294,8 @@ namespace MovieProject.Models
                     Slug = "game-of-thrones"
                 };
 
-                context.Add(s1);
-                context.Add(mg4);
-                context.Add(mg5);
+                context.FilmItem.Add(s1);
+                context.SaveChanges();
 
                 FilmItemGenre sg1 = new FilmItemGenre();
                 sg1.FilmItem = s1;
@@ -180,15 +303,16 @@ namespace MovieProject.Models
 
                 FilmItemGenre sg2 = new FilmItemGenre();
                 sg2.FilmItem = s1;
-                sg2.Genre = g4;
+                sg2.Genre = g3;
 
                 FilmItemGenre sg3 = new FilmItemGenre();
                 sg3.FilmItem = s1;
-                sg3.Genre = g5;
+                sg3.Genre = g9;
 
-                context.Add(sg1);
-                context.Add(sg2);
-                context.Add(sg3);
+                context.FilmItemGenres.Add(sg1);
+                context.FilmItemGenres.Add(sg2);
+                context.FilmItemGenres.Add(sg3);
+                context.SaveChanges();
 
                 Season se1 = new Season()
                 {
@@ -210,8 +334,9 @@ namespace MovieProject.Models
                     Status = Status.Released,
                 };
 
-                context.Add(se1);
-                context.Add(se2);
+                context.FilmItem.Add(se1);
+                context.FilmItem.Add(se2);
+                context.SaveChanges();
 
                 Episode ep1 = new Episode()
                 {
@@ -258,60 +383,25 @@ namespace MovieProject.Models
                     Status = Status.Released,
                 };
                 
-                context.Add(ep1);
-                context.Add(ep2);
-                context.Add(ep11);
-                context.Add(ep12);
+                context.FilmItem.Add(ep1);
+                context.FilmItem.Add(ep2);
+                context.FilmItem.Add(ep11);
+                context.FilmItem.Add(ep12);
+                context.SaveChanges();
 
-                FilmItemCredits epc1 = new FilmItemCredits();
-                epc1.FilmItem = ep1;
-                epc1.Person = a4;
-                epc1.Character = "Tyrion Lannister";
-
-                FilmItemCredits epc2 = new FilmItemCredits();
-                epc2.FilmItem = ep1;
-                epc2.Person = a5;
-                epc2.Character = "Daenerys Targaryen";
+                FilmItemCredits fica1 = new FilmItemCredits();
+                fica1.FilmItem = s1;
+                fica1.Person = a4;
+                fica1.Character = "Tyrion Lannister";
                 
-                FilmItemCredits epc3 = new FilmItemCredits();
-                epc3.FilmItem = ep2;
-                epc3.Person = a4;
-                epc3.Character = "Tyrion Lannister";
+                FilmItemCredits fica2 = new FilmItemCredits();
+                fica2.FilmItem = s1;
+                fica2.Person = a5;
+                fica2.Character = "Daenerys Targaryen";
                 
-                FilmItemCredits epc4 = new FilmItemCredits();
-                epc4.FilmItem = ep2;
-                epc4.Person = a5;
-                epc4.Character = "Daenerys Targaryen";
+                context.FilmItemCredits.Add(fica1);
+                context.FilmItemCredits.Add(fica2);
                 
-                FilmItemCredits epc5 = new FilmItemCredits();
-                epc5.FilmItem = ep11;
-                epc5.Person = a4;
-                epc5.Character = "Tyrion Lannister";
-                
-                FilmItemCredits epc6 = new FilmItemCredits();
-                epc6.FilmItem = ep11;
-                epc6.Person = a5;
-                epc6.Character = "Daenerys Targaryen";
-                
-                FilmItemCredits epc7 = new FilmItemCredits();
-                epc7.FilmItem = ep12;
-                epc7.Person = a4;
-                epc7.Character = "Tyrion Lannister";
-                
-                FilmItemCredits epc8 = new FilmItemCredits();
-                epc8.FilmItem = ep12;
-                epc8.Person = a5;
-                epc8.Character = "Daenerys Targaryen";
-                
-                context.Add(epc1);
-                context.Add(epc2);
-                context.Add(epc3);
-                context.Add(epc4);
-                context.Add(epc5);
-                context.Add(epc6);
-                context.Add(epc7);
-                context.Add(epc8);
-
                 context.SaveChanges();
             }
         }
