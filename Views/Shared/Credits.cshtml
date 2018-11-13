@@ -1,8 +1,8 @@
-@model MovieProject.Models.Movie
+@model MovieProject.Models.FilmItem
 @using MovieProject.Infrastructure;
 
 @{
-    ViewData["Title"] = "About Movies";
+    ViewData["Title"] = "About " + @Model.Name;
 }
 
 <div class="row">
