@@ -61,7 +61,21 @@ namespace MovieProject.Controllers
                 filmItemIds.Add(filmItem.Id);
             }
             
-            ViewBag.FilmItemIds = filmItemIds;
+            foreach (var item in filmItemIds)
+            {
+                System.Console.WriteLine(item);
+            }
+            
+            if (filmItemIds.Count == 1)
+            {
+                ViewBag.FilmItemId = filmItemIds.First();
+            } else if (filmItemIds.Count > 1)
+            {
+                Random rand = new Random();
+                int i = rand.Next(filmItemIds.Count) + 1;
+                ViewBag.FilmItemId = i;
+            }
+            
             ViewBag.FilmItems = filmItems;
 
             return View(person);

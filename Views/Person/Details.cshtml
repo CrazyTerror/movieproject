@@ -1,14 +1,6 @@
 @model MovieProject.Models.Person
 @{
-    ViewData["Title"] = @Model.FirstName + " " + @Model.Surname;
-    
-    Random rand = new Random();
-    int randomBackground = rand.Next(ViewBag.FilmItemIds.Count); //wrong
-    System.Console.WriteLine(randomBackground);
-    foreach (var item in ViewBag.FilmItemIds)
-    {
-        System.Console.WriteLine(item);
-    }
+    ViewData["Title"] = @Model.FirstName + " " + @Model.Surname; 
 }
 
 <div class="container">
@@ -53,7 +45,7 @@
 
 <div class="row">
     Background:
-    <img src="/images/filmitem/@(randomBackground).jpg" onerror="this.src='/images/person/template.jpg';this.onerror='';" alt="@Model.FirstName @Model.Surname" width="100%">
+    <img src="/images/filmitem/@(ViewBag.FilmItemId).jpg" onerror="this.src='/images/person/template.jpg';this.onerror='';" alt="@Model.FirstName @Model.Surname" width="100%">
 </div>
 
 <div class="row">
