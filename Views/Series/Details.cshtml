@@ -35,12 +35,18 @@
     </div>
 }
 
-<text>------------People------------</text>
-@foreach (var item in ViewBag.People)
-{
-    <div>@item.FirstName @item.Surname</div>
-    <div>@item.CharacterName</div><br />
-}
+<div class="row">
+    <h2>Actors</h2>
+    <a asp-action="Credits">Edit</a>
+    @foreach (var item in @Model.FilmItemCredits)
+    {
+        <a asp-action="Details" asp-controller="Person" asp-route-slug="@item.Person.Slug">
+            <img src="/images/person/poster/@(item.Person.Id).jpg" onerror="this.src='/images/person/poster/template.jpg';this.onerror='';" alt="@item.Person.FirstName @item.Person.Surname" height="127px" width="84px" />
+        </a>
+        <div>@item.Person.FirstName @item.Person.Surname</div>
+        <div>@item.Character</div><br />
+    }
+</div>
 
 <div>
     @Model.Seasons.Count @(@Model.Seasons.Count > 1 || Model.Seasons.Count == 0 ? "Seasons" : "Season" )

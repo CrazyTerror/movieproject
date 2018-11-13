@@ -3,7 +3,12 @@
     ViewData["Title"] = @Model.FirstName + " " + @Model.Surname;
     
     Random rand = new Random();
-    int randomBackground = rand.Next(ViewBag.FilmItemIds.Count) + 1;
+    int randomBackground = rand.Next(ViewBag.FilmItemIds.Count); //wrong
+    System.Console.WriteLine(randomBackground);
+    foreach (var item in ViewBag.FilmItemIds)
+    {
+        System.Console.WriteLine(item);
+    }
 }
 
 <div class="container">

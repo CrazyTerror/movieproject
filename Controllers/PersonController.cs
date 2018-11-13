@@ -54,7 +54,7 @@ namespace MovieProject.Controllers
                                 Name = f.Name,
                                 Character = fc.Character
                             };
-
+                            
             List<int> filmItemIds = new List<int>();
             foreach (var filmItem in filmItems)
             {
