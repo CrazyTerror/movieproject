@@ -170,7 +170,7 @@ namespace MovieProject.Controllers
         public ViewResult AddGenre(string Slug)
         {
             var movie = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
-            ViewBag.Movie = movie;
+            ViewBag.FilmItem = movie;
             ViewBag.Genres = new SelectList((_context.Genres.OrderBy(x => x.Name)), "Id", "Name");
 
             return View();
@@ -228,7 +228,7 @@ namespace MovieProject.Controllers
         public ViewResult AddCredit(string Slug)
         {
             var movie = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
-            ViewBag.Movie = movie;
+            ViewBag.FilmItem = movie;
 
             return View();
         }
