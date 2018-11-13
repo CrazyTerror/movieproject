@@ -14,6 +14,12 @@ namespace MovieProject.Models
         public IFormFile Banner { get; set; }
     }
 
+    public class EditPersonCreditViewModel
+    {
+        public string Character { get; set; }
+        public string Attribute { get; set; }
+    }
+
     public class FilmItemRelease
     {
         public int Id { get; set; }

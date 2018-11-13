@@ -154,5 +154,117 @@ namespace MovieProject.Controllers
                 return View(nameof(Index));
             }
         }
+
+        [HttpGet("person/{Slug}/credits")]
+        public ViewResult Credits(string Slug)
+        {
+            var filmItems = from f in _context.FilmItem
+                            join fc in _context.FilmItemCredits on f.Id equals fc.FilmItemId
+                            join p in _context.Persons on fc.PersonId equals p.Id
+                            where p.Slug == Slug
+                            where f.Discriminator == "Series" || f.Discriminator == "Movie"
+                            orderby f.ReleaseDate descending
+                            select new FilmItemRelease {
+                                Id = f.Id,
+                                ReleaseDate = f.ReleaseDate,
+                                Discriminator = f.Discriminator,
+                                Slug = f.Slug,
+                                Name = f.Name,
+                                Character = fc.Character
+                            };
+
+            return View(filmItems.ToList());
+        }
+
+        [HttpGet("person/{Slug}/credits/add")]
+        public ViewResult AddCredit()
+        {
+            return View();
+        }
+
+        [HttpPost("person/{Slug}/credits/add")]
+        public IActionResult AddCredit(string Slug)
+        {
+            var person = _context.Persons.FirstOrDefault(p => p.Slug == Slug);
+            var filmItemName = Request.Form["Name"];
+            var filmItem = _context.FilmItem.FirstOrDefault(f => f.Name == filmItemName);
+
+            if (filmItem != null && person != null)
+            {
+                FilmItemCredits fic = new FilmItemCredits
+                {
+                    FilmItem = filmItem,
+                    Person = person,
+                    Character = Request.Form["Character"]
+                };
+
+                _context.FilmItemCredits.Add(fic);
+                _context.SaveChanges();
+                
+                TempData["message"] = $"{person.FirstName} {person.Surname} is added to {filmItem.Name}";
+                return RedirectToAction("Details", "Person", new { Slug = Slug });
+            } else 
+            {
+                TempData["message"] = $"{filmItemName} does not exist. Please enter a valid title";
+                return RedirectToAction(nameof(Create));
+            }
+        }
+
+        [HttpGet("person/{Slug}/credits/{Id}/edit")]
+        public ViewResult EditCredit(string Slug, int Id)
+        {
+            var person = _context.Persons.FirstOrDefault(p => p.Slug == Slug);
+            var filmItem = _context.FilmItem.FirstOrDefault(f => f.Id == Id);
+            var filmItemCredit = _context.FilmItemCredits.Where(p => p.PersonId == person.Id).Where(f => f.FilmItemId == filmItem.Id).FirstOrDefault();
+
+            return View(filmItemCredit);
+        }
+
+        [HttpPost("person/{Slug}/credits/{Id}/edit")]
+        public IActionResult EditCredit(EditPersonCreditViewModel edc, string Slug, int Id)
+        {
+            var filmItemCredit = _context.FilmItemCredits.Include(p => p.Person).Include(f => f.FilmItem).FirstOrDefault(fic => fic.Id == Id);
+            var character = Request.Form["Character"].ToString();
+
+            if (ModelState.IsValid)
+            {
+                _context.FilmItemCredits.Attach(filmItemCredit);
+
+                if (character != null)
+                {
+                    filmItemCredit.Character = edc.Character;
+                }
+
+                _context.SaveChanges();
+                
+                TempData["message"] = $"Edited {filmItemCredit.Person.FirstName} {filmItemCredit.Person.Surname} as '{character}'";  
+                return RedirectToAction("Details", "Person", new { Slug = Slug });
+            } else 
+            {
+                TempData["message"] = $"Something went wrong";
+                return View(filmItemCredit);
+            }
+        }
+
+        [HttpPost("person/{Slug}/credits/{Id}/delete")]
+        public IActionResult DeleteCredit(string Slug, int Id)
+        {
+            var person = _context.Persons.FirstOrDefault(p => p.Slug == Slug);
+            var filmItem = _context.FilmItem.FirstOrDefault(x => x.Id == Id);
+            var filmItemCredit = _context.FilmItemCredits.Where(a => a.FilmItemId == Id).Where(p => p.PersonId == person.Id).FirstOrDefault();
+
+            if (filmItemCredit != null)
+            {
+                _context.FilmItemCredits.Remove(filmItemCredit);
+                _context.SaveChanges();
+
+                TempData["message"] = $"{person.FirstName} {person.Surname} was removed from {filmItem.Name}";
+
+                return RedirectToAction("Details", "Person", new { Slug = Slug });
+            } else
+            {
+                return View("Error");
+            }
+        }
     }
 }
