@@ -1,7 +1,30 @@
 @model MovieProject.Models.Series
 @{
     ViewData["Title"] = @Model.Name + " (" + ViewBag.Year + ")";
+    var genres = @Model.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();
 }
+
+<div>
+    <ul>
+        <li>
+            <label>Released</label>
+            @ViewBag.Date
+        </li>
+        <li>
+            <label>Runtime</label>
+            @Model.Runtime
+        </li>
+        <li>
+            <label>Genres</label>
+            @String.Join(", ", genres)
+            <a asp-action="Genre">Edit</a>
+        </li>
+        <li>
+            <label>Status</label>
+            @Model.Status
+        </li>
+    </ul>
+</div>
 
 @foreach (var season in @Model.Seasons.OrderBy(s => s.Season_SeasonNumber))
 {

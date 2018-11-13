@@ -161,6 +161,72 @@ namespace MovieProject.Controllers
             }
         }
 
+        [HttpGet("series/{Slug}/genres")]
+        public ViewResult Genre(string Slug)
+        {
+            var series = _context.Series.Include(fig => fig.FilmItemGenres).ThenInclude(g => g.Genre).FirstOrDefault(m => m.Slug == Slug);
+
+            return View(series);
+        } 
+        
+        [HttpPost("series/{Slug}/genres/{Id}")]
+        [ValidateAntiForgeryToken]
+        public IActionResult Genre(string Slug, int Id = 0)
+        {
+            var series = _context.Series.FirstOrDefault(m => m.Slug == Slug);
+            var filmItemGenre = _context.FilmItemGenres.Include(g => g.Genre).Where(f => f.FilmItemId == series.Id).Where(g => g.GenreId == Id).FirstOrDefault();
+
+            if (filmItemGenre != null)
+            {   
+                TempData["message"] = $"Deleted genre '{filmItemGenre.Genre.Name}' from {series.Name}";  
+                _context.FilmItemGenres.Remove(filmItemGenre);
+                _context.SaveChanges();
+
+                return RedirectToAction("Details", "Series", new { Slug = Slug });
+            } else
+            {
+                return View(nameof(Index));
+            }
+        }
+
+        [HttpGet("series/{Slug}/genres/add")]
+        public ViewResult AddGenre(string Slug)
+        {
+            var series = _context.Series.FirstOrDefault(m => m.Slug == Slug);
+            ViewBag.Series = series;
+            ViewBag.Genres = new SelectList((_context.Genres.OrderBy(x => x.Name)), "Id", "Name");
+
+            return View();
+        }
+
+        [HttpPost("series/{Slug}/genres/add")]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddGenre(string Slug, int i = 0)
+        {
+            var series = _context.Series.FirstOrDefault(m => m.Slug == Slug);
+            var currentGenres = _context.FilmItemGenres.Where(m => m.FilmItemId == series.Id).Select(g => g.GenreId).ToList();
+            
+            var newGenres = Request.Form["Genre"];
+            foreach (var newGenre in newGenres)
+            {
+                if (currentGenres.Contains(int.Parse(newGenre)))
+                {
+                    continue;
+                } else
+                {
+                    FilmItemGenre fig = new FilmItemGenre
+                    {
+                        FilmItem = series,
+                        GenreId = int.Parse(newGenre)
+                    };
+                    _context.FilmItemGenres.Add(fig);  
+                }
+                TempData["message"] = $"Added {newGenres.Count} new genres to {series.Name}";  
+                _context.SaveChanges();
+            }   
+            return RedirectToAction("Details", "Series", new { Slug = Slug });
+        }
+
         public void DeleteImagesBelongingToSeries(Series series)
         {
             var filmItemIds = new List<int>();
