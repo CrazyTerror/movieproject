@@ -12,4 +12,10 @@ namespace MovieProject.Models
         public IFormFile Banner { get; set; }
         public DateTime? ReleaseDate { get; set; }
     }
+
+    public class EditMovieCreditViewModel
+    {
+        public string Character { get; set; }
+        public string Attribute { get; set; }
+    }
 }

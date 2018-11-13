@@ -59,7 +59,7 @@ namespace MovieProject.Controllers
         [HttpGet("movies/create")]
         public ViewResult Create()
         {
-            ViewBag.Genres = new SelectList((_context.Genres), "Id", "Name");
+            ViewBag.Genres = new SelectList((_context.Genres.OrderBy(g => g.Name)), "Id", "Name");
 
             return View();
         }
@@ -196,13 +196,11 @@ namespace MovieProject.Controllers
                         FilmItem = movie,
                         GenreId = int.Parse(newGenre)
                     };
-                    
-                    _context.FilmItemGenres.Add(fig);
+                    _context.FilmItemGenres.Add(fig);  
                 }
-
+                TempData["message"] = $"Added {newGenres.Count} new genres to {movie.Name}";  
                 _context.SaveChanges();
-            }
-            
+            }   
             return RedirectToAction("Details", "Movie", new { Slug = Slug });
         }
 
@@ -211,10 +209,11 @@ namespace MovieProject.Controllers
         public IActionResult Genre(string Slug, int Id = 0)
         {
             var movie = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
-            var filmItemGenre = _context.FilmItemGenres.Where(f => f.FilmItemId == movie.Id).Where(g => g.GenreId == Id).FirstOrDefault();
+            var filmItemGenre = _context.FilmItemGenres.Include(g => g.Genre).Where(f => f.FilmItemId == movie.Id).Where(g => g.GenreId == Id).FirstOrDefault();
 
             if (filmItemGenre != null)
-            {
+            {   
+                TempData["message"] = $"Deleted genre '{filmItemGenre.Genre.Name}' from {movie.Name}";  
                 _context.FilmItemGenres.Remove(filmItemGenre);
                 _context.SaveChanges();
 
@@ -230,7 +229,6 @@ namespace MovieProject.Controllers
         {
             var movie = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
             ViewBag.Movie = movie;
-            //ViewBag.Genres = new SelectList((_context.Genres.OrderBy(x => x.Name)), "Id", "Name");
 
             return View();
         }
@@ -262,12 +260,46 @@ namespace MovieProject.Controllers
                 }
                 _context.SaveChanges();
             
-                //tempdata
+                TempData["message"] = $"Added {person.FirstName} {person.Surname} as '{character}' to {movie.Name}";  
                 return RedirectToAction("Details", "Movie", new { Slug = Slug });
             } else 
             {
-                //tempdata
+                TempData["message"] = $"You made an error filling in the Person or Character"; 
                 return RedirectToAction("AddCredit", "Movie", new { Slug = Slug});
+            }
+        }
+
+        [HttpGet("movies/{Slug}/credits/{Id}/edit")]
+        public ViewResult EditCredit(int Id)
+        {
+            var filmItemCredit = _context.FilmItemCredits.Include(p => p.Person).Include(f => f.FilmItem).FirstOrDefault(fic => fic.Id == Id);
+
+            return View(filmItemCredit);
+        }
+
+        [HttpPost("movies/{Slug}/credits/{Id}/edit")]
+        public IActionResult EditCredit(EditMovieCreditViewModel edc, string Slug, int Id)
+        {
+            var filmItemCredit = _context.FilmItemCredits.Include(p => p.Person).Include(f => f.FilmItem).FirstOrDefault(fic => fic.Id == Id);
+            var character = Request.Form["Character"].ToString();
+
+            if (ModelState.IsValid)
+            {
+                _context.FilmItemCredits.Attach(filmItemCredit);
+
+                if (character != null)
+                {
+                    filmItemCredit.Character = edc.Character;
+                }
+
+                _context.SaveChanges();
+                
+                TempData["message"] = $"Edited {filmItemCredit.Person.FirstName} {filmItemCredit.Person.Surname} as '{character}'";  
+                return RedirectToAction("Details", "Movie", new { Slug = Slug });
+            } else 
+            {
+                TempData["message"] = $"Something went wrong";
+                return View(filmItemCredit);
             }
         }
 
@@ -283,13 +315,13 @@ namespace MovieProject.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Credits(string Slug, int Id)
         {
-            var movie = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
-            var filmItemCredit = _context.FilmItemCredits.Where(f => f.FilmItemId == movie.Id).Where(p => p.PersonId == Id).FirstOrDefault();
+            var filmItemCredit = _context.FilmItemCredits.Include(p => p.Person).Include(f => f.FilmItem).FirstOrDefault(fic => fic.Id == Id);
 
             if (filmItemCredit != null)
             {
                 _context.FilmItemCredits.Remove(filmItemCredit);
                 _context.SaveChanges();
+                TempData["message"] = $"Removed {filmItemCredit.Person.FirstName} {filmItemCredit.Person.Surname} from '{filmItemCredit.FilmItem.Name}'"; 
 
                 return RedirectToAction("Details", "Movie", new { Slug = Slug });
             } else
