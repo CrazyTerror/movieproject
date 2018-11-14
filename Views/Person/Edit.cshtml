@@ -1,40 +1,66 @@
 @model MovieProject.Models.Person
 @{
-    ViewData["Title"] = "Edit: " + @Model.FirstName + " " + @Model.Surname;
+    ViewData["Title"] = "Editing " + @Model.FirstName + " " + @Model.Surname;
 }
-<h2>@ViewData["Title"]</h2>
+<h3 class="text-center">@ViewData["Title"]</h3>
 
-<form asp-action="Edit" enctype="multipart/form-data" method="post">
+<form class="form-horizontal" asp-action="Edit" enctype="multipart/form-data" method="post">
     <input type="hidden" name="Id" value="@Model.Id" />
     <div class="form-group">
-        <label asp-for="FirstName"></label>
-        <div><span asp-validation-for="FirstName" class="text-danger"></span></div>
-        <input asp-for="FirstName" class="form-control" />
+        <label class="col-md-2 control-label" asp-for="FirstName"></label>
+        <div class="col-md-8">
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+            <input asp-for="FirstName" class="form-control" />
+        </div>
     </div>
     <div class="form-group">
-        <label asp-for="Surname"></label>
-        <div><span asp-validation-for="Surname" class="text-danger"></span></div>
-        <input asp-for="Surname" class="form-control" />
+        <label class="col-md-2 control-label" asp-for="Surname"></label>
+        <div class="col-md-8">
+            <span asp-validation-for="Surname" class="text-danger"></span>
+            <input asp-for="Surname" class="form-control" />
+        </div>
     </div>
     <div class="form-group">
-        <label asp-for="BirthDate"></label>
-        <div><span asp-validation-for="BirthDate" class="text-danger"></span></div>
-        <input type="date" asp-for="BirthDate" class="form-control" />
+        <label class="col-md-2 control-label" asp-for="BirthDate"></label>
+        <div class="col-md-8">
+            <span asp-validation-for="BirthDate" class="text-danger"></span>
+            <input type="date" asp-for="BirthDate" class="form-control" />
+        </div>
     </div>
     <div class="form-group">
-        <label asp-for="DeathDate"></label>
-        <div><span asp-validation-for="DeathDate" class="text-danger"></span></div>
-        <input type="date" asp-for="DeathDate" class="form-control" />
+        <label class="col-md-2 control-label" asp-for="DeathDate"></label>
+        <div class="col-md-8">
+            <span asp-validation-for="DeathDate" class="text-danger"></span>
+            <input type="date" asp-for="DeathDate" class="form-control" />
+        </div>
     </div>
     <div class="form-group">
-        <label>Upload Poster using this form:</label>
-        <div><span class="text-danger"></span></div>
-        <input type="file" id="Poster" name="Poster" />
+        <label class="col-md-2 control-label" asp-for="BirthPlace"></label>
+        <div class="col-md-8">
+            <span asp-validation-for="BirthPlace" class="text-danger"></span>
+            <input asp-for="BirthPlace" class="form-control" />
+        </div>
     </div>
     <div class="form-group">
-        <label>Upload Banner using this form:</label>
-        <div><span class="text-danger"></span></div>
-        <input type="file" id="Banner" name="Banner" />
+        <label class="col-md-2 control-label" asp-for="Gender"></label>
+        <div class="col-md-8">
+            <span asp-validation-for="Gender" class="text-danger"></span>
+            <select asp-for="Gender" class="form-control" asp-items="@(Html.GetEnumSelectList<Gender>())"></select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label">Upload Poster</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <input type="file" id="Poster" name="Poster" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label" asp-for="Biography"></label>
+        <div class="col-md-8">
+            <span asp-validation-for="Biography" class="text-danger"></span>
+            <textarea asp-for="Biography" class="form-control"></textarea>
+        </div>
     </div>
     <div class="text-center">
         <button class="btn btn-primary" type="submit">Save</button>

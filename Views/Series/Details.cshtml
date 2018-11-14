@@ -4,15 +4,49 @@
     var genres = @Model.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();
 }
 
+<div class="row">
+    <img src="/images/filmitem/@(Model.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@Model.Name" width="100%">
+</div>
+
 <div>
     <ul>
         <li>
-            <label>Released</label>
-            @ViewBag.Date
+            <label>Average</label>
+            @if (@Model.VoteAverage != null)
+            {
+                @Model.VoteAverage
+            } else
+            {
+                <text>No votes</text>
+            }
+        </li>
+        <li>
+            <label>Votes</label>
+            @if (@Model.VoteCount != null)
+            {
+                @Model.VoteCount
+            } else
+            {
+                <text>No votes</text>
+            }
+        </li>
+        <li>
+            <label>Rate</label>
+            @if (@Model.ReleaseDate < DateTime.Today)
+            {
+                <text>You can rate now</text>
+            } else
+            {
+                <text>You can rate when the series is out</text>
+            }
+        </li>
+        <li>
+            <label>Premiered</label>
+            @ViewBag.Year
         </li>
         <li>
             <label>Runtime</label>
-            @Model.Runtime
+            @ViewBag.TotalRuntime
         </li>
         <li>
             <label>Genres</label>
@@ -54,10 +88,6 @@
 
 <div class="text-center">
     <a asp-controller="Season" asp-action="Create" class="btn btn-primary">Add Season</a>
-</div>
-
-<div class="row">
-    <img src="/images/filmitem/@(Model.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@Model.Name" width="100%">
 </div>
 
 <div>

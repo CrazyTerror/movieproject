@@ -38,6 +38,9 @@ namespace MovieProject.Controllers
             var series = _context.Series.Include(sg => sg.FilmItemGenres).ThenInclude(g => g.Genre)
                                         .Include(s => s.Seasons).ThenInclude(e => e.Episodes)
                                         .Include(mc => mc.FilmItemCredits).ThenInclude(p => p.Person)
+                                        .Include(m => m.Media)
+                                        .Include(v => v.Videos)
+                                        .Include(p => p.Photos)
                                         .FirstOrDefault(s => s.Slug == Slug);
 
             var people = from f in _context.FilmItem
@@ -51,10 +54,15 @@ namespace MovieProject.Controllers
                             Surname = p.Surname,
                             CharacterName = fc.Character
                          };
-
             ViewBag.People = people;
-            var year = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("yyyy") : "");
+
+            var year = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("dd MMMM yyyy") : "");
             ViewBag.Year = year;
+    
+            string totalRuntime = CalculateTotalRuntime(series);
+            ViewBag.TotalRuntime = totalRuntime;
+
+            System.Console.WriteLine(DateTime.Today);
 
             return View(series);
         }
@@ -62,7 +70,8 @@ namespace MovieProject.Controllers
         [HttpGet("series/create")]
         public ViewResult Create()
         {
-            ViewBag.Genres = new SelectList((_context.Genres), "Id", "Name");
+            ViewBag.Genres = new SelectList((_context.Genres.OrderBy(g => g.Name)), "Id", "Name");
+            ViewBag.Languages = new SelectList((_context.Languages.OrderBy(l => l.Name)), "Id", "Name");
 
             return View();
         }
@@ -70,11 +79,8 @@ namespace MovieProject.Controllers
         [HttpPost("series/create")]
         public IActionResult Create(Series series)
         {
-            var slug = UrlEncoder.ToFriendlyUrl(Request.Form["Name"]);
-            var firstAirDate = DateTime.Parse(Request.Form["ReleaseDate"]);
-
-            series.Slug = slug;
-            series.FirstAirDate = firstAirDate;
+            series.Slug = UrlEncoder.ToFriendlyUrl(Request.Form["Name"]);
+            series.FirstAirDate = DateTime.Parse(Request.Form["ReleaseDate"]);
             _context.Series.Add(series);
             _context.SaveChanges();
 
@@ -86,13 +92,10 @@ namespace MovieProject.Controllers
 
             foreach (var item in Request.Form["Genre"])
             {
-                var selectedGenre = Int32.Parse(item);
-                Genre genre = _context.Genres.Find(selectedGenre);
-                
                 FilmItemGenre sg = new FilmItemGenre()
                 {
                     FilmItem = series,
-                    Genre = genre
+                    GenreId = Int32.Parse(item)
                 };
 
                 _context.FilmItemGenres.Add(sg);
@@ -101,7 +104,7 @@ namespace MovieProject.Controllers
 
             TempData["message"] = $"{series.Name} has been created";
 
-            return RedirectToAction("Details", "Series", new { Slug = slug});
+            return RedirectToAction("Details", "Series", new { Slug = series.Slug});
         }
 
         [HttpGet("series/{Slug}/edit")]
@@ -352,6 +355,29 @@ namespace MovieProject.Controllers
             foreach (var filmItem in filmItemIds)
             {
                 Images.DeleteAssetImage(_context, _env, "filmitem", filmItem);
+            }
+        }
+        private string CalculateTotalRuntime(Series series)
+        {
+            int? totalMinutesRuntime = 0;
+
+            foreach (var episodes in series.Seasons.Select(e => e.Episodes))
+            {
+                foreach (var episode in episodes)
+                {
+                    totalMinutesRuntime += episode.Runtime;
+                }
+            }
+            int? days = totalMinutesRuntime / 1440;
+            int? hours = (totalMinutesRuntime % 1440)/60;
+            int? minutes = totalMinutesRuntime % 60;
+
+            if (days != 0)
+            {
+                return string.Format("{0} days, {1} hours, {2} minutes", days, hours, minutes);
+            } else 
+            {
+                return string.Format("{0} hours, {1} minutes", hours, minutes);
             }
         }
     }

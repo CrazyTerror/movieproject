@@ -61,11 +61,6 @@ namespace MovieProject.Controllers
                 filmItemIds.Add(filmItem.Id);
             }
             
-            foreach (var item in filmItemIds)
-            {
-                System.Console.WriteLine(item);
-            }
-            
             if (filmItemIds.Count == 1)
             {
                 ViewBag.FilmItemId = filmItemIds.First();
@@ -131,6 +126,9 @@ namespace MovieProject.Controllers
                 person.Surname = editPersonViewModel.Surname;
                 person.BirthDate = editPersonViewModel.BirthDate;
                 person.DeathDate = editPersonViewModel.DeathDate;
+                person.Gender = editPersonViewModel.Gender;
+                person.BirthPlace = editPersonViewModel.BirthPlace;
+                person.Biography = editPersonViewModel.Biography;
                 person.UpdatedAt = DateTime.Now;
 
                 _context.SaveChanges();

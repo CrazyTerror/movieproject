@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -68,12 +69,8 @@ namespace MovieProject.Models
     }
 
     public class Media
-    { // To Person???
+    { 
         public int Id { get; set; }
-        public int FilmItemId { get; set; }
-        public FilmItem FilmItem { get; set; }
-        public int PersonId { get; set; }
-        public Person Person { get; set; }
         public string IMDB { get; set; }
         public string TMDB { get; set; }
         public string Trakt { get; set; }
@@ -87,10 +84,14 @@ namespace MovieProject.Models
     public class Person
     {
         public int Id { get; set; }
+        [DisplayName("First Name")]
         public string FirstName { get; set; }
         public string Surname { get; set; }
+        [DisplayName("Birth Date")]
         public DateTime? BirthDate { get; set; } = null;
+        [DisplayName("Death Date")]
         public DateTime? DeathDate { get; set; } = null;
+        [DisplayName("Place of Birth")]
         public string BirthPlace { get; set; }
         [EnumDataType(typeof(Gender))]
         public Gender? Gender { get; set; } = null;

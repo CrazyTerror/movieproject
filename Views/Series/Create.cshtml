@@ -3,51 +3,71 @@
 }
 <h2>@ViewData["Title"]</h2>
 
-<form asp-action="Create" enctype="multipart/form-data" method="post">
+<form class="form-horizontal" asp-action="Create" enctype="multipart/form-data" method="post">
     <div class="form-group">
-        <label>Name</label>
-        <div><span class="text-danger"></span></div>
-        <input name="Name" class="form-control" />
+        <label class="col-md-2 control-label">Name</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <input name="Name" class="form-control" />
+        </div>
     </div>
     <div class="form-group">
-        <label>Description</label>
-        <div><span class="text-danger"></span></div>
-        <textarea name="Description" class="form-control"></textarea>
+        <label class="col-md-2 control-label">Description</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <textarea name="Description" class="form-control"></textarea>
+        </div>
     </div>
     <div class="form-group">
-        <label>Release Date</label>
-        <div><span class="text-danger"></span></div>
-        <input type="date" name="ReleaseDate" class="form-control" />
+        <label class="col-md-2 control-label">Release Date</label>
+        <div class="col-md-8">
+            <div class="form-group row">
+                <div class="col-md-5">
+                    <span class="text-danger"></span>
+                    <input type="date" name="ReleaseDate" class="form-control" />
+                </div>
+                <label class="col-md-2 control-label">Runtime</label>
+                <div class="col-md-5">
+                    <span class="text-danger"></span>
+                    <input type="number" name="EpisodeRunTime" class="form-control" />
+                </div>
+            </div>
+        </div>
     </div>
     <div class="form-group">
-        <label>Average Runtime</label>
-        <div><span class="text-danger"></span></div>
-        <input type="number" name="EpisodeRunTime" class="form-control" />
+        <label class="col-md-2 control-label">Language</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <select name="Genre" class="form-control" asp-items="ViewBag.Languages"></select>
+        </div>
     </div>
     <div class="form-group">
-        <label>Language</label>
-        <div><span class="text-danger"></span></div>
-        <input name="OriginalLanguage" class="form-control" />
+        <label class="col-md-2 control-label">Status</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <select name="Status" class="form-control" asp-items="@(Html.GetEnumSelectList<Status>())"></select>
+        </div>
     </div>
     <div class="form-group">
-        <label>Status</label>
-        <div><span class="text-danger"></span></div>
-        <input type="text" name="Status" class="form-control" />
+        <label class="col-md-2 control-label">Upload Poster</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <input type="file" id="Poster" name="Poster" />
+        </div>
     </div>
     <div class="form-group">
-        <label>Upload Poster using this form:</label>
-        <div><span class="text-danger"></span></div>
-        <input type="file" id="Poster" name="Poster" />
+        <label class="col-md-2 control-label">Upload Banner</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <input type="file" id="Banner" name="Banner" />
+        </div>
     </div>
     <div class="form-group">
-        <label>Upload Banner using this form:</label>
-        <div><span class="text-danger"></span></div>
-        <input type="file" id="Banner" name="Banner" />
-    </div>
-    <div class="form-group">
-        <label>Genre</label>
-        <div><span class="text-danger"></span></div>
-        <select name="Genre" multiple="multiple" class="form-control" asp-items="ViewBag.Genres"></select>
+        <label class="col-md-2 control-label">Genre</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <select name="Genre" multiple="multiple" class="form-control" asp-items="ViewBag.Genres"></select>
+        </div>
     </div>
     <div class="text-center">
         <button class="btn btn-primary" type="submit">Create</button>

@@ -3,31 +3,43 @@
 }
 <h2>@ViewData["Title"]</h2>
 
-<form asp-action="Create" enctype="multipart/form-data" method="post">
+<form class="form-horizontal" asp-action="Create" enctype="multipart/form-data" method="post">
     <div class="form-group">
-        <label>First Name</label>
-        <div><span class="text-danger"></span></div>
-        <input name="FirstName" class="form-control" />
+        <label class="col-md-2 control-label">First Name</label>
+        <div class="col-md-8">
+            <div class="form-group row">
+                <div class="col-md-5">
+                    <span class="text-danger"></span>
+                    <input type="number" name="FirstName" class="form-control" />
+                </div>
+                <label class="col-md-2 control-label">Surname</label>
+                <div class="col-md-5">
+                    <span class="text-danger"></span>
+                    <input type="number" name="Surname" class="form-control" />
+                </div>
+            </div>
+        </div>
     </div>
     <div class="form-group">
-        <label>Surname</label>
-        <div><span class="text-danger"></span></div>
-        <input name="Surname" class="form-control" />
+        <label class="col-md-2 control-label">Birth Date</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <input type="date" name="BirthDate" class="form-control" />
+        </div>
     </div>
     <div class="form-group">
-        <label>Birth Date</label>
-        <div><span class="text-danger"></span></div>
-        <input type="date" name="BirthDate" class="form-control" />
+        <label class="col-md-2 control-label">Death Date</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <input type="date" name="DeathDate" class="form-control" />
+        </div>
     </div>
     <div class="form-group">
-        <label>Death Date</label>
-        <div><span class="text-danger"></span></div>
-        <input type="date" name="DeathDate" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label>Upload Poster using this form:</label>
-        <div><span class="text-danger"></span></div>
-        <input type="file" id="Poster" name="Poster" />
+        <label class="col-md-2 control-label">Upload Poster</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <input type="file" id="Poster" name="Poster" />
+        </div>
     </div>
     <div class="text-center">
         <button class="btn btn-primary" type="submit">Save</button>
