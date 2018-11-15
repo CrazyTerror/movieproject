@@ -1,6 +1,9 @@
 using System;
+using System.Linq;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.EntityFrameworkCore;
+using MovieProject.Models;
 
 namespace MovieProject.Infrastructure
 {
@@ -134,5 +137,75 @@ namespace MovieProject.Infrastructure
                 return "";
             }
         }
+
+        /* public static string IsSlugAvailable(MovieContext _ctx, string table, string title, int year = 0)
+        {
+            var slug = "";
+            if (table == "filmitem")
+            {
+                slug = FilmItemSlugSearch(_ctx, title, year);
+            } else if (table == "person")
+            {
+                slug = PersonSlugSearch(_ctx, title, year);
+            } 
+            return slug;
+        }
+
+        private static string FilmItemSlugSearch(MovieContext _ctx, string title, int year = 0)
+        {
+            var slug = ToFriendlyUrl(title);
+            var slugAlreadyInUse = _ctx.FilmItem.Where(x => x.Slug == slug).FirstOrDefault();
+            if (slugAlreadyInUse != null && year != 0)
+            {
+                slug = ToFriendlyUrl(title + " " + year);
+                var slugYearAlreadyInUse = _ctx.FilmItem.Where(x => x.Slug == slug).FirstOrDefault();
+                if (slugYearAlreadyInUse != null)
+                {
+                    var randomString = RandomString();
+                    slug = ToFriendlyUrl(title + " " + RandomString() + " " + RandomString() + " " + RandomString() + " " + RandomString());
+                }
+            } else if (slugAlreadyInUse != null && year == 0)
+            {
+                var randomString = RandomString();
+                slug = ToFriendlyUrl(title + " " + RandomString() + " " + RandomString() + " " + RandomString() + " " + RandomString());
+            }
+
+            return slug;
+        }
+
+        private static string PersonSlugSearch(MovieContext _ctx, string title, int year = 0)
+        {
+            var slug = ToFriendlyUrl(title);
+            var slugAlreadyInUse = _ctx.Persons.Where(x => x.Slug == slug).FirstOrDefault();
+            if (slugAlreadyInUse != null && year != 0)
+            {
+                slug = ToFriendlyUrl(title + " " + year);
+                var slugYearAlreadyInUse = _ctx.Persons.Where(x => x.Slug == slug).FirstOrDefault();
+                if (slugYearAlreadyInUse != null)
+                {
+                    slug = ToFriendlyUrl(title + " " + RandomString() + " " + RandomString() + " " + RandomString() + " " + RandomString());
+                } 
+            } else if (slugAlreadyInUse != null && year == 0)
+            {
+                var randomString = RandomString();
+                slug = ToFriendlyUrl(title + " " + RandomString() + " " + RandomString() + " " + RandomString() + " " + RandomString());
+            }
+
+            return slug;
+        }
+
+        private static string RandomString()
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var stringChars = new char[8];
+            var random = new Random();
+
+            for (int i = 0; i < stringChars.Length; i++)
+            {
+                stringChars[i] = chars[random.Next(chars.Length)];
+            }
+
+            return new String(stringChars);
+        }*/
     }
 }

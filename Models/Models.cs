@@ -10,17 +10,19 @@ namespace MovieProject.Models
     public class FilmItem
     {
         public int Id { get; set; }
+        [Required]
         public string Name { get; set; }
         [DisplayName("Release Date")]
         public DateTime? ReleaseDate { get; set; } = null;
-        public int? Runtime { get; set; } = null;
+        public int? Runtime { get; set; }
+        [Required]
         [EnumDataType(typeof(Status))]
-        public Status? Status { get; set; } = null;
+        public Status? Status { get; set; }
         public string Description { get; set; }
         [DisplayName("Original Language")]
         public string OriginalLanguage { get; set; }
-        public int? VoteCount { get; set; } = null;
-        public float? VoteAverage { get; set; } = null;
+        public int? VoteCount { get; set; }
+        public float? VoteAverage { get; set; }
         public string Slug { get; set; }
         public string Discriminator { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
@@ -36,26 +38,26 @@ namespace MovieProject.Models
 
     public class Movie : FilmItem
     {
-        public int? Budget { get; set; } = null;
-        public int? Revenue { get; set; } = null;
+        public int? Budget { get; set; }
+        public int? Revenue { get; set; }
     }
 
     public class Series : FilmItem
     {
-        public int? Series_SeasonCount { get; set; } = null;
-        public int? Series_EpisodeCount { get; set; } = null;
+        public int? Series_SeasonCount { get; set; }
+        public int? Series_EpisodeCount { get; set; }
         [DisplayName("First Air Date")]
-        public DateTime? FirstAirDate { get; set; } = null;
+        public DateTime? FirstAirDate { get; set; }
         [DisplayName("Last Air Date")]
-        public DateTime? LastAirDate { get; set; } = null;
+        public DateTime? LastAirDate { get; set; }
 
         public ICollection<Season> Seasons { get; set; }
     }
 
     public class Season : FilmItem
     {
-        public int? Season_SeasonNumber { get; set; } = null;
-        public int? Season_EpisodeCount { get; set; } = null;
+        public int? Season_SeasonNumber { get; set; }
+        public int? Season_EpisodeCount { get; set; }
 
         public int SeriesId { get; set; }
         public Series Series { get; set; }

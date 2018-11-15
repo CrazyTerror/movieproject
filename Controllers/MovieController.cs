@@ -42,8 +42,8 @@ namespace MovieProject.Controllers
                                        .Include(mc => mc.FilmItemCredits).ThenInclude(p => p.Person)
                                        .FirstOrDefault(m => m.Slug == Slug);
 
-            ViewBag.Year = (movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("yyyy") : "");
-            ViewBag.Date = (movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("dd MMMM, yyyy") : "");
+            ViewBag.Year = (movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("yyyy") : "Unknown");
+            ViewBag.Date = (movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("dd MMMM, yyyy") : "Unknown");
             
             if (movie == null)
             {
@@ -64,6 +64,15 @@ namespace MovieProject.Controllers
         [HttpPost("movies/create")]
         public IActionResult Create(Movie movie)
         {
+            //check if slug is available, else with releaseyear else random
+            //if (string.IsNullOrWhiteSpace(Request.Form["ReleaseDate"]))
+            //{
+            //    movie.Slug = UrlEncoder.IsSlugAvailable(_context, "filmitem", Request.Form["Name"]);
+            //} else
+            //{
+            //    movie.Slug = UrlEncoder.IsSlugAvailable(_context, "filmitem", Request.Form["Name"], DateTime.Parse(Request.Form["ReleaseDate"]).Year);
+            //}
+            
             movie.Slug = UrlEncoder.ToFriendlyUrl(Request.Form["Name"]);
             _context.Movies.Add(movie);
             _context.SaveChanges();
@@ -115,6 +124,7 @@ namespace MovieProject.Controllers
                 movie.Name = movieViewModel.Name;
                 movie.Description = movieViewModel.Description;
                 movie.ReleaseDate = movieViewModel.ReleaseDate;
+                movie.Slug = UrlEncoder.ToFriendlyUrl(movieViewModel.Name + " " + movieViewModel.ReleaseDate.Year);
                 movie.UpdatedAt = DateTime.Now;
                 
                 var images = HttpContext.Request.Form.Files; 

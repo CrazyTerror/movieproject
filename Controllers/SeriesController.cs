@@ -83,7 +83,7 @@ namespace MovieProject.Controllers
             {
                 Images.ReadImages(_context, _env, images, "filmitem");
             }
-
+            
             foreach (var item in Request.Form["Genre"])
             {
                 FilmItemGenre sg = new FilmItemGenre()

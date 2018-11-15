@@ -27,7 +27,7 @@
                         </a>
                     </td>
                     <td>
-                        @(m.ReleaseDate.HasValue ? m.ReleaseDate.Value.ToString("yyyy") : "")
+                        @(m.ReleaseDate.HasValue ? m.ReleaseDate.Value.ToString("yyyy") : "Unknown")
                     </td>
                     <td>
                         <form asp-action="Delete" asp-route-id="@m.Id" method="post">
