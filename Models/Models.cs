@@ -11,11 +11,13 @@ namespace MovieProject.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        [DisplayName("Release Date")]
         public DateTime? ReleaseDate { get; set; } = null;
         public int? Runtime { get; set; } = null;
         [EnumDataType(typeof(Status))]
         public Status? Status { get; set; } = null;
         public string Description { get; set; }
+        [DisplayName("Original Language")]
         public string OriginalLanguage { get; set; }
         public int? VoteCount { get; set; } = null;
         public float? VoteAverage { get; set; } = null;
@@ -42,7 +44,9 @@ namespace MovieProject.Models
     {
         public int? Series_SeasonCount { get; set; } = null;
         public int? Series_EpisodeCount { get; set; } = null;
+        [DisplayName("First Air Date")]
         public DateTime? FirstAirDate { get; set; } = null;
+        [DisplayName("Last Air Date")]
         public DateTime? LastAirDate { get; set; } = null;
 
         public ICollection<Season> Seasons { get; set; }
@@ -74,6 +78,7 @@ namespace MovieProject.Models
         public string IMDB { get; set; }
         public string TMDB { get; set; }
         public string Trakt { get; set; }
+        [DisplayName("Official Site")]
         public string OfficialSite { get; set; }
         public string Wikipedia { get; set; }
         public string Twitter { get; set; }

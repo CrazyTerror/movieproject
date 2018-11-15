@@ -1,23 +1,29 @@
 @{
-    ViewData["Title"] = "Add Person to FilmItem";
+    ViewData["Title"] = "Add " + ViewBag.Person.FirstName + " " + ViewBag.Person.Surname +  " to a new film item";
 }
-<h2>@ViewData["Title"]</h2>
+<h2 class="text-center">@ViewData["Title"]</h2>
 
-<form asp-action="AddCredit" method="post">
+<form class="form-horizontal" asp-action="AddCredit" method="post">
     <div class="form-group">
-        <label>Title:</label>
-        <div><span class="text-danger"></span></div>
-        <input type="text" id="Name" name="Name" />
+        <label class="col-md-2 control-label">Title:</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <input id="Name" name="Name" class="form-control" />
+        </div>
     </div>
     <div class="form-group">
-        <label>Character:</label>
-        <div><span class="text-danger"></span></div>
-        <input type="text" id="Character" name="Character" />
+        <label class="col-md-2 control-label">Character:</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <input id="Character" name="Character" class="form-control" />
+        </div>
     </div>
     <div class="form-group">
-        <label>Attribute:</label>
-        <div><span class="text-danger"></span></div>
-        <input type="text" id="Attribute" name="Attribute" />
+        <label class="col-md-2 control-label">Attribute:</label>
+        <div class="col-md-8"> 
+            <span class="text-danger"></span>
+            <input id="Attribute" name="Attribute" class="form-control" />
+        </div>
     </div>
     <div class="text-center">
         <button class="btn btn-primary" type="submit">Create</button>

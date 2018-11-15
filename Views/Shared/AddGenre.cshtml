@@ -1,13 +1,15 @@
 @{
-    ViewData["Title"] = "Add Genre to " + ViewBag.FilmItem.Name;
+    ViewData["Title"] = "Add genre to " + ViewBag.FilmItem.Name;
 }
-<h2>@ViewData["Title"]</h2>
+<h2 class="text-center">@ViewData["Title"]</h2>
 
-<form asp-action="AddGenre" method="post">
+<form class="form-horizontal" asp-action="AddGenre" method="post">
     <div class="form-group">
-        <label>Genre</label>
-        <div><span class="text-danger"></span></div>
-        <select name="Genre" multiple="multiple" class="form-control" style="height: 500px;" asp-items="ViewBag.Genres"></select>
+        <label class="col-md-2 control-label">Genre</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <select name="Genre" multiple="multiple" class="form-control" style="height: 500px;" asp-items="ViewBag.Genres"></select>
+        </div>
     </div>
     <div class="text-center">
         <button class="btn btn-primary" type="submit">Add Genre</button>

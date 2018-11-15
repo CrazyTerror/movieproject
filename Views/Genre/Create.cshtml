@@ -3,11 +3,13 @@
 }
 <h2>@ViewData["Title"]</h2>
 
-<form asp-action="Create" method="post">
+<form class="form-horizontal" asp-action="Create" method="post">
     <div class="form-group">
-        <label>Name</label>
-        <div><span class="text-danger"></span></div>
-        <input name="Name" class="form-control" />
+        <label class="col-md-2 control-label">Name</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <input name="Name" class="form-control" />
+        </div>
     </div>
     <div class="text-center">
         <button class="btn btn-primary" type="submit">Create</button>

@@ -76,6 +76,7 @@ namespace MovieProject.Controllers
                 _context.Genres.Attach(genre);
 
                 genre.Name = tempGenre.Name;
+                genre.Slug = UrlEncoder.ToFriendlyUrl(tempGenre.Name);
                 _context.SaveChanges();
                 
                 TempData["message"] = $"{genre.Name} has been changed";

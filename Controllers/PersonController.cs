@@ -189,13 +189,15 @@ namespace MovieProject.Controllers
         }
 
         [HttpGet("person/{Slug}/credits/add")]
-        public ViewResult AddCredit()
+        public ViewResult AddCredit(string Slug)
         {
+            ViewBag.Person = _context.Persons.FirstOrDefault(p => p.Slug == Slug);
+
             return View();
         }
 
         [HttpPost("person/{Slug}/credits/add")]
-        public IActionResult AddCredit(string Slug)
+        public IActionResult AddCredit(string Slug, int i = 0)
         {
             var person = _context.Persons.FirstOrDefault(p => p.Slug == Slug);
             var filmItemName = Request.Form["Name"];
@@ -227,7 +229,7 @@ namespace MovieProject.Controllers
         {
             var person = _context.Persons.FirstOrDefault(p => p.Slug == Slug);
             var filmItem = _context.FilmItem.FirstOrDefault(f => f.Id == Id);
-            var filmItemCredit = _context.FilmItemCredits.Where(p => p.PersonId == person.Id).Where(f => f.FilmItemId == filmItem.Id).FirstOrDefault();
+            var filmItemCredit = _context.FilmItemCredits.Include(p => p.Person).Include(f => f.FilmItem).Where(p => p.PersonId == person.Id).Where(f => f.FilmItemId == filmItem.Id).FirstOrDefault();
 
             return View(filmItemCredit);
         }

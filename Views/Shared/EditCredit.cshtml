@@ -1,15 +1,17 @@
 @model MovieProject.Models.FilmItemCredits
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit " + @Model.Person.FirstName + " " + @Model.Person.Surname + " in " + @Model.FilmItem.Name;
 }
-<h2>@ViewData["Title"]</h2>
+<h2 class="text-center">@ViewData["Title"]</h2>
 
-<form asp-action="EditCredit" method="post">
+<form class="form-horizontal" asp-action="EditCredit" method="post">
     <input type="hidden" name="Id" value="@Model.Id" />
     <div class="form-group">
-        <label asp-for="Character"></label>
-        <div><span asp-validation-for="Character" class="text-danger"></span></div>
-        <input asp-for="Character" class="form-control" />
+        <label class="col-md-2 control-label" asp-for="Character"></label>
+        <div class="col-md-8">
+            <span asp-validation-for="Character" class="text-danger"></span>
+            <input asp-for="Character" class="form-control" />
+        </div>
     </div>
     <div class="text-center">
         <button class="btn btn-primary" type="submit">Save</button>
