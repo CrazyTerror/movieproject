@@ -59,15 +59,11 @@ namespace MovieProject.Controllers
         {
             var series = _context.Series.Include(s => s.Seasons).FirstOrDefault(x => x.Slug == Slug);
 
+            var updatedSeries = FilmItemMethods.SaveSeriesInfoAfterCreateSeason(_context, series);
+
             // Add New Season
             season.SeriesId = series.Id;
-            if (series.Series_SeasonCount == null)
-            {
-                season.Season_SeasonNumber = 1;
-            } else 
-            {
-                season.Season_SeasonNumber = series.Series_SeasonCount + 1;
-            }
+            season.Season_SeasonNumber = updatedSeries.Series_SeasonCount;
             _context.Seasons.Add(season);
             _context.SaveChanges();
 
@@ -76,13 +72,6 @@ namespace MovieProject.Controllers
             {
                 Images.ReadImages(_context, _env, images, "filmitem");
             }
-
-            // Change amount of seasons in series
-            _context.Series.Attach(series);
-            series.Series_SeasonCount = series.Seasons.Count;
-            series.UpdatedAt = DateTime.Now;
-
-            _context.SaveChanges();
 
             return RedirectToAction("Details", "Series", new { Slug = Slug});
         }
@@ -133,11 +122,7 @@ namespace MovieProject.Controllers
             
             if (season != null)
             {
-                _context.Attach(series);
-                series.Series_SeasonCount--;
-                series.Series_EpisodeCount = series.Series_EpisodeCount - season.Season_EpisodeCount;
-                series.UpdatedAt = DateTime.Now;
-
+                FilmItemMethods.EditSeriesInfoAfterDeleteSeason(_context, series, season);
                 Images.DeleteImagesBelongingToSeason(_context, _env, season);
 
                 _context.Seasons.Remove(season);

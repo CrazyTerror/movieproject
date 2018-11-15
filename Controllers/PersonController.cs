@@ -86,7 +86,14 @@ namespace MovieProject.Controllers
         public IActionResult Create(Person person)
         {
             var personName = Request.Form["FirstName"] + " " + Request.Form["Surname"];
-            person.Slug = UrlEncoder.ToFriendlyUrl(personName);
+            //check if slug is available, else with release year
+            if (string.IsNullOrWhiteSpace(Request.Form["BirthDate"]))
+            {
+                person.Slug = UrlEncoder.IsSlugAvailable(_context, "person", personName);
+            } else
+            {
+                person.Slug = UrlEncoder.IsSlugAvailable(_context, "person", personName, DateTime.Parse(Request.Form["BirthDate"]).Year);
+            }
 
             _context.Persons.Add(person);
             _context.SaveChanges();
@@ -238,14 +245,7 @@ namespace MovieProject.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.FilmItemCredits.Attach(filmItemCredit);
-
-                if (character != null)
-                {
-                    filmItemCredit.Character = edc.Character;
-                }
-
-                _context.SaveChanges();
+                FilmItemMethods.EditFilmItemCredit(_context, filmItemCredit, character);
                 
                 TempData["message"] = $"Edited {filmItemCredit.Person.FirstName} {filmItemCredit.Person.Surname} as '{character}'";  
                 return RedirectToAction("Details", "Person", new { Slug = Slug });

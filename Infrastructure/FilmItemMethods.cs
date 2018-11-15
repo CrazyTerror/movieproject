@@ -58,5 +58,94 @@ namespace MovieProject.Infrastructure
             _ctx.FilmItemCredits.Add(fic);
             _ctx.SaveChanges();
         }
+
+        public static void EditFilmItemCredit(MovieContext _ctx, FilmItemCredits filmItemCredit, string character)
+        {
+            _ctx.FilmItemCredits.Attach(filmItemCredit);
+
+            if (character != null)
+            {
+                filmItemCredit.Character = character;
+            }
+
+            _ctx.SaveChanges();
+        }
+
+        public static Series SaveSeriesInfoAfterCreateEpisode(MovieContext _ctx, Series series)
+        {
+            // Change episode count in series
+            _ctx.Series.Attach(series);
+            if (series.Series_EpisodeCount == null)
+            {
+                series.Series_EpisodeCount = 1;
+            } else
+            {
+                series.Series_EpisodeCount++;
+            }
+            series.UpdatedAt = DateTime.Now;
+
+            _ctx.SaveChanges();
+
+            return series;
+        }
+
+        public static Season SaveSeasonInfoAfterCreateEpisode(MovieContext _ctx, Season season)
+        {
+            // Change episode count in season
+            _ctx.Seasons.Attach(season);
+            if (season.Season_EpisodeCount == null)
+            {
+                season.Season_EpisodeCount = 1;
+            } else 
+            {
+                season.Season_EpisodeCount++;
+            }
+            season.UpdatedAt = DateTime.Now;
+            
+            _ctx.SaveChanges();
+
+            return season;
+        }
+
+        public static Series SaveSeriesInfoAfterCreateSeason(MovieContext _ctx, Series series)
+        {
+            // Change amount of seasons in series
+            _ctx.Series.Attach(series);
+            if (series.Series_SeasonCount == null)
+            {
+                series.Series_SeasonCount = 1;
+            } else
+            {
+                series.Series_SeasonCount++;
+            }
+            series.UpdatedAt = DateTime.Now;
+
+            _ctx.SaveChanges();
+
+            return series;
+        }
+
+        public static void EditSeriesAndSeasonAfterDeleteEpisode(MovieContext _ctx, Series series, Season season)
+        {
+            _ctx.Attach(series);
+            series.Series_EpisodeCount--;
+            series.UpdatedAt = DateTime.Now;
+
+            _ctx.Attach(season);
+            season.Season_EpisodeCount--;
+            season.UpdatedAt = DateTime.Now;
+
+            _ctx.SaveChanges();
+        }
+
+        public static void EditSeriesInfoAfterDeleteSeason(MovieContext _ctx, Series series, Season season)
+        {
+            _ctx.Attach(series);
+            series.Series_SeasonCount--;
+            series.Series_EpisodeCount = series.Series_EpisodeCount - season.Season_EpisodeCount;
+            series.UpdatedAt = DateTime.Now;
+
+            _ctx.SaveChanges();
+        }
     }
 }

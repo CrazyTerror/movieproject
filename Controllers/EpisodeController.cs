@@ -66,32 +66,13 @@ namespace MovieProject.Controllers
             var series = _context.Series.Include(s => s.Seasons).ThenInclude(s => s.Episodes).FirstOrDefault(srs => srs.Slug == Slug);
             var season = _context.Seasons.Where(s => s.SeriesId == series.Id).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault(); 
             
-            // Change episode count in series
-            _context.Series.Attach(series);
-            if (series.Series_EpisodeCount == null)
-            {
-                series.Series_EpisodeCount = 1;
-            } else
-            {
-                series.Series_EpisodeCount++;
-            }
-            series.UpdatedAt = DateTime.Now;
-
-            // Change episode count in season
-            _context.Seasons.Attach(season);
-            if (season.Season_EpisodeCount == null)
-            {
-                season.Season_EpisodeCount = 1;
-            } else 
-            {
-                season.Season_EpisodeCount++;
-            }
-            season.UpdatedAt = DateTime.Now;
+            var updatedSeries = FilmItemMethods.SaveSeriesInfoAfterCreateEpisode(_context, series);
+            var updatedSeason = FilmItemMethods.SaveSeasonInfoAfterCreateEpisode(_context, season);
 
             // Add new Episode
             episode.SeasonId = season.Id;
-            episode.Episode_SeasonNumber = season.Season_SeasonNumber;
-            episode.Episode_EpisodeNumber = season.Season_EpisodeCount;
+            episode.Episode_SeasonNumber = updatedSeason.Season_SeasonNumber;
+            episode.Episode_EpisodeNumber = updatedSeason.Season_EpisodeCount;
             episode.UpdatedAt = DateTime.Now;
             _context.Episodes.Add(episode);
 
@@ -120,6 +101,7 @@ namespace MovieProject.Controllers
         public IActionResult Edit(EditEpisodeInfoViewModel editEpisodeViewModel, int EpisodeNumber)
         {
             var episode = _context.Episodes.FirstOrDefault(s => s.Id == editEpisodeViewModel.Id);
+            System.Console.WriteLine(editEpisodeViewModel.ReleaseDate);
             
             if (ModelState.IsValid)
             {
@@ -127,7 +109,7 @@ namespace MovieProject.Controllers
 
                 episode.Name = editEpisodeViewModel.Name;
                 episode.Description = editEpisodeViewModel.Description;
-                episode.ReleaseDate = editEpisodeViewModel.AirDate;
+                episode.ReleaseDate = editEpisodeViewModel.ReleaseDate;
                 episode.Runtime = editEpisodeViewModel.Runtime;
                 episode.UpdatedAt = DateTime.Now;
                 
@@ -155,18 +137,11 @@ namespace MovieProject.Controllers
 
             if (episode != null)
             {
-                _context.Attach(series);
-                series.Series_EpisodeCount--;
-                series.UpdatedAt = DateTime.Now;
-
-                _context.Attach(season);
-                season.Season_EpisodeCount--;
-                season.UpdatedAt = DateTime.Now;
+                FilmItemMethods.EditSeriesAndSeasonAfterDeleteEpisode(_context, series, season);
+                Images.DeleteAssetImage(_context, _env, "filmItem", episode.Id);
 
                 _context.Episodes.Remove(episode);
                 _context.SaveChanges();
-
-                Images.DeleteAssetImage(_context, _env, "filmItem", episode.Id);
 
                 TempData["message"] = $"Episode {episode.Episode_EpisodeNumber} - {episode.Name} from {series.Name} - {season.Name} was deleted";
 

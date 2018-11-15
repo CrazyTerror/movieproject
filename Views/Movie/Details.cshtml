@@ -4,8 +4,6 @@
     var genres = @Model.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();
 }
 
-
-
 <div class="row">
     <img src="/images/filmitem/@(Model.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@Model.Name" width="100%">
 </div>

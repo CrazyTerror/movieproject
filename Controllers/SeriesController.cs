@@ -73,7 +73,7 @@ namespace MovieProject.Controllers
         [HttpPost("series/create")]
         public IActionResult Create(Series series)
         {
-            //check if slug is available, else with releaseyear else random
+            //check if slug is available, else with release year
             if (string.IsNullOrWhiteSpace(Request.Form["ReleaseDate"]))
             {
                 series.Slug = UrlEncoder.IsSlugAvailable(_context, "filmitem", Request.Form["Name"]);
@@ -124,14 +124,13 @@ namespace MovieProject.Controllers
                 series.FirstAirDate = seriesViewModel.FirstAirDate;
                 series.ReleaseDate = seriesViewModel.FirstAirDate;
                 series.UpdatedAt = DateTime.Now;
+                _context.SaveChanges();
 
                 var images = HttpContext.Request.Form.Files; 
                 if (images.Count > 0)
                 {
                     Images.ReadImages(_context, _env, images, "filmitem", series.Id);
                 }
-
-                _context.SaveChanges();
 
                 TempData["message"] = $"{series.Name} has been changed";
 
@@ -297,14 +296,7 @@ namespace MovieProject.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.FilmItemCredits.Attach(filmItemCredit);
-
-                if (character != null)
-                {
-                    filmItemCredit.Character = edc.Character;
-                }
-
-                _context.SaveChanges();
+                FilmItemMethods.EditFilmItemCredit(_context, filmItemCredit, character);
                 
                 TempData["message"] = $"Edited {filmItemCredit.Person.FirstName} {filmItemCredit.Person.Surname} as '{character}'";  
                 return RedirectToAction("Details", "Series", new { Slug = Slug });

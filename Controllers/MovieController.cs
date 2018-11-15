@@ -260,14 +260,7 @@ namespace MovieProject.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.FilmItemCredits.Attach(filmItemCredit);
-
-                if (character != null)
-                {
-                    filmItemCredit.Character = emc.Character;
-                }
-
-                _context.SaveChanges();
+                FilmItemMethods.EditFilmItemCredit(_context, filmItemCredit, character);
                 
                 TempData["message"] = $"Edited {filmItemCredit.Person.FirstName} {filmItemCredit.Person.Surname} as '{character}'";  
                 return RedirectToAction("Details", "Movie", new { Slug = Slug });

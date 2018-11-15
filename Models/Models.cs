@@ -14,7 +14,7 @@ namespace MovieProject.Models
         public string Name { get; set; }
         [DisplayName("Release Date")]
         public DateTime? ReleaseDate { get; set; } = null;
-        public int? Runtime { get; set; }
+        public int? Runtime { get; set; } = null;
         [Required]
         [EnumDataType(typeof(Status))]
         public Status? Status { get; set; }
