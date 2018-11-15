@@ -17,7 +17,7 @@ namespace MovieProject.Infrastructure
 
                 foreach (CultureInfo culture in cultures)
                 {
-                     RegionInfo getRegionInfo = new RegionInfo(culture.LCID);
+                    RegionInfo getRegionInfo = new RegionInfo(culture.LCID);
 
                     if (!(cultureList.Contains(getRegionInfo.EnglishName)))
                     {

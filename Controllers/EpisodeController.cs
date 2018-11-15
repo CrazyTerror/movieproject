@@ -55,7 +55,7 @@ namespace MovieProject.Controllers
         }
 
         [HttpGet("series/{Slug}/seasons/{SeasonNumber}/episodes/create")]
-        public ViewResult Create(string Slug, int SeasonNumber)
+        public ViewResult Create()
         {
             return View();
         }
@@ -149,7 +149,6 @@ namespace MovieProject.Controllers
         [HttpPost("series/{Slug}/seasons/{SeasonNumber}/episodes/{EpisodeNumber}/delete")]
         public IActionResult Delete(string Slug, int SeasonNumber, int Id)
         {
-            System.Console.WriteLine("-------------" + Id);
             var series = _context.Series.FirstOrDefault(srs => srs.Slug == Slug);
             var season = _context.Seasons.Where(s => s.SeriesId == series.Id).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
             var episode = _context.Episodes.FirstOrDefault(s => s.Id == Id);

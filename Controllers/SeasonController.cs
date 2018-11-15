@@ -49,7 +49,7 @@ namespace MovieProject.Controllers
         }
 
         [HttpGet("series/{Slug}/seasons/create")]
-        public ViewResult Create(string Slug)
+        public ViewResult Create()
         {
             return View();
         }
@@ -138,7 +138,7 @@ namespace MovieProject.Controllers
                 series.Series_EpisodeCount = series.Series_EpisodeCount - season.Season_EpisodeCount;
                 series.UpdatedAt = DateTime.Now;
 
-                DeleteImagesBelongingToSeason(season);
+                Images.DeleteImagesBelongingToSeason(_context, _env, season);
 
                 _context.Seasons.Remove(season);
                 _context.SaveChanges();
@@ -148,24 +148,7 @@ namespace MovieProject.Controllers
                 return RedirectToAction("Details", "Series", new { Slug = Slug});
             } else 
             {
-                
                 return View("Error");
-            }
-        }
-
-        public void DeleteImagesBelongingToSeason(Season season)
-        {
-            var filmItemIds = new List<int>();
-            filmItemIds.Add(season.Id);
-
-            foreach (var episode in season.Episodes)
-            {
-                filmItemIds.Add(episode.Id);
-            }
-
-            foreach (var filmItem in filmItemIds)
-            {
-                Images.DeleteAssetImage(_context, _env, "filmitem", filmItem);
             }
         }
     }

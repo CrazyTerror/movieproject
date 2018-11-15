@@ -47,8 +47,7 @@ namespace MovieProject.Controllers
         [HttpPost("genres/create")]
         public IActionResult Create(Genre genre)
         {
-            var slug = UrlEncoder.ToFriendlyUrl(Request.Form["Name"]);
-            genre.Slug = slug;
+            genre.Slug = UrlEncoder.ToFriendlyUrl(Request.Form["Name"]);
             _context.Genres.Add(genre);
             _context.SaveChanges();
 
@@ -77,6 +76,7 @@ namespace MovieProject.Controllers
 
                 genre.Name = tempGenre.Name;
                 genre.Slug = UrlEncoder.ToFriendlyUrl(tempGenre.Name);
+                genre.UpdatedAt = DateTime.Now;
                 _context.SaveChanges();
                 
                 TempData["message"] = $"{genre.Name} has been changed";
@@ -94,7 +94,6 @@ namespace MovieProject.Controllers
             
             if (genre != null)
             {
-
                 _context.Genres.Remove(genre);
                 _context.SaveChanges();
 

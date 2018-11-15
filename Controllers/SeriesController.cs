@@ -43,7 +43,7 @@ namespace MovieProject.Controllers
                                         .Include(p => p.Photos)
                                         .FirstOrDefault(s => s.Slug == Slug);
 
-            var people = from f in _context.FilmItem
+            ViewBag.People = from f in _context.FilmItem
                          join fc in _context.FilmItemCredits on f.Id equals fc.FilmItemId
                          join p in _context.Persons on fc.PersonId equals p.Id
                          where f.Slug == Slug
@@ -54,15 +54,9 @@ namespace MovieProject.Controllers
                             Surname = p.Surname,
                             CharacterName = fc.Character
                          };
-            ViewBag.People = people;
 
-            var year = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("dd MMMM yyyy") : "");
-            ViewBag.Year = year;
-    
-            string totalRuntime = CalculateTotalRuntime(series);
-            ViewBag.TotalRuntime = totalRuntime;
-
-            System.Console.WriteLine(DateTime.Today);
+            ViewBag.Year = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("dd MMMM yyyy") : "");
+            ViewBag.TotalRuntime = Runtime.CalculateTotalRuntime(series);
 
             return View(series);
         }
@@ -153,7 +147,7 @@ namespace MovieProject.Controllers
 
             if (series != null)
             {
-                DeleteImagesBelongingToSeries(series);
+                Images.DeleteImagesBelongingToSeries(_context, _env, series);
                 _context.Series.Remove(series);
                 _context.SaveChanges();
 
@@ -197,8 +191,7 @@ namespace MovieProject.Controllers
         [HttpGet("series/{Slug}/genres/add")]
         public ViewResult AddGenre(string Slug)
         {
-            var series = _context.Series.FirstOrDefault(m => m.Slug == Slug);
-            ViewBag.FilmItem = series;
+            ViewBag.FilmItem = _context.Series.FirstOrDefault(m => m.Slug == Slug);
             ViewBag.Genres = new SelectList((_context.Genres.OrderBy(x => x.Name)), "Id", "Name");
 
             return View();
@@ -262,8 +255,7 @@ namespace MovieProject.Controllers
         [HttpGet("series/{Slug}/credits/add")]
         public ViewResult AddCredit(string Slug)
         {
-            var series = _context.Series.FirstOrDefault(m => m.Slug == Slug);
-            ViewBag.FilmItem = series;
+            ViewBag.FilmItem  = _context.Series.FirstOrDefault(m => m.Slug == Slug);
 
             return View();
         }
@@ -274,10 +266,7 @@ namespace MovieProject.Controllers
             var series = _context.Series.FirstOrDefault(m => m.Slug == Slug);
             var currentCredits = _context.FilmItemCredits.Where(m => m.FilmItemId == series.Id).Select(p => p.PersonId).ToList();
             
-            var firstName = Request.Form["Firstname"];
-            var surname = Request.Form["Surname"];
-            var person = _context.Persons.Where(fn => fn.FirstName == firstName).Where(sn => sn.Surname == surname).FirstOrDefault();
-            
+            var person = _context.Persons.Where(fn => fn.FirstName == Request.Form["Firstname"]).Where(sn => sn.Surname == Request.Form["Surname"]).FirstOrDefault();
             var character = Request.Form["Character"].ToString();
 
             if (person != null && character != null)
@@ -335,49 +324,6 @@ namespace MovieProject.Controllers
             {
                 TempData["message"] = $"Something went wrong";
                 return View(filmItemCredit);
-            }
-        }
-
-        public void DeleteImagesBelongingToSeries(Series series)
-        {
-            var filmItemIds = new List<int>();
-            filmItemIds.Add(series.Id);
-
-            foreach (var season in series.Seasons)
-            {
-                filmItemIds.Add(season.Id);
-                foreach (var episode in season.Episodes)
-                {
-                    filmItemIds.Add(episode.Id);
-                }
-            }
-
-            foreach (var filmItem in filmItemIds)
-            {
-                Images.DeleteAssetImage(_context, _env, "filmitem", filmItem);
-            }
-        }
-        private string CalculateTotalRuntime(Series series)
-        {
-            int? totalMinutesRuntime = 0;
-
-            foreach (var episodes in series.Seasons.Select(e => e.Episodes))
-            {
-                foreach (var episode in episodes)
-                {
-                    totalMinutesRuntime += episode.Runtime;
-                }
-            }
-            int? days = totalMinutesRuntime / 1440;
-            int? hours = (totalMinutesRuntime % 1440)/60;
-            int? minutes = totalMinutesRuntime % 60;
-
-            if (days != 0)
-            {
-                return string.Format("{0} days, {1} hours, {2} minutes", days, hours, minutes);
-            } else 
-            {
-                return string.Format("{0} hours, {1} minutes", hours, minutes);
             }
         }
     }

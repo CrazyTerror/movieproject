@@ -25,7 +25,6 @@ namespace MovieProject.Controllers
         {
             _context = context;
             _env = env;
-
         }
 
         [HttpGet("movies")]
@@ -43,10 +42,8 @@ namespace MovieProject.Controllers
                                        .Include(mc => mc.FilmItemCredits).ThenInclude(p => p.Person)
                                        .FirstOrDefault(m => m.Slug == Slug);
 
-            var year = (movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("yyyy") : "");
-            var date = (movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("dd MMMM, yyyy") : "");
-            ViewBag.Year = year;
-            ViewBag.Date = date;
+            ViewBag.Year = (movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("yyyy") : "");
+            ViewBag.Date = (movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("dd MMMM, yyyy") : "");
             
             if (movie == null)
             {
@@ -67,8 +64,7 @@ namespace MovieProject.Controllers
         [HttpPost("movies/create")]
         public IActionResult Create(Movie movie)
         {
-            var slug = UrlEncoder.ToFriendlyUrl(Request.Form["Name"]);
-            movie.Slug = slug;
+            movie.Slug = UrlEncoder.ToFriendlyUrl(Request.Form["Name"]);
             _context.Movies.Add(movie);
             _context.SaveChanges();
 
@@ -128,7 +124,6 @@ namespace MovieProject.Controllers
                 }
 
                 _context.SaveChanges();
-                
 
                 TempData["message"] = $"{movie.Name} has been changed";
 
@@ -169,8 +164,7 @@ namespace MovieProject.Controllers
         [HttpGet("movies/{Slug}/genres/add")]
         public ViewResult AddGenre(string Slug)
         {
-            var movie = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
-            ViewBag.FilmItem = movie;
+            ViewBag.FilmItem = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
             ViewBag.Genres = new SelectList((_context.Genres.OrderBy(x => x.Name)), "Id", "Name");
 
             return View();
@@ -227,8 +221,7 @@ namespace MovieProject.Controllers
         [HttpGet("movies/{Slug}/credits/add")]
         public ViewResult AddCredit(string Slug)
         {
-            var movie = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
-            ViewBag.FilmItem = movie;
+            ViewBag.FilmItem = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
 
             return View();
         }
@@ -239,10 +232,7 @@ namespace MovieProject.Controllers
             var movie = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
             var currentCredits = _context.FilmItemCredits.Where(m => m.FilmItemId == movie.Id).Select(p => p.PersonId).ToList();
             
-            var firstName = Request.Form["Firstname"];
-            var surname = Request.Form["Surname"];
-            var person = _context.Persons.Where(fn => fn.FirstName == firstName).Where(sn => sn.Surname == surname).FirstOrDefault();
-            
+            var person = _context.Persons.Where(fn => fn.FirstName == Request.Form["Firstname"]).Where(sn => sn.Surname == Request.Form["Surname"]).FirstOrDefault();
             var character = Request.Form["Character"].ToString();
 
             if (person != null && character != null)
@@ -278,7 +268,7 @@ namespace MovieProject.Controllers
         }
 
         [HttpPost("movies/{Slug}/credits/{Id}/edit")]
-        public IActionResult EditCredit(EditMovieCreditViewModel edc, string Slug, int Id)
+        public IActionResult EditCredit(EditMovieCreditViewModel emc, string Slug, int Id)
         {
             var filmItemCredit = _context.FilmItemCredits.Include(p => p.Person).Include(f => f.FilmItem).FirstOrDefault(fic => fic.Id == Id);
             var character = Request.Form["Character"].ToString();
@@ -289,7 +279,7 @@ namespace MovieProject.Controllers
 
                 if (character != null)
                 {
-                    filmItemCredit.Character = edc.Character;
+                    filmItemCredit.Character = emc.Character;
                 }
 
                 _context.SaveChanges();

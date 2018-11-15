@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
@@ -57,7 +58,6 @@ namespace MovieProject.Infrastructure
             {
                 path = Path.Combine(_env.WebRootPath, "images\\" + type + "\\") + newFileName;
             }
-            System.Console.WriteLine(path);
             
             using (FileStream fs = System.IO.File.Create(path))
             {
@@ -78,6 +78,42 @@ namespace MovieProject.Infrastructure
             if (banner.Exists)
             {
                 banner.Delete();
+            }
+        }
+
+        public static void DeleteImagesBelongingToSeries(MovieContext _context, IHostingEnvironment _env, Series series)
+        {
+            var filmItemIds = new List<int>();
+            filmItemIds.Add(series.Id);
+
+            foreach (var season in series.Seasons)
+            {
+                filmItemIds.Add(season.Id);
+                foreach (var episode in season.Episodes)
+                {
+                    filmItemIds.Add(episode.Id);
+                }
+            }
+
+            foreach (var filmItem in filmItemIds)
+            {
+                Images.DeleteAssetImage(_context, _env, "filmitem", filmItem);
+            }
+        }
+
+        public static void DeleteImagesBelongingToSeason(MovieContext _context, IHostingEnvironment _env, Season season)
+        {
+            var filmItemIds = new List<int>();
+            filmItemIds.Add(season.Id);
+
+            foreach (var episode in season.Episodes)
+            {
+                filmItemIds.Add(episode.Id);
+            }
+
+            foreach (var filmItem in filmItemIds)
+            {
+                Images.DeleteAssetImage(_context, _env, "filmitem", filmItem);
             }
         }
     }

@@ -86,8 +86,7 @@ namespace MovieProject.Controllers
         public IActionResult Create(Person person)
         {
             var personName = Request.Form["FirstName"] + " " + Request.Form["Surname"];
-            var slug = UrlEncoder.ToFriendlyUrl(personName);
-            person.Slug = slug;
+            person.Slug = UrlEncoder.ToFriendlyUrl(personName);
 
             _context.Persons.Add(person);
             _context.SaveChanges();
@@ -100,7 +99,7 @@ namespace MovieProject.Controllers
 
             TempData["message"] = $"{person.FirstName} {person.Surname} has been created";
 
-            return RedirectToAction("Details", "Person", new { Slug = slug});
+            return RedirectToAction("Details", "Person", new { Slug = person.Slug });
         }
 
         [HttpGet("person/{Slug}/edit")]
@@ -117,7 +116,6 @@ namespace MovieProject.Controllers
         {
             var person = _context.Persons.FirstOrDefault(m => m.Id == editPersonViewModel.Id);
             
-            System.Console.WriteLine("------------" + editPersonViewModel.DeathDate);
             if (ModelState.IsValid)
             {
                 _context.Persons.Attach(person);
@@ -200,8 +198,7 @@ namespace MovieProject.Controllers
         public IActionResult AddCredit(string Slug, int i = 0)
         {
             var person = _context.Persons.FirstOrDefault(p => p.Slug == Slug);
-            var filmItemName = Request.Form["Name"];
-            var filmItem = _context.FilmItem.FirstOrDefault(f => f.Name == filmItemName);
+            var filmItem = _context.FilmItem.FirstOrDefault(f => f.Name == Request.Form["Name"]);
 
             if (filmItem != null && person != null)
             {
@@ -219,7 +216,7 @@ namespace MovieProject.Controllers
                 return RedirectToAction("Details", "Person", new { Slug = Slug });
             } else 
             {
-                TempData["message"] = $"{filmItemName} does not exist. Please enter a valid title";
+                TempData["message"] = $"{Request.Form["Name"]} does not exist. Please enter an existing title";
                 return RedirectToAction(nameof(Create));
             }
         }
