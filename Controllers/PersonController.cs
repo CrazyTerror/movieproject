@@ -199,20 +199,19 @@ namespace MovieProject.Controllers
         {
             var person = _context.Persons.FirstOrDefault(p => p.Slug == Slug);
             var filmItem = _context.FilmItem.FirstOrDefault(f => f.Name == Request.Form["Name"]);
+            var currentCredits = _context.FilmItemCredits.Where(f => f.FilmItemId == filmItem.Id).Select(p => p.PersonId).ToList();
+            var character = Request.Form["Character"].ToString();
 
-            if (filmItem != null && person != null)
+            if (filmItem != null && character != null)
             {
-                FilmItemCredits fic = new FilmItemCredits
+                if (!currentCredits.Contains(person.Id))
                 {
-                    FilmItem = filmItem,
-                    Person = person,
-                    Character = Request.Form["Character"]
-                };
-
-                _context.FilmItemCredits.Add(fic);
-                _context.SaveChanges();
-                
-                TempData["message"] = $"{person.FirstName} {person.Surname} is added to {filmItem.Name}";
+                    FilmItemMethods.SaveFilmItemCredits(_context, filmItem, person, character);
+                    TempData["message"] = $"{person.FirstName} {person.Surname} is added to {filmItem.Name}";
+                } else 
+                {
+                    TempData["message"] = $"{person.FirstName} {person.Surname} already belongs to {filmItem.Name}";
+                }
                 return RedirectToAction("Details", "Person", new { Slug = Slug });
             } else 
             {

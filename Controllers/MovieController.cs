@@ -65,15 +65,14 @@ namespace MovieProject.Controllers
         public IActionResult Create(Movie movie)
         {
             //check if slug is available, else with releaseyear else random
-            //if (string.IsNullOrWhiteSpace(Request.Form["ReleaseDate"]))
-            //{
-            //    movie.Slug = UrlEncoder.IsSlugAvailable(_context, "filmitem", Request.Form["Name"]);
-            //} else
-            //{
-            //    movie.Slug = UrlEncoder.IsSlugAvailable(_context, "filmitem", Request.Form["Name"], DateTime.Parse(Request.Form["ReleaseDate"]).Year);
-            //}
+            if (string.IsNullOrWhiteSpace(Request.Form["ReleaseDate"]))
+            {
+                movie.Slug = UrlEncoder.IsSlugAvailable(_context, "filmitem", Request.Form["Name"]);
+            } else
+            {
+                movie.Slug = UrlEncoder.IsSlugAvailable(_context, "filmitem", Request.Form["Name"], DateTime.Parse(Request.Form["ReleaseDate"]).Year);
+            }
             
-            movie.Slug = UrlEncoder.ToFriendlyUrl(Request.Form["Name"]);
             _context.Movies.Add(movie);
             _context.SaveChanges();
 
@@ -83,20 +82,10 @@ namespace MovieProject.Controllers
                 Images.ReadImages(_context, _env, images, "filmitem");
             }
 
-            foreach (var item in Request.Form["Genre"])
+            foreach (var genre in Request.Form["Genre"])
             {
-                var selectedGenre = Int32.Parse(item);
-                Genre genre = _context.Genres.Find(selectedGenre);
-                
-                FilmItemGenre mvg = new FilmItemGenre()
-                {
-                    FilmItem = movie,
-                    Genre = genre
-                };
-
-                _context.FilmItemGenres.Add(mvg);
+                FilmItemMethods.SaveFilmItemGenres(_context, movie, genre);
             }
-            _context.SaveChanges();
 
             TempData["message"] = $"{movie.Name} has been created";
 
@@ -124,7 +113,6 @@ namespace MovieProject.Controllers
                 movie.Name = movieViewModel.Name;
                 movie.Description = movieViewModel.Description;
                 movie.ReleaseDate = movieViewModel.ReleaseDate;
-                movie.Slug = UrlEncoder.ToFriendlyUrl(movieViewModel.Name + " " + movieViewModel.ReleaseDate.Year);
                 movie.UpdatedAt = DateTime.Now;
                 
                 var images = HttpContext.Request.Form.Files; 
@@ -187,23 +175,16 @@ namespace MovieProject.Controllers
             var movie = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
             var currentGenres = _context.FilmItemGenres.Where(m => m.FilmItemId == movie.Id).Select(g => g.GenreId).ToList();
             
-            var newGenres = Request.Form["Genre"];
-            foreach (var newGenre in newGenres)
+            foreach (var newGenre in Request.Form["Genre"])
             {
                 if (currentGenres.Contains(int.Parse(newGenre)))
                 {
                     continue;
                 } else
                 {
-                    FilmItemGenre fig = new FilmItemGenre
-                    {
-                        FilmItem = movie,
-                        GenreId = int.Parse(newGenre)
-                    };
-                    _context.FilmItemGenres.Add(fig);  
+                    FilmItemMethods.SaveFilmItemGenres(_context, movie, newGenre);
                 }
-                TempData["message"] = $"Added {newGenres.Count} new genres to {movie.Name}";  
-                _context.SaveChanges();
+                TempData["message"] = $"Added new genres to {movie.Name}";
             }   
             return RedirectToAction("Details", "Movie", new { Slug = Slug });
         }
@@ -249,18 +230,12 @@ namespace MovieProject.Controllers
             {
                 if (!currentCredits.Contains(person.Id))
                 {
-                    FilmItemCredits fic = new FilmItemCredits
-                    {
-                        FilmItem = movie,
-                        Person = person,
-                        Character = character
-                    };
-
-                    _context.FilmItemCredits.Add(fic);
+                    FilmItemMethods.SaveFilmItemCredits(_context, movie, person, character);
+                    TempData["message"] = $"Added {person.FirstName} {person.Surname} as '{character}' to {movie.Name}";  
+                } else 
+                {
+                    TempData["message"] = $"{person.FirstName} {person.Surname} already belongs to {movie.Name}";
                 }
-                _context.SaveChanges();
-            
-                TempData["message"] = $"Added {person.FirstName} {person.Surname} as '{character}' to {movie.Name}";  
                 return RedirectToAction("Details", "Movie", new { Slug = Slug });
             } else 
             {

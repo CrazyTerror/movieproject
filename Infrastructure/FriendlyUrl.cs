@@ -138,7 +138,7 @@ namespace MovieProject.Infrastructure
             }
         }
 
-        /* public static string IsSlugAvailable(MovieContext _ctx, string table, string title, int year = 0)
+        public static string IsSlugAvailable(MovieContext _ctx, string table, string title, int year = 0)
         {
             var slug = "";
             if (table == "filmitem")
@@ -206,6 +206,6 @@ namespace MovieProject.Infrastructure
             }
 
             return new String(stringChars);
-        }*/
+        }
     }
 }
