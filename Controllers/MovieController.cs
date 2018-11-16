@@ -279,7 +279,7 @@ namespace MovieProject.Controllers
             return View(movie);
         }
 
-        [HttpPost("movies/{Slug}/credits/{Id}")]
+        [HttpPost("movies/{Slug}/credits")]
         [ValidateAntiForgeryToken]
         public IActionResult Credits(string Slug, int Id)
         {
