@@ -95,13 +95,13 @@ namespace MovieProject.Models
         public string FirstName { get; set; }
         public string Surname { get; set; }
         [DisplayName("Birth Date")]
-        public DateTime? BirthDate { get; set; } = null;
+        public DateTime? BirthDate { get; set; }
         [DisplayName("Death Date")]
-        public DateTime? DeathDate { get; set; } = null;
+        public DateTime? DeathDate { get; set; }
         [DisplayName("Place of Birth")]
         public string BirthPlace { get; set; }
         [EnumDataType(typeof(Gender))]
-        public Gender? Gender { get; set; } = null;
+        public Gender? Gender { get; set; }
         public string Biography { get; set; }
         public string Slug { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
