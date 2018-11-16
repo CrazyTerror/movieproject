@@ -1,8 +1,8 @@
 @model MovieProject.Models.Season
 @{
-    ViewData["Title"] = "Edit " + @Model.Name;
+    ViewData["Title"] = @ViewBag.Series.Name + " - " + @Model.Name;
 }
-<h2 class="text-center">@ViewData["Title"]</h2>
+<h2 class="text-center">Edit - @ViewData["Title"]</h2>
 
 <form class="form-horizontal" asp-action="Edit" enctype="multipart/form-data" method="post">
     <input type="hidden" name="Id" value="@Model.Id" />

@@ -30,6 +30,8 @@ namespace MovieProject.Controllers
             var series = _context.Series.FirstOrDefault(s => s.Slug == Slug);
             var seasons = _context.Seasons.Where(s => s.SeriesId == series.Id).ToList();
 
+            ViewBag.Series = series;
+
             return View(seasons);
         }
 
@@ -49,8 +51,9 @@ namespace MovieProject.Controllers
         }
 
         [HttpGet("series/{Slug}/seasons/create")]
-        public ViewResult Create()
+        public ViewResult Create(string Slug)
         {
+            ViewBag.Series = _context.Series.FirstOrDefault(s => s.Slug == Slug);
             return View();
         }
 
@@ -81,6 +84,8 @@ namespace MovieProject.Controllers
         {
             var series = _context.Series.FirstOrDefault(m => m.Slug == Slug);
             var season = _context.Seasons.Where(s => s.SeriesId == series.Id).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
+
+            ViewBag.Series = series;
 
             return View(season);
         }

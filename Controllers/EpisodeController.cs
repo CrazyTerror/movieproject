@@ -28,8 +28,11 @@ namespace MovieProject.Controllers
         public ViewResult Index(string Slug, int SeasonNumber)
         {
             var series = _context.Series.FirstOrDefault(s => s.Slug == Slug);
-            var seasons = _context.Seasons.FirstOrDefault(s => s.Season_SeasonNumber == SeasonNumber);
-            var episodes = _context.Episodes.Where(e => e.SeasonId == seasons.Id).ToList();
+            var season = _context.Seasons.FirstOrDefault(s => s.Season_SeasonNumber == SeasonNumber);
+            var episodes = _context.Episodes.Where(e => e.SeasonId == season.Id).ToList();
+
+            ViewBag.Series = series.Name;
+            ViewBag.Season = season.Name;
 
             return View(episodes);
         }
@@ -49,6 +52,7 @@ namespace MovieProject.Controllers
                 ViewBag.Episode = episode.Episode_EpisodeNumber;
             }
             ViewBag.Series = series.Name;
+            ViewBag.Season = season.Name;
             ViewBag.EpisodeCount = season.Season_EpisodeCount;
 
             return View(episode);
@@ -93,6 +97,18 @@ namespace MovieProject.Controllers
             var series = _context.Series.FirstOrDefault(m => m.Slug == Slug);
             var season = _context.Seasons.Where(s => s.SeriesId == series.Id).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
             var episode = _context.Episodes.Where(e => e.SeasonId == season.Id).Where(e => e.Episode_EpisodeNumber == EpisodeNumber).FirstOrDefault();
+
+            if (episode.Episode_EpisodeNumber < 10)
+            {
+                ViewBag.Episode = "0" + episode.Episode_EpisodeNumber;
+            } else
+            {
+                ViewBag.Episode = episode.Episode_EpisodeNumber;
+            }
+
+            ViewBag.Series = series.Name;
+            ViewBag.Season = season.Name;
+            ViewBag.EpisodeCount = season.Season_EpisodeCount;
 
             return View(episode);
         }

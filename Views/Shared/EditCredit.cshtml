@@ -1,6 +1,6 @@
 @model MovieProject.Models.FilmItemCredits
 @{
-    ViewData["Title"] = "Edit " + @Model.Person.FirstName + " " + @Model.Person.Surname + " in " + @Model.FilmItem.Name;
+    ViewData["Title"] = @Model.FilmItem.Name + " - " + @Model.Person.FirstName + " " + @Model.Person.Surname;
 }
 <h2 class="text-center">@ViewData["Title"]</h2>
 

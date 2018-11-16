@@ -1,7 +1,7 @@
 @model List<MovieProject.Models.Episode>
 
 @{
-    ViewData["Title"] = "About Episodes";
+    ViewData["Title"] = ViewBag.Series + " - " + ViewBag.Season + " - Episodes";
 }
 <h2>@ViewData["Title"]</h2>
 
@@ -21,11 +21,11 @@
             {
                 <tr>
                     <td>
-                        <a asp-controller="Episode" asp-action="Details" asp-route-seasonnumber="@e.Episode_EpisodeNumber">@e.Name</a>
+                        <a asp-controller="Episode" asp-action="Details" asp-route-episodenumber="@e.Episode_EpisodeNumber">@e.Name</a>
                     </td>
                     <td>
-                        <form asp-action="Delete" asp-route-id="@e.Id" method="post">
-                            <a asp-action="Edit" class="btn btn-sm btn-warning" asp-route-id="@e.Id">
+                        <form asp-action="Delete" asp-route-episodenumber="@e.Id" method="post">
+                            <a asp-action="Edit" class="btn btn-sm btn-warning" asp-route-episodenumber="@e.Episode_EpisodeNumber">
                                 Edit
                             </a>
                             <input type="hidden" name="Id" value="@e.Id" />

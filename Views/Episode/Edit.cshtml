@@ -1,6 +1,6 @@
 @model MovieProject.Models.Episode
 @{
-    ViewData["Title"] = "Edit: " + @Model.Name;
+    ViewData["Title"] = @ViewBag.Series + " " + @Model.Episode_SeasonNumber + "x" + @ViewBag.Episode + " \"" +  @Model.Name + "\"";
 }
 <h2 class="text-center">@ViewData["Title"]</h2>
 

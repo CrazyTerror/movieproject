@@ -190,6 +190,8 @@ namespace MovieProject.Controllers
                                 Character = fc.Character
                             };
 
+            ViewBag.Person = _context.Persons.FirstOrDefault(p => p.Slug == Slug);
+
             return View(filmItems.ToList());
         }
 

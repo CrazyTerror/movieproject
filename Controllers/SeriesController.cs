@@ -55,6 +55,7 @@ namespace MovieProject.Controllers
                             CharacterName = fc.Character
                          };
 
+            ViewBag.Genres = series.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();
             ViewBag.Year = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("dd MMMM yyyy") : "");
             ViewBag.TotalRuntime = FilmItemMethods.CalculateTotalRuntime(series);
 
@@ -105,6 +106,7 @@ namespace MovieProject.Controllers
         public ViewResult Edit(string Slug)
         {
             var series = _context.Series.Include(sg => sg.FilmItemGenres).ThenInclude(g => g.Genre).FirstOrDefault(m => m.Slug == Slug);
+            ViewBag.Year = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("yyyy") : "");
 
             return View(series);
         }
@@ -226,7 +228,7 @@ namespace MovieProject.Controllers
             return View(series);
         }
 
-        [HttpPost("series/{Slug}/credits/{Id}")]
+        [HttpPost("series/{Slug}/credits")]
         [ValidateAntiForgeryToken]
         public IActionResult Credits(string Slug, int Id)
         {

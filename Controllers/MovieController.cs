@@ -42,6 +42,7 @@ namespace MovieProject.Controllers
                                        .Include(mc => mc.FilmItemCredits).ThenInclude(p => p.Person)
                                        .FirstOrDefault(m => m.Slug == Slug);
 
+            ViewBag.Genres = movie.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();
             ViewBag.Year = (movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("yyyy") : "Unknown");
             ViewBag.Date = (movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("dd MMMM, yyyy") : "Unknown");
             
@@ -96,6 +97,7 @@ namespace MovieProject.Controllers
         public ViewResult Edit(string Slug)
         {
             var movie = _context.Movies.Include(mg => mg.FilmItemGenres).ThenInclude(g => g.Genre).FirstOrDefault(m => m.Slug == Slug);
+            ViewBag.Year = (movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("yyyy") : "Unknown");
 
             return View(movie);
         }
