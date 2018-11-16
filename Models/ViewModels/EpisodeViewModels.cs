@@ -12,5 +12,14 @@ namespace MovieProject.Models
         public IFormFile Poster { get; set; }
         public IFormFile Banner { get; set; }
         public int? Runtime { get; set; }
+
+        public void MapToModel(Episode e)
+        {
+            e.Name = Name;
+            e.Description = Description;
+            e.ReleaseDate = ReleaseDate;
+            e.Runtime = Runtime;
+            e.UpdatedAt = DateTime.Now;
+        }
     }
 }

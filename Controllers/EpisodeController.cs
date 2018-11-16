@@ -123,20 +123,14 @@ namespace MovieProject.Controllers
             if (ModelState.IsValid)
             {
                 _context.Episodes.Attach(episode);
-
-                episode.Name = editEpisodeViewModel.Name;
-                episode.Description = editEpisodeViewModel.Description;
-                episode.ReleaseDate = editEpisodeViewModel.ReleaseDate;
-                episode.Runtime = editEpisodeViewModel.Runtime;
-                episode.UpdatedAt = DateTime.Now;
+                editEpisodeViewModel.MapToModel(episode);
+                _context.SaveChanges();
                 
                 var images = HttpContext.Request.Form.Files; 
                 if (images.Count > 0)
                 {
                     Images.ReadImages(_context, _env, images, "filmitem", episode.Id);
                 }
-
-                _context.SaveChanges();
 
                 TempData["message"] = $"{episode.Name} has been changed";
 

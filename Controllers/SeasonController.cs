@@ -109,19 +109,14 @@ namespace MovieProject.Controllers
             if (ModelState.IsValid)
             {
                 _context.Seasons.Attach(season);
-
-                season.Name = editSeasonViewModel.Name;
-                season.Description = editSeasonViewModel.Description;
-                season.ReleaseDate = editSeasonViewModel.AirDate;
-                season.UpdatedAt = DateTime.Now;
+                editSeasonViewModel.MapToModel(season);
+                _context.SaveChanges();
 
                 var images = HttpContext.Request.Form.Files; 
                 if (images.Count > 0)
                 {
                     Images.ReadImages(_context, _env, images, "filmitem", season.Id);
                 }
-
-                _context.SaveChanges();
 
                 TempData["message"] = $"{season.Name} has been changed";
 

@@ -11,6 +11,14 @@ namespace MovieProject.Models
         public DateTime? AirDate { get; set; }
         public IFormFile Poster { get; set; }
         public IFormFile Banner { get; set; }
+
+        public void MapToModel(Season season)
+        {
+            season.Name = Name;
+            season.Description = Description;
+            season.ReleaseDate = AirDate;
+            season.UpdatedAt = DateTime.Now;
+        }
     }
 
     public class PeopleOnSeries

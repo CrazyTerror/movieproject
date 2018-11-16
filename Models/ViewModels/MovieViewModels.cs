@@ -11,6 +11,14 @@ namespace MovieProject.Models
         public IFormFile Poster { get; set; }
         public IFormFile Banner { get; set; }
         public DateTime ReleaseDate { get; set; }
+
+        public void MapToModel(Movie movie)
+        {
+            movie.Name = Name;
+            movie.Description = Description;
+            movie.ReleaseDate = ReleaseDate;
+            movie.UpdatedAt = DateTime.Now;
+        }
     }
 
     public class EditMovieCreditViewModel

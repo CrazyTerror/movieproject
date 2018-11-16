@@ -127,16 +127,7 @@ namespace MovieProject.Controllers
             if (ModelState.IsValid)
             {
                 _context.Persons.Attach(person);
-
-                person.FirstName = editPersonViewModel.FirstName;
-                person.Surname = editPersonViewModel.Surname;
-                person.BirthDate = editPersonViewModel.BirthDate;
-                person.DeathDate = editPersonViewModel.DeathDate;
-                person.Gender = editPersonViewModel.Gender;
-                person.BirthPlace = editPersonViewModel.BirthPlace;
-                person.Biography = editPersonViewModel.Biography;
-                person.UpdatedAt = DateTime.Now;
-
+                editPersonViewModel.MapToModel(person);
                 _context.SaveChanges();
 
                 var images = HttpContext.Request.Form.Files;

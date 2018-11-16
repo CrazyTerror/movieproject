@@ -121,12 +121,7 @@ namespace MovieProject.Controllers
             if (ModelState.IsValid)
             {
                 _context.Series.Attach(series);
-
-                series.Name = seriesViewModel.Name;
-                series.Description = seriesViewModel.Description;
-                series.FirstAirDate = seriesViewModel.FirstAirDate;
-                series.ReleaseDate = seriesViewModel.FirstAirDate;
-                series.UpdatedAt = DateTime.Now;
+                seriesViewModel.MapToModel(series);
                 _context.SaveChanges();
 
                 var images = HttpContext.Request.Form.Files; 

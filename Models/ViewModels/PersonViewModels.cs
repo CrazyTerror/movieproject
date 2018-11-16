@@ -14,6 +14,18 @@ namespace MovieProject.Models
         public Gender Gender { get; set; }
         public string Biography { get; set; }
         public IFormFile Poster { get; set; }
+
+        public void MapToModel(Person person)
+        {
+            person.FirstName = FirstName;
+            person.Surname = Surname;
+            person.BirthDate = BirthDate;
+            person.DeathDate = DeathDate;
+            person.Gender = Gender;
+            person.BirthPlace = BirthPlace;
+            person.Biography = Biography;
+            person.UpdatedAt = DateTime.Now;
+        }
     }
 
     public class EditPersonCreditViewModel
