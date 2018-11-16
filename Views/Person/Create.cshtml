@@ -21,6 +21,13 @@
         </div>
     </div>
     <div class="form-group">
+        <label class="col-md-2 control-label">Gender</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <select name="Gender" class="form-control" asp-items="@(Html.GetEnumSelectList<Gender>())"></select>
+        </div>
+    </div>
+    <div class="form-group">
         <label class="col-md-2 control-label">Birth Date</label>
         <div class="col-md-8">
             <span class="text-danger"></span>
@@ -32,6 +39,13 @@
         <div class="col-md-8">
             <span class="text-danger"></span>
             <input type="date" name="DeathDate" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label">Birth Place</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <input name="BirthPlace" class="form-control" />
         </div>
     </div>
     <div class="form-group">
