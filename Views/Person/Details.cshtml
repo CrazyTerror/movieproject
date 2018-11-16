@@ -3,52 +3,63 @@
     ViewData["Title"] = @Model.FirstName + " " + @Model.Surname; 
 }
 
-<div class="container">
-    <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
-        <a asp-action="Edit" class="btn btn-sm btn-warning">
-            Edit Person
-        </a>
-        <button type="submit" class="btn btn-danger btn-sm">
-            Delete
-        </button>
-    </form>
-    <div>
-        Actor: @Model.FirstName @Model.Surname
-    </div>
-    @if (Model.BirthDate != null)
-    {
-        <div>
-            Birth Date: @Model.BirthDate.Value.ToString("dd MMMM yyyy")
-        </div>
-    } 
-    @if (Model.DeathDate != null)
-    {
-        <div>
-            Death Date: @Model.DeathDate.Value.ToString("dd MMMM yyyy")
-        </div>
-    } 
-
-    ------------FilmItems------------
-    <a asp-action="Credits" asp-controller="Person">
-        Edit
-    </a> <br>
-    @foreach (var item in ViewBag.FilmItems)
-    {
-        <a asp-action="Details" asp-controller="@item.Discriminator" asp-route-slug="@item.Slug">
-            <img src="/images/filmitem/poster/@(item.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@item.Name" width="200px" height="300px"/>
-        </a>
-        <div>@item.Name</div>
-        <div>@item.ReleaseDate.ToString("yyyy")</div>
-        <div>@item.Character</div><br />
-    }
-
-
 <div class="row">
-    Background:
     <img src="/images/filmitem/@(ViewBag.FilmItemId).jpg" onerror="this.src='/images/person/template.jpg';this.onerror='';" alt="@Model.FirstName @Model.Surname" width="100%">
 </div>
 
+<form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+    <a asp-action="Edit" class="btn btn-sm btn-warning">
+        Edit Person
+    </a>
+    <button type="submit" class="btn btn-danger btn-sm">
+        Delete
+    </button>
+</form>
+
 <div class="row">
-    Poster:
+    Actor: @Model.FirstName @Model.Surname
+</div>
+
+<div class="row">
+    <label>Age</label> @ViewBag.Age
+</div>
+
+<div class="row">
+    <label>Born</label>
+    <text>@(Model.BirthDate.HasValue ? Model.BirthDate.Value.ToString("d MMMM yyyy") : "")</text>
+    @if (Model.BirthPlace != null)
+    {
+        <text>in</text>
+        <text>@Model.BirthPlace</text>
+    }
+</div>
+
+<div class="row">
+@if (Model.DeathDate != null)
+{
+    <label>Death</label>
+    <text>@Model.DeathDate.Value.ToString("d MMMM yyyy")</text>
+} 
+</div>
+
+<div class="row">
+    @Model.Biography
+</div>
+
+------------FilmItems------------
+<a asp-action="Credits" asp-controller="Person">
+    Edit
+</a> <br>
+@foreach (var item in ViewBag.FilmItems)
+{
+    <a asp-action="Details" asp-controller="@item.Discriminator" asp-route-slug="@item.Slug">
+        <img src="/images/filmitem/poster/@(item.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@item.Name" width="200px" height="300px"/>
+    </a>
+    <div>@item.Name</div>
+    <div>@item.ReleaseDate.ToString("yyyy")</div>
+    <div>@item.Character</div><br />
+}
+
+<div class="row">
     <img src="/images/person/poster/@(Model.Id).jpg" onerror="this.src='/images/person/poster/template.jpg';this.onerror='';" alt="@Model.FirstName @Model.Surname" width="200px" height="300px">
 </div>

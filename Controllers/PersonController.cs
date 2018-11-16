@@ -72,6 +72,7 @@ namespace MovieProject.Controllers
             }
             
             ViewBag.FilmItems = filmItems;
+            ViewBag.Age = PersonMethods.CalculatePersonAge(person);
 
             return View(person);
         }

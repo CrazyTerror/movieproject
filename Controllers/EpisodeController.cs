@@ -40,7 +40,7 @@ namespace MovieProject.Controllers
         [HttpGet("series/{Slug}/seasons/{SeasonNumber}/episodes/{EpisodeNumber}")]
         public ViewResult Details(string Slug, int SeasonNumber, int EpisodeNumber)
         {
-            var series = _context.Series.FirstOrDefault(s => s.Slug == Slug);
+            var series = _context.Series.Include(fig => fig.FilmItemGenres).ThenInclude(g => g.Genre).FirstOrDefault(s => s.Slug == Slug);
             var season = _context.Seasons.Where(srs => srs.SeriesId == series.Id).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
             var episode = _context.Episodes.Where(s => s.SeasonId == season.Id).Where(ep => ep.Episode_EpisodeNumber == EpisodeNumber).FirstOrDefault();
 
@@ -51,6 +51,7 @@ namespace MovieProject.Controllers
             {
                 ViewBag.Episode = episode.Episode_EpisodeNumber;
             }
+            ViewBag.Genres = series.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();
             ViewBag.Series = series.Name;
             ViewBag.Season = season.Name;
             ViewBag.EpisodeCount = season.Season_EpisodeCount;

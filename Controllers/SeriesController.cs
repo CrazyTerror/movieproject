@@ -56,8 +56,9 @@ namespace MovieProject.Controllers
                          };
 
             ViewBag.Genres = series.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();
-            ViewBag.Year = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("dd MMMM yyyy") : "");
-            ViewBag.TotalRuntime = FilmItemMethods.CalculateTotalRuntime(series);
+            ViewBag.Year = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("yyyy") : "");
+            ViewBag.Premiere = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("dd MMMM yyyy") : "");
+            ViewBag.TotalRuntime = FilmItemMethods.CalculateSeriesTotalRuntime(series);
 
             return View(series);
         }

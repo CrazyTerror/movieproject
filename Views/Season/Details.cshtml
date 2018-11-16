@@ -4,6 +4,17 @@
     string selected = "color:red;";
 }
 
+<div class="row">
+    <img src="/images/filmitem/@(Model.SeriesId).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@Model.Name" width="100%" />
+</div>
+
+<div class="row">
+    <a asp-controller="Series" asp-action="Details">@ViewBag.Series</a>
+</div>
+<div class="row">
+    <text>@Model.Name</text>
+</div>
+
 <div class="container"></div>
     <form asp-action="Delete" method="post">
         <a asp-action="Edit" class="btn btn-sm btn-warning">
@@ -20,13 +31,48 @@
     <a style="@(i == @Model.Season_SeasonNumber ? @selected : null )" asp-action="Details" asp-controller="Season" asp-route-seasonnumber="@i">@i </a>
 }
 
+<div class="row">
+    <label>Average</label>
+    @if (@Model.VoteAverage != null) { @Model.VoteAverage } else { <text>No votes</text>}
+</div>
+
+<div class="row">
+    <label>Votes</label>
+    @if (@Model.VoteAverage != null) { @Model.VoteCount } else { <text>No votes</text>}
+</div>
+
+<div class="row">
+    <label>Rate</label>
+    @if (@Model.ReleaseDate < DateTime.Today) { <text>Rate Now</text> } else { <text>Rate after release date</text> }
+</div>
+
+<div class="row">
+    <label>Aired</label> @ViewBag.FirstEpisode
+</div>
+
+<div class="row">
+    <label>Total Runtime</label> @ViewBag.TotalRuntime
+</div>
+
+<div class="row">
+    <label>Language</label> @Model.OriginalLanguage
+</div>
+
+<div class="row">
+    <label>Genres</label> @String.Join(", ", ViewBag.Genres)
+</div>
+
+<div class="row">
+    <label>Description</label> @Model.Description
+</div>
+
 @foreach (var episode in @Model.Episodes.OrderBy(ob => ob.Episode_EpisodeNumber))
 {
     <div class="row">
         <a asp-action="Details" asp-controller="Episode" asp-route-episodenumber="@episode.Episode_EpisodeNumber">
             <img src="/images/filmitem/@(episode.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@episode.Name" height="170px" width="300px" />
-        </a>    
-        <div>
+        </a>
+        <div class="row">
             @if(@episode.Episode_EpisodeNumber < 10)
             { 
                 <text>@(episode.Episode_SeasonNumber + "x0" + @episode.Episode_EpisodeNumber)</text>
@@ -34,7 +80,14 @@
             {
                 <text>@(episode.Episode_SeasonNumber + "x" + @episode.Episode_EpisodeNumber)</text>
             }
-            <text>@(episode.Name + " " + episode.Runtime + " mins")</text>
+            <text>@episode.Name</text>
+        </div>
+        <div class="row">
+            @if(episode.Episode_EpisodeNumber == 1 && episode.Episode_SeasonNumber == 1) { <text>Series Premiere</text> } else if (episode.Episode_EpisodeNumber == 1) { <text>Season Premiere</text> }    
+            <text>@(episode.Runtime + " mins")</text>
+            <text>@(episode.ReleaseDate.HasValue ? episode.ReleaseDate.Value.ToString("d MMMM yyyy") : "")</text>
+        </div>
+        <div class="row">
             <p>@episode.Description</p>
         </div>
     </div>
@@ -52,11 +105,5 @@
 </div>
 
 <div class="row">
-    Series Background:
-    <img src="/images/filmitem/@(Model.SeriesId).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@Model.Name" width="100%" />
-</div>
-
-<div class="row">
-    Season Poster:
     <img src="/images/filmitem/poster/@(Model.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@Model.Name" />
 </div>

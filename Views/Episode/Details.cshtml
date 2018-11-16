@@ -4,15 +4,54 @@
     string selected = "color:red;";
 }
 
+<div class="row">
+    <img src="/images/filmitem/@(Model.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@Model.Name" width="100%" />
+</div>
+
+<div class="row">
+    <a asp-controller="Series" asp-action="Details">@ViewBag.Series:</a>
+    <a asp-controller="Season" asp-action="Details">@ViewBag.Season</a>
+</div>
+<div class="row">
+    <text>@(Model.Episode_SeasonNumber + "x" + ViewBag.Episode) @Model.Name</text>
+</div>
+
 <text>Episode</text>
-<ul>
-    @for (var i = 1; i < @ViewBag.EpisodeCount + 1; i++)
-    {
-        <li>
-            <a style="@(i == @Model.Episode_EpisodeNumber ? @selected : null )" asp-action="Details" asp-controller="Episode" asp-route-episodenumber="@i">@i</a>
-        </li>
-    }
-</ul>
+@for (var i = 1; i < @ViewBag.EpisodeCount + 1; i++)
+{
+    <a style="@(i == @Model.Episode_EpisodeNumber ? @selected : null )" asp-action="Details" asp-controller="Episode" asp-route-episodenumber="@i">@i</a>
+}
+<div class="row">
+    <label>Average</label> @if (@Model.VoteAverage != null) { @Model.VoteAverage } else { <text>No votes</text>}
+</div>
+
+<div class="row">
+    <label>Votes</label> @if (@Model.VoteAverage != null) { @Model.VoteCount } else { <text>No votes</text>}
+</div>
+
+<div class="row">
+    <label>Rate</label> @if (@Model.ReleaseDate < DateTime.Today) { <text>Rate Now</text> } else { <text>Rate after release date</text>}
+</div>
+
+<div class="row">
+    <label>Aired</label> @(Model.ReleaseDate.HasValue ? Model.ReleaseDate.Value.ToString("d MMMM yyyy") : "")
+</div>
+
+<div class="row">
+    <label>Runtime</label> @Model.Runtime
+</div>
+
+<div class="row">
+    <label>Language</label> @Model.OriginalLanguage
+</div>
+
+<div class="row">
+    <label>Genres</label> @String.Join(", ", ViewBag.Genres)
+</div>
+
+<div class="row">
+    <label>Description</label> @Model.Description
+</div>
 
 <form asp-action="Delete" method="post">
     <a asp-action="Edit" class="btn btn-sm btn-warning">
@@ -23,9 +62,3 @@
         Delete Episode
     </button>
 </form>
-
-<div class="row">
-    <img src="/images/filmitem/@(Model.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@Model.Name" width="100%" />
-</div>
-
-<h3>@Model.Name</h3>

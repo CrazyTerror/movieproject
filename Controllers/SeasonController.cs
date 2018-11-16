@@ -38,14 +38,25 @@ namespace MovieProject.Controllers
         [HttpGet("series/{Slug}/seasons/{SeasonNumber}")]
         public ViewResult Details(string Slug, int SeasonNumber)
         {
-            var series = _context.Series.FirstOrDefault(s => s.Slug == Slug);
+            var series = _context.Series.Include(fig => fig.FilmItemGenres).ThenInclude(g => g.Genre).FirstOrDefault(s => s.Slug == Slug);
             var season = _context.Seasons.Include(ep => ep.Episodes)
                                          .Where(x => x.Season_SeasonNumber == SeasonNumber)
                                          .Where(y => y.SeriesId == series.Id)
                                          .FirstOrDefault();
 
+
+            ViewBag.Genres = series.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();
             ViewBag.Series = series.Name;
             ViewBag.SeasonCount = series.Series_SeasonCount;
+            ViewBag.TotalRuntime = FilmItemMethods.CalculateSeasonTotalRuntime(season);
+            var firstEpisode = season.Episodes.OrderBy(e => e.ReleaseDate).First().ReleaseDate;
+            if (firstEpisode.HasValue)
+            {
+                ViewBag.FirstEpisode = firstEpisode.Value.ToString("d MMMM yyyy");
+            } else
+            {
+                ViewBag.FirstEpisode = "";
+            }
 
             return View(season);
         }

@@ -11,41 +11,20 @@
     <ul>
         <li>
             <label>Average</label>
-            @if (@Model.VoteAverage != null)
-            {
-                @Model.VoteAverage
-            } else
-            {
-                <text>No votes</text>
-            }
+            @if (@Model.VoteAverage != null) { @Model.VoteAverage } else { <text>No votes</text> }
         </li>
         <li>
             <label>Votes</label>
-            @if (@Model.VoteCount != null)
-            {
-                @Model.VoteCount
-            } else
-            {
-                <text>No votes</text>
-            }
+            @if (@Model.VoteCount != null) { @Model.VoteCount } else { <text>No votes</text> }
         </li>
         <li>
-            <label>Rate</label>
-            @if (@Model.ReleaseDate < DateTime.Today)
-            {
-                <text>You can rate now</text>
-            } else
-            {
-                <text>You can rate when the series is out</text>
-            }
+            <label>Rate</label> @if (@Model.FirstAirDate < DateTime.Today) { <text>You can rate now</text> } else { <text>You can rate when the series is out</text> }
         </li>
         <li>
-            <label>Premiered</label>
-            @ViewBag.Year
+            <label>Premiered</label> @ViewBag.Premiere
         </li>
         <li>
-            <label>Runtime</label>
-            @ViewBag.TotalRuntime
+            <label>Runtime</label> @ViewBag.TotalRuntime
         </li>
         <li>
             <label>Genres</label>
@@ -53,8 +32,7 @@
             <a asp-action="Genre">Edit</a>
         </li>
         <li>
-            <label>Status</label>
-            @Model.Status
+            <label>Status</label> @Model.Status
         </li>
     </ul>
 </div>

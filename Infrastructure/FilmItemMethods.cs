@@ -10,7 +10,7 @@ namespace MovieProject.Infrastructure
 {
     public class FilmItemMethods
     {
-        public static string CalculateTotalRuntime(Series series)
+        public static string CalculateSeriesTotalRuntime(Series series)
         {
             int? totalMinutesRuntime = 0;
 
@@ -18,9 +18,18 @@ namespace MovieProject.Infrastructure
             {
                 foreach (var episode in episodes)
                 {
-                    totalMinutesRuntime += episode.Runtime;
+                    if (episode.Runtime != null)
+                    {
+                        totalMinutesRuntime += episode.Runtime;
+                    }
                 }
             }
+            
+            if (totalMinutesRuntime == null)
+            {
+                return string.Format("");
+            }
+
             int? days = totalMinutesRuntime / 1440;
             int? hours = (totalMinutesRuntime % 1440)/60;
             int? minutes = totalMinutesRuntime % 60;
@@ -28,9 +37,45 @@ namespace MovieProject.Infrastructure
             if (days != 0)
             {
                 return string.Format("{0} days, {1} hours, {2} minutes", days, hours, minutes);
-            } else 
+            } else if (days == 0 && hours != 0)
             {
                 return string.Format("{0} hours, {1} minutes", hours, minutes);
+            } else 
+            {
+                return string.Format("{0} minutes", minutes);
+            }
+        }
+
+        public static string CalculateSeasonTotalRuntime(Season season)
+        {
+            int? totalMinutesRuntime = 0;
+
+            foreach (var episode in season.Episodes)
+            {
+                if (episode.Runtime != null)
+                {
+                    totalMinutesRuntime += episode.Runtime;
+                }
+            }
+
+            if (totalMinutesRuntime == null)
+            {
+                return string.Format("");
+            }
+
+            int? days = totalMinutesRuntime / 1440;
+            int? hours = (totalMinutesRuntime % 1440)/60;
+            int? minutes = totalMinutesRuntime % 60;
+
+            if (days != 0)
+            {
+                return string.Format("{0} days, {1} hours, {2} minutes", days, hours, minutes);
+            } else if (days == 0 && hours != 0)
+            {
+                return string.Format("{0} hours, {1} minutes", hours, minutes);
+            } else 
+            {
+                return string.Format("{0} minutes", minutes);
             }
         }
 
