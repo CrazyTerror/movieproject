@@ -11,6 +11,7 @@
         <thead>
             <tr>
                 <th scope="col">Film Item</th>
+                <th scope="col">Role</th>
                 <th scope="col">Character</th>
                 <th scope="col"></th>
             </tr>
@@ -24,15 +25,14 @@
                             <img src="/images/filmitem/poster/@(f.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@f.Name"/>
                         </a>
                     </td>
+                    <td>@f.PartType</td>
+                    <td>@f.Character</td>
                     <td>
-                        @f.Character
-                    </td>
-                    <td>
-                        <form asp-action="DeleteCredit" asp-route-id="@f.Id" method="post">
-                            <a asp-action="EditCredit" asp-route-id="@f.Id" class="btn btn-sm btn-warning">
+                        <form asp-action="DeleteCredit" asp-route-id="@f.FicId" method="post">
+                            <a asp-action="EditCredit" asp-route-id="@f.FicId" class="btn btn-sm btn-warning">
                                 Edit
                             </a>
-                            <input type="hidden" name="Id" value="@f.Id" />
+                            <input type="hidden" name="Id" value="@f.FicId" />
                             <button type="submit" class="btn btn-danger btn-sm">
                                 Delete
                             </button>

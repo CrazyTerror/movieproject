@@ -179,6 +179,7 @@ namespace MovieProject.Controllers
                             orderby f.ReleaseDate descending
                             select new FilmItemRelease {
                                 Id = f.Id,
+                                FicId = fc.Id,
                                 ReleaseDate = f.ReleaseDate,
                                 Discriminator = f.Discriminator,
                                 Slug = f.Slug,
@@ -205,7 +206,6 @@ namespace MovieProject.Controllers
         {
             var person = _context.Persons.FirstOrDefault(p => p.Slug == Slug);
             var filmItem = _context.FilmItem.Where(f => f.Name == Request.Form["Name"]).DefaultIfEmpty().First();
-            var currentCredits = _context.FilmItemCredits.Where(f => f.FilmItemId == filmItem.Id).Select(p => p.PersonId).ToList();
             var character = Request.Form["Character"].ToString();
             var partType = int.Parse(Request.Form["PartType"]);
 
@@ -224,9 +224,7 @@ namespace MovieProject.Controllers
         [HttpGet("person/{Slug}/credits/{Id}/edit")]
         public ViewResult EditCredit(string Slug, int Id)
         {
-            var person = _context.Persons.FirstOrDefault(p => p.Slug == Slug);
-            var filmItem = _context.FilmItem.FirstOrDefault(f => f.Id == Id);
-            var filmItemCredit = _context.FilmItemCredits.Include(p => p.Person).Include(f => f.FilmItem).Where(p => p.PersonId == person.Id).Where(f => f.FilmItemId == filmItem.Id).FirstOrDefault();
+            var filmItemCredit = _context.FilmItemCredits.Include(p => p.Person).Include(f => f.FilmItem).FirstOrDefault(fic => fic.Id == Id);
 
             return View(filmItemCredit);
         }

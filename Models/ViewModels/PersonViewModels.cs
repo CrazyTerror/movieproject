@@ -37,6 +37,7 @@ namespace MovieProject.Models
     public class FilmItemRelease
     {
         public int Id { get; set; }
+        public int FicId { get; set; }
         public string Name { get; set; }
         public DateTime? ReleaseDate { get; set; }
         public string Discriminator { get; set; }

@@ -228,8 +228,6 @@ namespace MovieProject.Controllers
         public IActionResult AddCredit(string Slug, int i = 0)
         {
             var movie = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
-            var currentCredits = _context.FilmItemCredits.Where(m => m.FilmItemId == movie.Id).Select(p => p.PersonId).ToList();
-            
             var person = _context.Persons.Where(fn => fn.FirstName == Request.Form["Firstname"]).Where(sn => sn.Surname == Request.Form["Surname"]).FirstOrDefault();
             var character = Request.Form["Character"].ToString();
             var partType = int.Parse(Request.Form["PartType"]);
