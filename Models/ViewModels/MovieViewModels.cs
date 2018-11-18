@@ -24,6 +24,7 @@ namespace MovieProject.Models
     public class EditMovieCreditViewModel
     {
         public string Character { get; set; }
+        public PartType PartType { get; set; }
         public string Attribute { get; set; }
     }
 }

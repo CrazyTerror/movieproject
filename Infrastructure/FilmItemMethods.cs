@@ -91,26 +91,43 @@ namespace MovieProject.Infrastructure
             _ctx.SaveChanges();
         }
 
-        public static void SaveFilmItemCredits(MovieContext _ctx, FilmItem filmItem, Person person, string character)
+        public static void SaveFilmItemCredits(MovieContext _ctx, FilmItem filmItem, Person person, int partType, string character)
+        {
+            character = (string.IsNullOrWhiteSpace(character) ? null : character);
+            var personAlreadyCreditedInDepartment = _ctx.FilmItemCredits.Where(p => p.Person == person).Where(f => f.FilmItem == filmItem).Where(fic => fic.PartType == (PartType) partType).FirstOrDefault();
+
+            if (personAlreadyCreditedInDepartment == null)
+            {
+                SaveFilmItemMember(_ctx, filmItem, person, partType, character);
+            }
+        }
+
+        public static void SaveFilmItemMember(MovieContext _ctx, FilmItem filmItem, Person person, int partType, string character)
         {
             FilmItemCredits fic = new FilmItemCredits
             {
                 FilmItem = filmItem,
                 Person = person,
-                Character = character
+                Character = character,
+                PartType = (PartType) partType
             };
 
             _ctx.FilmItemCredits.Add(fic);
             _ctx.SaveChanges();
         }
 
-        public static void EditFilmItemCredit(MovieContext _ctx, FilmItemCredits filmItemCredit, string character)
+        public static void EditFilmItemCredit(MovieContext _ctx, FilmItemCredits filmItemCredit, int partType, string character)
         {
             _ctx.FilmItemCredits.Attach(filmItemCredit);
 
-            if (character != null)
+            if (character != null && partType == 1)
             {
                 filmItemCredit.Character = character;
+                filmItemCredit.PartType = (PartType) partType;
+            } else if (partType != 1)
+            {
+                filmItemCredit.Character = null;
+                filmItemCredit.PartType = (PartType) partType;
             }
 
             _ctx.SaveChanges();

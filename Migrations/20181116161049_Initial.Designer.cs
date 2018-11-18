@@ -9,7 +9,7 @@ using MovieProject.Models;
 namespace MovieProject.Migrations
 {
     [DbContext(typeof(MovieContext))]
-    [Migration("20181112135413_Initial")]
+    [Migration("20181116161049_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,7 +46,8 @@ namespace MovieProject.Migrations
                     b.Property<string>("Discriminator")
                         .IsRequired();
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.Property<string>("OriginalLanguage");
 
@@ -56,7 +57,7 @@ namespace MovieProject.Migrations
 
                     b.Property<string>("Slug");
 
-                    b.Property<int?>("Status");
+                    b.Property<int>("Status");
 
                     b.Property<DateTime>("UpdatedAt");
 
@@ -81,6 +82,8 @@ namespace MovieProject.Migrations
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<int>("FilmItemId");
+
+                    b.Property<int>("PartType");
 
                     b.Property<int>("PersonId");
 
@@ -158,15 +161,13 @@ namespace MovieProject.Migrations
 
                     b.Property<string>("Facebook");
 
-                    b.Property<int>("FilmItemId");
+                    b.Property<int?>("FilmItemId");
 
                     b.Property<string>("IMDB");
 
                     b.Property<string>("Instagram");
 
                     b.Property<string>("OfficialSite");
-
-                    b.Property<int>("PersonId");
 
                     b.Property<string>("TMDB");
 
@@ -179,8 +180,6 @@ namespace MovieProject.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FilmItemId");
-
-                    b.HasIndex("PersonId");
 
                     b.ToTable("Media");
                 });
@@ -371,15 +370,9 @@ namespace MovieProject.Migrations
 
             modelBuilder.Entity("MovieProject.Models.Media", b =>
                 {
-                    b.HasOne("MovieProject.Models.FilmItem", "FilmItem")
+                    b.HasOne("MovieProject.Models.FilmItem")
                         .WithMany("Media")
-                        .HasForeignKey("FilmItemId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("MovieProject.Models.Person", "Person")
-                        .WithMany()
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("FilmItemId");
                 });
 
             modelBuilder.Entity("MovieProject.Models.Photo", b =>

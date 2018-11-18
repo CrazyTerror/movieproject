@@ -13,6 +13,10 @@ using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Newtonsoft.Json.Linq;
+using MovieProject.Data;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MovieProject.Controllers
 {
@@ -28,10 +32,12 @@ namespace MovieProject.Controllers
         }
 
         [HttpGet("movies")]
+        [AllowAnonymous]
         public ViewResult Index()
         {
             var movies = _context.Movies.OrderBy(item => item.VoteAverage).ToList();
-
+            //var user = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            //System.Console.WriteLine(user);
             return View(movies);
         }
 
@@ -45,6 +51,10 @@ namespace MovieProject.Controllers
             ViewBag.Genres = movie.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();
             ViewBag.Year = (movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("yyyy") : "Unknown");
             ViewBag.Date = (movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("dd MMMM, yyyy") : "Unknown");
+
+            ViewBag.Directors = movie.FilmItemCredits.Where(p => p.PartType == PartType.Director).OrderBy(x => x.Person.Surname).ToList();
+            ViewBag.Producers = movie.FilmItemCredits.Where(p => p.PartType == PartType.Producer).ToList();
+            ViewBag.Writers = movie.FilmItemCredits.Where(p => p.PartType == PartType.Writer).ToList();
             
             if (movie == null)
             {
@@ -222,19 +232,14 @@ namespace MovieProject.Controllers
             
             var person = _context.Persons.Where(fn => fn.FirstName == Request.Form["Firstname"]).Where(sn => sn.Surname == Request.Form["Surname"]).FirstOrDefault();
             var character = Request.Form["Character"].ToString();
+            var partType = int.Parse(Request.Form["PartType"]);
 
-            if (person != null && character != null)
+            if (movie != null && person != null && character != null && (partType >= 1 && partType <= 7 ))
             {
-                if (!currentCredits.Contains(person.Id))
-                {
-                    FilmItemMethods.SaveFilmItemCredits(_context, movie, person, character);
-                    TempData["message"] = $"Added {person.FirstName} {person.Surname} as '{character}' to {movie.Name}";  
-                } else 
-                {
-                    TempData["message"] = $"{person.FirstName} {person.Surname} already belongs to {movie.Name}";
-                }
+                FilmItemMethods.SaveFilmItemCredits(_context, movie, person, partType, character);
+                TempData["message"] = $"You added {person.FirstName} {person.Surname} to {movie.Name} as {(PartType) partType}"; 
                 return RedirectToAction("Details", "Movie", new { Slug = Slug });
-            } else 
+            } else
             {
                 TempData["message"] = $"You made an error filling in the Person or Character"; 
                 return RedirectToAction("AddCredit", "Movie", new { Slug = Slug});
@@ -254,10 +259,11 @@ namespace MovieProject.Controllers
         {
             var filmItemCredit = _context.FilmItemCredits.Include(p => p.Person).Include(f => f.FilmItem).FirstOrDefault(fic => fic.Id == Id);
             var character = Request.Form["Character"].ToString();
+            var partType = int.Parse(Request.Form["PartType"]);
 
             if (ModelState.IsValid)
             {
-                FilmItemMethods.EditFilmItemCredit(_context, filmItemCredit, character);
+                FilmItemMethods.EditFilmItemCredit(_context, filmItemCredit, partType, character);
                 
                 TempData["message"] = $"Edited {filmItemCredit.Person.FirstName} {filmItemCredit.Person.Surname} as '{character}'";  
                 return RedirectToAction("Details", "Movie", new { Slug = Slug });

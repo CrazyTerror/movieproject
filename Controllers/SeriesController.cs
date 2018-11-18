@@ -259,19 +259,14 @@ namespace MovieProject.Controllers
             
             var person = _context.Persons.Where(fn => fn.FirstName == Request.Form["Firstname"]).Where(sn => sn.Surname == Request.Form["Surname"]).FirstOrDefault();
             var character = Request.Form["Character"].ToString();
+            var partType = int.Parse(Request.Form["PartType"]);
 
-            if (person != null && character != null)
+            if (series != null && person != null && character != null && (partType >= 1 && partType <= 7 ))
             {
-                if (!currentCredits.Contains(person.Id))
-                {
-                    FilmItemMethods.SaveFilmItemCredits(_context, series, person, character);
-                    TempData["message"] = $"Added {person.FirstName} {person.Surname} as '{character}' to {series.Name}";  
-                } else
-                {
-                    TempData["message"] = $"{person.FirstName} {person.Surname} already belongs to {series.Name}";
-                }
+                FilmItemMethods.SaveFilmItemCredits(_context, series, person, partType, character);
+                TempData["message"] = $"You added {person.FirstName} {person.Surname} to {series.Name} as {(PartType) partType}"; 
                 return RedirectToAction("Details", "Series", new { Slug = Slug });
-            } else 
+            } else
             {
                 TempData["message"] = $"You made an error filling in the Person or Character"; 
                 return RedirectToAction("AddCredit", "Series", new { Slug = Slug});
@@ -291,10 +286,11 @@ namespace MovieProject.Controllers
         {
             var filmItemCredit = _context.FilmItemCredits.Include(p => p.Person).Include(f => f.FilmItem).FirstOrDefault(fic => fic.Id == Id);
             var character = Request.Form["Character"].ToString();
+            var partType = int.Parse(Request.Form["PartType"]);
 
             if (ModelState.IsValid)
             {
-                FilmItemMethods.EditFilmItemCredit(_context, filmItemCredit, character);
+                FilmItemMethods.EditFilmItemCredit(_context, filmItemCredit, partType, character);
                 
                 TempData["message"] = $"Edited {filmItemCredit.Person.FirstName} {filmItemCredit.Person.Surname} as '{character}'";  
                 return RedirectToAction("Details", "Series", new { Slug = Slug });

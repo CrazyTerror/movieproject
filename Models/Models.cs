@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MovieProject.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -143,7 +145,7 @@ namespace MovieProject.Models
         public FilmItem FilmItem { get; set; }
         public int PersonId { get; set; }
         public Person Person { get; set; }
-        //public PartType PartType { get; set; }
+        public PartType PartType { get; set; }
         public string Character { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
@@ -169,16 +171,17 @@ namespace MovieProject.Models
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
 
-    /*public class UserRating
+    
+    public class UserRating
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
-        public User User { get; set; }
+        public int ApplicationUserId { get; set; }
+        public IdentityUser ApplicationUser { get; set; }
         public int Rating { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
-
+/*
     public class List
     {
         public int Id { get; set; }

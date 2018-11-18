@@ -1,4 +1,6 @@
 @model MovieProject.Models.Movie
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
 @{
     ViewData["Title"] = @Model.Name + " (" + ViewBag.Year + ")";
 }
@@ -17,9 +19,21 @@
                 <label>Votes</label>
                 @if (@Model.VoteCount != null) { @Model.VoteCount } else { <text>No votes</text> }
             </li>
-            <li>
-                <label>Rate</label> @if (@Model.ReleaseDate < DateTime.Today) { <text>You can rate now</text> } else { <text>You can rate when the series is out</text> }
-            </li>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <input type="hidden" name="Id" value="@UserManager.GetUserId(User)" />
+                <div>Hello @UserManager.GetUserId(User)</div>
+                <li>
+                    <label>Rate</label> 
+                    @if (@Model.ReleaseDate < DateTime.Today) 
+                    { 
+                        <select id="rating" name="Rating"></select>
+                    } else 
+                    { 
+                        <text>You can rate when the series is out</text> 
+                    }
+                </li>
+            }
         </ul>
     </div>
 </div>
@@ -40,21 +54,57 @@
         <li>
             <label>Status</label> @Model.Status
         </li>
+        @if (Model.FilmItemCredits.Where(p => p.PartType == PartType.Director).ToList().Count > 0)
+        {
+            <li>
+                <label>Director</label>
+                @Html.Raw(string.Join(", ", Model.FilmItemCredits.Where(p => p.PartType == PartType.Director).OrderBy(x => x.Person.Surname).Select(s => string.Format("<a href={0}>{1}{2}{3}</a>", "/person/" + s.Person.Slug, s.Person.FirstName, " ", s.Person.Surname))))
+            </li>
+        }
+        @if (Model.FilmItemCredits.Where(p => p.PartType == PartType.Producer).ToList().Count > 0)
+        {
+            <li>
+                <label>Director</label>
+                @String.Join(", ", ViewBag.Producers)
+            </li>
+        }
+        @if (Model.FilmItemCredits.Where(p => p.PartType == PartType.Writer).ToList().Count > 0)
+        {
+            <li>
+                <label>Director</label>
+                @String.Join(", ", ViewBag.Writers)
+            </li>
+        }
     </ul>
 </div>
 
 <div class="row">
-    <h2>Actors</h2>
-    <a asp-action="Credits">Edit</a>
-    @foreach (var actor in @Model.FilmItemCredits)
+    @if (Model.FilmItemCredits.Where(p => p.PartType == PartType.Cast).ToList().Count > 0)
     {
-        <a asp-action="Details" asp-controller="Person" asp-route-slug="@actor.Person.Slug">
-            <img src="/images/person/poster/@(actor.Person.Id).jpg" onerror="this.src='/images/person/poster/template.jpg';this.onerror='';" alt="@actor.Person.FirstName @actor.Person.Surname" height="127px" width="84px" />
-        </a>
-        <div>@actor.Person.FirstName @actor.Person.Surname - @actor.Character</div>
+        <h2>Actors</h2>
+        <a asp-action="Credits">Edit</a>
+        @foreach (var actor in @Model.FilmItemCredits.Where(p => p.PartType == PartType.Cast))
+        {
+            <a asp-action="Details" asp-controller="Person" asp-route-slug="@actor.Person.Slug">
+                <img src="/images/person/poster/@(actor.Person.Id).jpg" onerror="this.src='/images/person/poster/template.jpg';this.onerror='';" alt="@actor.Person.FirstName @actor.Person.Surname" height="127px" width="84px" />
+            </a>
+            <div>@actor.Person.FirstName @actor.Person.Surname - @actor.Character</div>
+        }
     }
 </div>
 
 <div>
     <img src="/images/filmitem/poster/@(Model.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@Model.Name">
 </div>
+
+@section Scripts
+{
+    <script>
+        var select = '';
+        for (i=1; i<=10; i++)
+        {
+            select += '<option val=' + i + '>' + i + '</option>';
+        }
+        $('#rating').html(select);
+    </script>
+}

@@ -42,5 +42,6 @@ namespace MovieProject.Models
         public string Discriminator { get; set; }
         public string Slug { get; set; }
         public string Character { get; set; }
+        public PartType PartType { get; set; }
     }
 }

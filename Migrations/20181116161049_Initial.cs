@@ -28,10 +28,10 @@ namespace MovieProject.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: false),
                     ReleaseDate = table.Column<DateTime>(nullable: true),
                     Runtime = table.Column<int>(nullable: true),
-                    Status = table.Column<int>(nullable: true),
+                    Status = table.Column<int>(nullable: false),
                     Description = table.Column<string>(nullable: true),
                     OriginalLanguage = table.Column<string>(nullable: true),
                     VoteCount = table.Column<int>(nullable: true),
@@ -121,6 +121,33 @@ namespace MovieProject.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Persons", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Media",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    IMDB = table.Column<string>(nullable: true),
+                    TMDB = table.Column<string>(nullable: true),
+                    Trakt = table.Column<string>(nullable: true),
+                    OfficialSite = table.Column<string>(nullable: true),
+                    Wikipedia = table.Column<string>(nullable: true),
+                    Twitter = table.Column<string>(nullable: true),
+                    Facebook = table.Column<string>(nullable: true),
+                    Instagram = table.Column<string>(nullable: true),
+                    FilmItemId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Media", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Media_FilmItem_FilmItemId",
+                        column: x => x.FilmItemId,
+                        principalTable: "FilmItem",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -227,6 +254,7 @@ namespace MovieProject.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     FilmItemId = table.Column<int>(nullable: false),
                     PersonId = table.Column<int>(nullable: false),
+                    PartType = table.Column<int>(nullable: false),
                     Character = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false)
@@ -242,40 +270,6 @@ namespace MovieProject.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_FilmItemCredits_Persons_PersonId",
-                        column: x => x.PersonId,
-                        principalTable: "Persons",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Media",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    FilmItemId = table.Column<int>(nullable: false),
-                    PersonId = table.Column<int>(nullable: false),
-                    IMDB = table.Column<string>(nullable: true),
-                    TMDB = table.Column<string>(nullable: true),
-                    Trakt = table.Column<string>(nullable: true),
-                    OfficialSite = table.Column<string>(nullable: true),
-                    Wikipedia = table.Column<string>(nullable: true),
-                    Twitter = table.Column<string>(nullable: true),
-                    Facebook = table.Column<string>(nullable: true),
-                    Instagram = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Media", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Media_FilmItem_FilmItemId",
-                        column: x => x.FilmItemId,
-                        principalTable: "FilmItem",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Media_Persons_PersonId",
                         column: x => x.PersonId,
                         principalTable: "Persons",
                         principalColumn: "Id",
@@ -316,11 +310,6 @@ namespace MovieProject.Migrations
                 name: "IX_Media_FilmItemId",
                 table: "Media",
                 column: "FilmItemId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Media_PersonId",
-                table: "Media",
-                column: "PersonId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Photos_FilmItemId",
@@ -365,10 +354,10 @@ namespace MovieProject.Migrations
                 name: "Videos");
 
             migrationBuilder.DropTable(
-                name: "Genres");
+                name: "Persons");
 
             migrationBuilder.DropTable(
-                name: "Persons");
+                name: "Genres");
 
             migrationBuilder.DropTable(
                 name: "FilmItem");

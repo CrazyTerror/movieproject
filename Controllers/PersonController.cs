@@ -52,7 +52,8 @@ namespace MovieProject.Controllers
                                 Discriminator = f.Discriminator,
                                 Slug = f.Slug,
                                 Name = f.Name,
-                                Character = fc.Character
+                                Character = fc.Character,
+                                PartType = fc.PartType
                             };
                             
             List<int> filmItemIds = new List<int>();
@@ -182,7 +183,8 @@ namespace MovieProject.Controllers
                                 Discriminator = f.Discriminator,
                                 Slug = f.Slug,
                                 Name = f.Name,
-                                Character = fc.Character
+                                Character = fc.Character,
+                                PartType = fc.PartType
                             };
 
             ViewBag.Person = _context.Persons.FirstOrDefault(p => p.Slug == Slug);
@@ -202,25 +204,20 @@ namespace MovieProject.Controllers
         public IActionResult AddCredit(string Slug, int i = 0)
         {
             var person = _context.Persons.FirstOrDefault(p => p.Slug == Slug);
-            var filmItem = _context.FilmItem.FirstOrDefault(f => f.Name == Request.Form["Name"]);
+            var filmItem = _context.FilmItem.Where(f => f.Name == Request.Form["Name"]).DefaultIfEmpty().First();
             var currentCredits = _context.FilmItemCredits.Where(f => f.FilmItemId == filmItem.Id).Select(p => p.PersonId).ToList();
             var character = Request.Form["Character"].ToString();
+            var partType = int.Parse(Request.Form["PartType"]);
 
-            if (filmItem != null && character != null)
+            if (filmItem != null && person != null && character != null && (partType >= 1 && partType <= 7 ))
             {
-                if (!currentCredits.Contains(person.Id))
-                {
-                    FilmItemMethods.SaveFilmItemCredits(_context, filmItem, person, character);
-                    TempData["message"] = $"{person.FirstName} {person.Surname} is added to {filmItem.Name}";
-                } else 
-                {
-                    TempData["message"] = $"{person.FirstName} {person.Surname} already belongs to {filmItem.Name}";
-                }
+                FilmItemMethods.SaveFilmItemCredits(_context, filmItem, person, partType, character);
+                TempData["message"] = $"You added {person.FirstName} {person.Surname} to {filmItem.Name} as {(PartType) partType}"; 
                 return RedirectToAction("Details", "Person", new { Slug = Slug });
-            } else 
+            } else
             {
-                TempData["message"] = $"{Request.Form["Name"]} does not exist. Please enter an existing title";
-                return RedirectToAction(nameof(Create));
+                TempData["message"] = $"You made an error filling in the Person or Character"; 
+                return RedirectToAction("AddCredit", "Person", new { Slug = Slug});
             }
         }
 
@@ -239,10 +236,11 @@ namespace MovieProject.Controllers
         {
             var filmItemCredit = _context.FilmItemCredits.Include(p => p.Person).Include(f => f.FilmItem).FirstOrDefault(fic => fic.Id == Id);
             var character = Request.Form["Character"].ToString();
+            var partType = int.Parse(Request.Form["PartType"]);
 
             if (ModelState.IsValid)
             {
-                FilmItemMethods.EditFilmItemCredit(_context, filmItemCredit, character);
+                FilmItemMethods.EditFilmItemCredit(_context, filmItemCredit, partType, character);
                 
                 TempData["message"] = $"Edited {filmItemCredit.Person.FirstName} {filmItemCredit.Person.Surname} as '{character}'";  
                 return RedirectToAction("Details", "Person", new { Slug = Slug });

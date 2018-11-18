@@ -84,21 +84,25 @@ namespace MovieProject.Models
                 mc1.FilmItem = m1;
                 mc1.Person = a1;
                 mc1.Character = "Frodo Baggins";
+                mc1.PartType = PartType.Cast;
 
                 FilmItemCredits mc2 = new FilmItemCredits();
                 mc2.FilmItem = m1;
                 mc2.Person = a2;
                 mc2.Character = "Gollum (Voice)";
+                mc2.PartType = PartType.Cast;
                 
                 FilmItemCredits mc3 = new FilmItemCredits();
                 mc3.FilmItem = m2;
                 mc3.Person = a2;
                 mc3.Character = "Ulysses Klaue";
+                mc3.PartType = PartType.Cast;
 
                 FilmItemCredits mc4 = new FilmItemCredits();
                 mc4.FilmItem = m2;
                 mc4.Person = a3;
                 mc4.Character = "T'Challa / Black Panther";
+                mc4.PartType = PartType.Cast;
 
                 context.FilmItemCredits.Add(mc1);
                 context.FilmItemCredits.Add(mc2);
@@ -393,11 +397,13 @@ namespace MovieProject.Models
                 fica1.FilmItem = s1;
                 fica1.Person = a4;
                 fica1.Character = "Tyrion Lannister";
+                fica1.PartType = PartType.Cast;
                 
                 FilmItemCredits fica2 = new FilmItemCredits();
                 fica2.FilmItem = s1;
                 fica2.Person = a5;
                 fica2.Character = "Daenerys Targaryen";
+                fica2.PartType = PartType.Cast;
                 
                 context.FilmItemCredits.Add(fica1);
                 context.FilmItemCredits.Add(fica2);

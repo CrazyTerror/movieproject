@@ -25,6 +25,13 @@
             <input id="Attribute" name="Attribute" class="form-control" />
         </div>
     </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label">Part Type</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <select name="PartType" class="form-control" asp-items="@(Html.GetEnumSelectList<PartType>())"></select>
+        </div>
+    </div>
     <div class="text-center">
         <button class="btn btn-primary" type="submit">Create</button>
         <a asp-action="Credits" class="btn btn-secondary">Cancel</a>
