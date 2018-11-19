@@ -68,8 +68,8 @@ namespace MovieProject.Controllers
             } else if (filmItemIds.Count > 1)
             {
                 Random rand = new Random();
-                int i = rand.Next(filmItemIds.Count) + 1;
-                ViewBag.FilmItemId = i;
+                int i = rand.Next(filmItemIds.Count);
+                ViewBag.FilmItemId = filmItemIds[i];
             }
             
             ViewBag.FilmItems = filmItems;
