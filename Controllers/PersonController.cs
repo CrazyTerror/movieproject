@@ -37,29 +37,13 @@ namespace MovieProject.Controllers
         [HttpGet("person/{Slug}")]
         public ViewResult Details(string Slug)
         {
-            var person = _context.Persons.Include(mc => mc.FilmItemCredits).ThenInclude(c => c.FilmItem)
-                                         .FirstOrDefault(p => p.Slug == Slug);
-            
-            var filmItems = from p in _context.Persons
-                            join fc in _context.FilmItemCredits on p.Id equals fc.PersonId
-                            join f in _context.FilmItem on fc.FilmItemId equals f.Id
-                            where p.Slug == Slug
-                            where f.Discriminator == "Series" || f.Discriminator == "Movie"
-                            orderby f.ReleaseDate descending
-                            select new FilmItemRelease {
-                                Id = f.Id,
-                                ReleaseDate = f.ReleaseDate,
-                                Discriminator = f.Discriminator,
-                                Slug = f.Slug,
-                                Name = f.Name,
-                                Character = fc.Character,
-                                PartType = fc.PartType
-                            };
-                            
+            var person = _context.Persons.Include(mc => mc.FilmItemCredits).ThenInclude(c => c.FilmItem).FirstOrDefault(p => p.Slug == Slug);
+                                   
             List<int> filmItemIds = new List<int>();
-            foreach (var filmItem in filmItems)
+            foreach (var filmItem in person.FilmItemCredits.Where(p => p.FilmItem.Discriminator == "Series" || p.FilmItem.Discriminator == "Movie"))
             {
-                filmItemIds.Add(filmItem.Id);
+                filmItemIds.Add(filmItem.FilmItemId);
+                System.Console.WriteLine(filmItem.FilmItemId);
             }
             
             if (filmItemIds.Count > 0)
@@ -68,15 +52,13 @@ namespace MovieProject.Controllers
                 int i = rand.Next(filmItemIds.Count);
                 ViewBag.FilmItemId = filmItemIds[i];
             }
-            
-            ViewBag.Person = person;
-            ViewBag.FilmItems = filmItems;
+
             if (person.BirthDate != null)
             {
                 ViewBag.Age = PersonMethods.CalculatePersonAge(person);
             }
-            
-            return View(filmItems.ToList());
+
+            return View(person);
         }
 
         [HttpGet("person/create")]

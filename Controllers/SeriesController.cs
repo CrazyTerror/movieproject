@@ -43,18 +43,6 @@ namespace MovieProject.Controllers
                                         .Include(p => p.Photos)
                                         .FirstOrDefault(s => s.Slug == Slug);
 
-            ViewBag.People = from f in _context.FilmItem
-                         join fc in _context.FilmItemCredits on f.Id equals fc.FilmItemId
-                         join p in _context.Persons on fc.PersonId equals p.Id
-                         where f.Slug == Slug
-                         orderby p.Surname
-                         select new PeopleOnSeries {
-                            Id = p.Id,
-                            FirstName = p.FirstName,
-                            Surname = p.Surname,
-                            CharacterName = fc.Character
-                         };
-
             ViewBag.Genres = series.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();
             ViewBag.Year = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("yyyy") : "");
             ViewBag.Premiere = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("dd MMMM yyyy") : "");
