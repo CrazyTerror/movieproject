@@ -216,7 +216,7 @@ namespace MovieProject.Controllers
                 return RedirectToAction("Details", "Person", new { Slug = Slug });
             } else
             {
-                TempData["message"] = $"You made an error filling in the Person or Character"; 
+                TempData["message"] = $"You made an error filling in the Film Item or Character"; 
                 return RedirectToAction("AddCredit", "Person", new { Slug = Slug});
             }
         }
