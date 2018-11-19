@@ -46,6 +46,10 @@ namespace MovieProject.Controllers
         {
             var movie = _context.Movies.Include(mg => mg.FilmItemGenres).ThenInclude(g => g.Genre)
                                        .Include(mc => mc.FilmItemCredits).ThenInclude(p => p.Person)
+                                       .Include(v => v.Videos)
+                                       .Include(p => p.Photos)
+                                       .Include(t => t.Trivia)
+                                       .Include(m => m.Media)
                                        .FirstOrDefault(m => m.Slug == Slug);
 
             ViewBag.Genres = movie.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();

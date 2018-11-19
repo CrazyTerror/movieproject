@@ -1,13 +1,13 @@
-@model MovieProject.Models.Person
+@model List<MovieProject.Models.FilmItemRelease>
 @{
-    ViewData["Title"] = @Model.FirstName + " " + @Model.Surname; 
+    ViewData["Title"] = @ViewBag.Person.FirstName + " " + @ViewBag.Person.Surname; 
 }
 
 <div class="row">
-    <img src="/images/filmitem/@(ViewBag.FilmItemId).jpg" onerror="this.src='/images/person/template.jpg';this.onerror='';" alt="@Model.FirstName @Model.Surname" width="100%">
+    <img src="/images/filmitem/@(ViewBag.FilmItemId).jpg" onerror="this.src='/images/person/template.jpg';this.onerror='';" alt="@ViewBag.Person.FirstName @ViewBag.Person.Surname" width="100%">
 </div>
 
-<form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+<form asp-action="Delete" asp-route-id="@ViewBag.Person.Id" method="post">
     <a asp-action="Edit" class="btn btn-sm btn-warning">
         Edit Person
     </a>
@@ -16,8 +16,18 @@
     </button>
 </form>
 
+<ul>
+    @if (Model.Where(s => s.PartType == PartType.Cast).ToList().Count > 0) { <li><a href="#actor">Actor</a></li> }
+    @if (Model.Where(s => s.PartType == PartType.Director).ToList().Count > 0) { <li><a href="#director">Director</a></li> }
+    @if (Model.Where(s => s.PartType == PartType.Producer).ToList().Count > 0) { <li><a href="#producer">Producer</a></li> }
+    @if (Model.Where(s => s.PartType == PartType.Writer).ToList().Count > 0) { <li><a href="#writer">Writer</a></li> }
+    @if (Model.Where(s => s.PartType == PartType.Editor).ToList().Count > 0) { <li><a href="#editor">Editor</a></li> }
+    @if (Model.Where(s => s.PartType == PartType.CostumeDesigner).ToList().Count > 0) { <li><a href="#designer">Costume Designer</a></li> }
+    @if (Model.Where(s => s.PartType == PartType.Composer).ToList().Count > 0) { <li><a href="#composer">Composer</a></li> }
+</ul>
+
 <div class="row">
-    Actor: @Model.FirstName @Model.Surname
+    Actor: @ViewBag.Person.FirstName @ViewBag.Person.Surname
 </div>
 
 <div class="row">
@@ -26,41 +36,92 @@
 
 <div class="row">
     <label>Born</label>
-    <text>@(Model.BirthDate.HasValue ? Model.BirthDate.Value.ToString("d MMMM yyyy") : "")</text>
-    @if (Model.BirthPlace != null)
+    <text>@ViewBag.Person.BirthDate.ToString("d MMMM yyyy")</text>
+    @if (ViewBag.Person.BirthPlace != null)
     {
         <text>in</text>
-        <text>@Model.BirthPlace</text>
+        <text>@ViewBag.Person.BirthPlace</text>
     }
 </div>
 
 <div class="row">
-@if (Model.DeathDate != null)
+@if (ViewBag.Person.DeathDate != null)
 {
     <label>Death</label>
-    <text>@Model.DeathDate.Value.ToString("d MMMM yyyy")</text>
+    <text>@ViewBag.Person.DeathDate.ToString("d MMMM yyyy")</text>
 } 
 </div>
 
 <div class="row">
-    @Model.Biography
+    @ViewBag.Person.Biography
 </div>
 
-------------FilmItems------------
-<a asp-action="Credits" asp-controller="Person">
-    Edit
-</a> <br>
-@foreach (var item in ViewBag.FilmItems)
-{
-    <a asp-action="Details" asp-controller="@item.Discriminator" asp-route-slug="@item.Slug">
-        <img src="/images/filmitem/poster/@(item.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@item.Name" width="200px" height="300px"/>
-    </a>
-    <div>@item.Name</div>
-    <div>@item.ReleaseDate.ToString("yyyy")</div>
-    <div>@item.Character</div>
-    <div>@item.PartType</div><br />
+@if (Model.Where(s => s.PartType == PartType.Cast).ToList().Count > 0) {
+    <div id="actor">Actor</div>
+    @foreach (var item in Model.Where(p => p.PartType == PartType.Cast))
+    {
+        <a asp-action="Details" asp-controller="@item.Discriminator" asp-route-slug="@item.Slug">
+            <img src="/images/filmitem/poster/@(item.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@item.Name" width="200px" height="300px"/>
+        </a>
+        <div>@item.Name</div>
+        <div>@(item.ReleaseDate.HasValue ? @item.ReleaseDate.Value.ToString("yyyy") : "")</div>
+        <div>@item.Character</div>
+        <hr>
+    }
+}
+
+@if (Model.Where(s => s.PartType == PartType.Director).ToList().Count > 0) {
+    <div id="director">Directing</div>
+    @foreach (var item in Model.Where(p => p.PartType == PartType.Director))
+    {
+        <a asp-action="Details" asp-controller="@item.Discriminator" asp-route-slug="@item.Slug">
+            <img src="/images/filmitem/poster/@(item.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@item.Name" width="200px" height="300px"/>
+        </a>
+        <div>@item.Name</div>
+        <div>@(item.ReleaseDate.HasValue ? @item.ReleaseDate.Value.ToString("yyyy") : "")</div>
+        <hr>
+    }
+}
+
+@if (Model.Where(s => s.PartType == PartType.Producer).ToList().Count > 0) {
+    <div id="producer">Production</div>
+    @foreach (var item in Model.Where(p => p.PartType == PartType.Producer))
+    {
+        <a asp-action="Details" asp-controller="@item.Discriminator" asp-route-slug="@item.Slug">
+            <img src="/images/filmitem/poster/@(item.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@item.Name" width="200px" height="300px"/>
+        </a>
+        <div>@item.Name</div>
+        <div>@(item.ReleaseDate.HasValue ? @item.ReleaseDate.Value.ToString("yyyy") : "")</div>
+        <hr>
+    }
+}
+
+@if (Model.Where(s => s.PartType == PartType.Composer).ToList().Count > 0) {
+    <div id="composer">Composer</div>
+    @foreach (var item in Model.Where(p => p.PartType == PartType.Composer))
+    {
+        <a asp-action="Details" asp-controller="@item.Discriminator" asp-route-slug="@item.Slug">
+            <img src="/images/filmitem/poster/@(item.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@item.Name" width="200px" height="300px"/>
+        </a>
+        <div>@item.Name</div>
+        <div>@(item.ReleaseDate.HasValue ? @item.ReleaseDate.Value.ToString("yyyy") : "")</div>
+        <hr>
+    }
+}
+
+@if (Model.Where(s => s.PartType == PartType.Editor).ToList().Count > 0) {
+    <div id="editor">Editing</div>
+    @foreach (var item in Model.Where(p => p.PartType == PartType.Editor))
+    {
+        <a asp-action="Details" asp-controller="@item.Discriminator" asp-route-slug="@item.Slug">
+            <img src="/images/filmitem/poster/@(item.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@item.Name" width="200px" height="300px"/>
+        </a>
+        <div>@item.Name</div>
+        <div>@(item.ReleaseDate.HasValue ? @item.ReleaseDate.Value.ToString("yyyy") : "")</div>
+        <hr>
+    }
 }
 
 <div class="row">
-    <img src="/images/person/poster/@(Model.Id).jpg" onerror="this.src='/images/person/poster/template.jpg';this.onerror='';" alt="@Model.FirstName @Model.Surname" width="200px" height="300px">
+    <img src="/images/person/poster/@(ViewBag.Person.Id).jpg" onerror="this.src='/images/person/poster/template.jpg';this.onerror='';" alt="@ViewBag.Person.FirstName @ViewBag.Person.Surname" width="200px" height="300px">
 </div>

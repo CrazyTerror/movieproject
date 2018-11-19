@@ -62,23 +62,21 @@ namespace MovieProject.Controllers
                 filmItemIds.Add(filmItem.Id);
             }
             
-            if (filmItemIds.Count == 1)
-            {
-                ViewBag.FilmItemId = filmItemIds.First();
-            } else if (filmItemIds.Count > 1)
+            if (filmItemIds.Count > 0)
             {
                 Random rand = new Random();
                 int i = rand.Next(filmItemIds.Count);
                 ViewBag.FilmItemId = filmItemIds[i];
             }
             
+            ViewBag.Person = person;
             ViewBag.FilmItems = filmItems;
             if (person.BirthDate != null)
             {
                 ViewBag.Age = PersonMethods.CalculatePersonAge(person);
             }
-
-            return View(person);
+            
+            return View(filmItems.ToList());
         }
 
         [HttpGet("person/create")]
