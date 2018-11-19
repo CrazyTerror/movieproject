@@ -49,7 +49,7 @@
 <div class="row">
     <h2>Actors</h2>
     <a asp-action="Credits">Edit</a>
-    @foreach (var item in @Model.FilmItemCredits)
+    @foreach (var item in @Model.FilmItemCredits.Where(f => f.PartType == PartType.Cast))
     {
         <a asp-action="Details" asp-controller="Person" asp-route-slug="@item.Person.Slug">
             <img src="/images/person/poster/@(item.Person.Id).jpg" onerror="this.src='/images/person/poster/template.jpg';this.onerror='';" alt="@item.Person.FirstName @item.Person.Surname" height="127px" width="84px" />
