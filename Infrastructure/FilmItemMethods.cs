@@ -118,17 +118,21 @@ namespace MovieProject.Infrastructure
 
         public static void EditFilmItemCredit(MovieContext _ctx, FilmItemCredits filmItemCredit, int partType, string character)
         {
+            character = (partType == 1 && !string.IsNullOrWhiteSpace(character) ? character : null);
+            var personAlreadyCreditedInDepartment = _ctx.FilmItemCredits.Where(p => p.Person == filmItemCredit.Person)
+                                                                        .Where(f => f.FilmItem == filmItemCredit.FilmItem)
+                                                                        .Where(fic => fic.PartType == (PartType) partType)
+                                                                        .Where(fp => fp.Id != filmItemCredit.Id)
+                                                                        .FirstOrDefault();
+            
             _ctx.FilmItemCredits.Attach(filmItemCredit);
 
-            if (character != null && partType == 1)
+            if (personAlreadyCreditedInDepartment == null)
             {
                 filmItemCredit.Character = character;
                 filmItemCredit.PartType = (PartType) partType;
-            } else if (partType != 1)
-            {
-                filmItemCredit.Character = null;
-                filmItemCredit.PartType = (PartType) partType;
-            }
+                filmItemCredit.UpdatedAt = DateTime.Now;
+            } 
 
             _ctx.SaveChanges();
         }
