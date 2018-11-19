@@ -56,6 +56,8 @@
     @Model.Biography
 </div>
 
+<a asp-action="Credits" asp-controller="Person">Edit</a>
+
 @if (Model.FilmItemCredits.Where(s => s.PartType == PartType.Cast).ToList().Count > 0)
 {
     <div id="actor">Actor</div>

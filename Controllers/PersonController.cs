@@ -40,10 +40,9 @@ namespace MovieProject.Controllers
             var person = _context.Persons.Include(mc => mc.FilmItemCredits).ThenInclude(c => c.FilmItem).FirstOrDefault(p => p.Slug == Slug);
                                    
             List<int> filmItemIds = new List<int>();
-            foreach (var filmItem in person.FilmItemCredits.Where(p => p.FilmItem.Discriminator == "Series" || p.FilmItem.Discriminator == "Movie"))
+            foreach (var filmItem in person.FilmItemCredits)
             {
                 filmItemIds.Add(filmItem.FilmItemId);
-                System.Console.WriteLine(filmItem.FilmItemId);
             }
             
             if (filmItemIds.Count > 0)
@@ -151,26 +150,9 @@ namespace MovieProject.Controllers
         [HttpGet("person/{Slug}/credits")]
         public ViewResult Credits(string Slug)
         {
-            var filmItems = from f in _context.FilmItem
-                            join fc in _context.FilmItemCredits on f.Id equals fc.FilmItemId
-                            join p in _context.Persons on fc.PersonId equals p.Id
-                            where p.Slug == Slug
-                            where f.Discriminator == "Series" || f.Discriminator == "Movie"
-                            orderby f.ReleaseDate descending
-                            select new FilmItemRelease {
-                                Id = f.Id,
-                                FicId = fc.Id,
-                                ReleaseDate = f.ReleaseDate,
-                                Discriminator = f.Discriminator,
-                                Slug = f.Slug,
-                                Name = f.Name,
-                                Character = fc.Character,
-                                PartType = fc.PartType
-                            };
+            var person = _context.Persons.Include(mc => mc.FilmItemCredits).ThenInclude(c => c.FilmItem).FirstOrDefault(p => p.Slug == Slug);
 
-            ViewBag.Person = _context.Persons.FirstOrDefault(p => p.Slug == Slug);
-
-            return View(filmItems.ToList());
+            return View(person);
         }
 
         [HttpGet("person/{Slug}/credits/add")]
