@@ -152,6 +152,50 @@ namespace MovieProject.Migrations
                     b.ToTable("Languages");
                 });
 
+            modelBuilder.Entity("MovieProject.Models.List", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ApplicationUserId");
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("Description");
+
+                    b.Property<int>("ItemCount");
+
+                    b.Property<string>("Name");
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Lists");
+                });
+
+            modelBuilder.Entity("MovieProject.Models.ListItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("FilmItemId");
+
+                    b.Property<int>("ListId");
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FilmItemId");
+
+                    b.HasIndex("ListId");
+
+                    b.ToTable("ListItems");
+                });
+
             modelBuilder.Entity("MovieProject.Models.Media", b =>
                 {
                     b.Property<int>("Id")
@@ -252,6 +296,28 @@ namespace MovieProject.Migrations
                     b.HasIndex("FilmItemId");
 
                     b.ToTable("Trivia");
+                });
+
+            modelBuilder.Entity("MovieProject.Models.UserRating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ApplicationUserId");
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("FilmItemId");
+
+                    b.Property<int>("Rating");
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FilmItemId");
+
+                    b.ToTable("UserRatings");
                 });
 
             modelBuilder.Entity("MovieProject.Models.Video", b =>
@@ -366,6 +432,19 @@ namespace MovieProject.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("MovieProject.Models.ListItem", b =>
+                {
+                    b.HasOne("MovieProject.Models.FilmItem", "FilmItem")
+                        .WithMany()
+                        .HasForeignKey("FilmItemId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MovieProject.Models.List", "List")
+                        .WithMany("ListItems")
+                        .HasForeignKey("ListId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("MovieProject.Models.Media", b =>
                 {
                     b.HasOne("MovieProject.Models.FilmItem")
@@ -385,6 +464,14 @@ namespace MovieProject.Migrations
                 {
                     b.HasOne("MovieProject.Models.FilmItem", "FilmItem")
                         .WithMany("Trivia")
+                        .HasForeignKey("FilmItemId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MovieProject.Models.UserRating", b =>
+                {
+                    b.HasOne("MovieProject.Models.FilmItem", "FilmItem")
+                        .WithMany("UserRatings")
                         .HasForeignKey("FilmItemId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

@@ -1,0 +1,48 @@
+@model List<MovieProject.Models.List>
+
+@{
+    ViewData["Title"] = "Lists";
+}
+<h2>@ViewData["Title"]</h2>
+
+@if (Model.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Lists</th>
+                <th scope="col">Description</th>
+                <th scope="col">Items</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (List l in Model)
+            {
+                <tr>
+                    <td>
+                        <a asp-action="Details" asp-route-listname="@l.Name">@l.Name</a>
+                    </td>
+                    <td>@l.Description</td>
+                    <td>@l.ItemCount</td>
+                    <td>
+                        <form asp-action="Delete" asp-route-id="@l.Id" method="post">
+                            <a asp-action="Edit" class="btn btn-sm btn-warning">
+                                Edit
+                            </a>
+                            <input type="hidden" name="Id" value="@l.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<div class="text-center">
+    <a asp-action="Create" class="btn btn-primary">Add List</a>
+</div>

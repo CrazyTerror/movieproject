@@ -36,6 +36,8 @@ namespace MovieProject.Models
         public ICollection<Trivia> Trivia { get; set; }
         public ICollection<Photo> Photos { get; set; }
         public ICollection<Video> Videos { get; set; }
+        public ICollection<UserRating> UserRatings { get; set; }
+        public ICollection<ListItem> ListItems { get; set; }
     }
 
     public class Movie : FilmItem
@@ -175,36 +177,40 @@ namespace MovieProject.Models
     public class UserRating
     {
         public int Id { get; set; }
-        public int ApplicationUserId { get; set; }
-        public IdentityUser ApplicationUser { get; set; }
+        public string ApplicationUserId { get; set; }
+        public int FilmItemId { get; set; }
+        public FilmItem FilmItem { get; set; }
         public int Rating { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
-/*
+
     public class List
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
-        public User User { get; set; }
+        public string ApplicationUserId { get; set; }
         public string Name { get; set; }
+        //public string Slug { get; set; }
         public string Description { get; set; }
         public int ItemCount { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+        public ICollection<ListItem> ListItems { get; set; }
     }
     
-    public class ListItems
+    public class ListItem
     {
         public int Id { get; set; }
         public int ListId { get; set; }
         public List List { get; set; }
-        public int ?? { get; set; }
+        public int FilmItemId { get; set; }
+        public FilmItem FilmItem { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
 
-    public class Review
+/*    public class Review
     {
         public int Id { get; set; }
         public int UserId { get; set; }

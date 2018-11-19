@@ -36,8 +36,7 @@ namespace MovieProject.Controllers
         public ViewResult Index()
         {
             var movies = _context.Movies.OrderBy(item => item.VoteAverage).ToList();
-            //var user = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            //System.Console.WriteLine(user);
+            
             return View(movies);
         }
 
@@ -50,6 +49,7 @@ namespace MovieProject.Controllers
                                        .Include(p => p.Photos)
                                        .Include(t => t.Trivia)
                                        .Include(m => m.Media)
+                                       .Include(mr => mr.UserRatings)
                                        .FirstOrDefault(m => m.Slug == Slug);
 
             ViewBag.Genres = movie.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();
@@ -60,6 +60,39 @@ namespace MovieProject.Controllers
             ViewBag.Producers = movie.FilmItemCredits.Where(p => p.PartType == PartType.Producer).ToList();
             ViewBag.Writers = movie.FilmItemCredits.Where(p => p.PartType == PartType.Writer).ToList();
             
+            /* if (User.Identity.IsAuthenticated)
+            {
+                var user = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            
+                UserRating r = new UserRating()
+                {
+                    ApplicationUserId = user,
+                    FilmItem = movie,
+                    Rating = 9
+                };
+                _context.UserRatings.Add(r);
+                _context.SaveChanges();
+
+                List l = new List()
+                {
+                    ApplicationUserId = user,
+                    Name = "First List",
+                    Description = "Best Movies Ever"
+                };
+
+                _context.Lists.Add(l);
+                _context.SaveChanges();
+
+                ListItem li = new ListItem()
+                {
+                    List = l,
+                    FilmItem = movie
+                };
+
+                _context.ListItems.Add(li);
+                _context.SaveChanges();
+            }*/
+
             if (movie == null)
             {
                 return View(nameof(Index));

@@ -1,0 +1,16 @@
+@model MovieProject.Models.List
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+@{
+    ViewData["Title"] = @Model.Name + ", a list by " + @UserManager.GetUserName(User);
+}
+
+<div>@UserManager.GetUserName(User)</div>
+
+@foreach (var item in Model.ListItems)
+{
+    <div>@item.FilmItem.Name</div>
+    <a asp-action="Details" asp-controller="@item.FilmItem.Discriminator" asp-route-slug="@item.FilmItem.Slug">
+        <img src="/images/filmitem/poster/@(item.FilmItem.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@item.FilmItem.Name" height="127px" width="84px" />
+    </a>
+}

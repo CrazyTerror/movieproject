@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MovieProject.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
-using System.Data.SqlClient;
 
 namespace MovieProject.Controllers
 {

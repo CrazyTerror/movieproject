@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -36,6 +38,7 @@
                     <li><a asp-area="" asp-controller="Series" asp-action="Index">Series</a></li>
                     <li><a asp-area="" asp-controller="Person" asp-action="Index">People</a></li>
                     <li><a asp-area="" asp-controller="Genre" asp-action="Index">Genre</a></li>
+                    @if (User.Identity.IsAuthenticated) { <li><a asp-controller="List" asp-action="Index" asp-route-slug="@UserManager.GetUserName(User)">Lists</a></li> }
                 </ul>
                 <partial name="_LoginPartial" />
             </div>

@@ -38,6 +38,11 @@
     </div>
 </div>
 
+@if (Model.UserRatings.Where(i => i.ApplicationUserId == UserManager.GetUserId(User)).ToList().Count > 0)
+{
+    <div>@Model.UserRatings.Where(i => i.ApplicationUserId == UserManager.GetUserId(User)).First().Rating</div>
+}
+
 <div>
     <ul>
         <li>
