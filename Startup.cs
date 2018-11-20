@@ -9,11 +9,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MovieProject.Data;
+//using MovieProject.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MovieProject.Models;
 using Microsoft.AspNetCore.Routing.Constraints;
+using MovieProject.Areas.Identity.Data;
 
 namespace MovieProject
 {
