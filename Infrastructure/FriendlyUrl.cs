@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
@@ -138,7 +139,7 @@ namespace MovieProject.Infrastructure
             }
         }
 
-        public static string IsSlugAvailable(MovieContext _ctx, string table, string title, int year = 0)
+        public static string IsSlugAvailable(MovieContext _ctx, string table, string title, int year = 0, string user = null)
         {
             var slug = "";
             if (table == "filmitem")
@@ -189,6 +190,19 @@ namespace MovieProject.Infrastructure
             {
                 var randomString = RandomString();
                 slug = ToFriendlyUrl(title + " " + RandomString() + " " + RandomString() + " " + RandomString() + " " + RandomString());
+            }
+
+            return slug;
+        }
+
+        public static string ListSlugSearch(MovieContext _ctx, List list, string user)
+        {   
+            var slug = ToFriendlyUrl(list.Name);
+            var slugAlreadyInUse = _ctx.Lists.Where(l => l.Name == slug).Where(u => u.ApplicationUserId == user).Where(lu => lu.Id != list.Id).FirstOrDefault(); 
+            
+            if (slugAlreadyInUse != null)
+            {
+                slug = ToFriendlyUrl(list.Name + " " + RandomString());
             }
 
             return slug;

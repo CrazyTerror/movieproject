@@ -28,7 +28,7 @@
                     <td>@l.ItemCount</td>
                     <td>
                         <form asp-action="Delete" asp-route-id="@l.Id" method="post">
-                            <a asp-action="Edit" class="btn btn-sm btn-warning">
+                            <a asp-action="Edit" class="btn btn-sm btn-warning" asp-route-listname="@l.Name">
                                 Edit
                             </a>
                             <input type="hidden" name="Id" value="@l.Id" />
