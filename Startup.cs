@@ -45,9 +45,12 @@ namespace MovieProject
                 options.UseSqlite(
                     Configuration["Data:MovieDB:ConnectionString"]));
 
-            services.AddDefaultIdentity<IdentityUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-
+            services.AddDefaultIdentity<IdentityUser>(config =>
+                {
+                    config.User.RequireUniqueEmail = true;
+                })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
             
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)

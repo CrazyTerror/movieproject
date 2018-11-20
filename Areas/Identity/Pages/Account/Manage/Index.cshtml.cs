@@ -41,6 +41,11 @@ namespace MovieProject.Areas.Identity.Pages.Account.Manage
         public class InputModel
         {
             [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Username")]
+            public string Username { get; set; }
+
+            [Required]
             [EmailAddress]
             public string Email { get; set; }
 
@@ -56,7 +61,7 @@ namespace MovieProject.Areas.Identity.Pages.Account.Manage
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-
+            
             var userName = await _userManager.GetUserNameAsync(user);
             var email = await _userManager.GetEmailAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
@@ -65,6 +70,7 @@ namespace MovieProject.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
+                Username = user.UserName,
                 Email = email,
                 PhoneNumber = phoneNumber
             };
@@ -85,6 +91,11 @@ namespace MovieProject.Areas.Identity.Pages.Account.Manage
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            if (Input.Username != user.UserName)
+            {
+                user.UserName = Input.Username;
             }
 
             var email = await _userManager.GetEmailAsync(user);

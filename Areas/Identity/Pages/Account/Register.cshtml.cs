@@ -40,9 +40,10 @@ namespace MovieProject.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            /* [Required]
+            [Required]
+            [DataType(DataType.Text)]
             [Display(Name = "Username")]
-            public string Username { get; set; }*/
+            public string Username { get; set; }
 
             [Required]
             [EmailAddress]
@@ -72,7 +73,7 @@ namespace MovieProject.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { 
-                    UserName = Input.Email, 
+                    UserName = Input.Username, 
                     Email = Input.Email 
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);

@@ -10,9 +10,8 @@ namespace MovieProject.Areas.Identity.Data
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
     {
-        //public string Username { get; set; }
-
-        public ICollection<UserRating> UserRatings { get; set; }
-        public ICollection<List> Lists { get; set; }
+        //public string Slug { get; set; }
+        //public ICollection<UserRating> UserRatings { get; set; }
+        //public ICollection<List> Lists { get; set; }
     }
 }

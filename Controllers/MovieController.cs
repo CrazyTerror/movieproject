@@ -17,6 +17,7 @@ using MovieProject.Data;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using MovieProject.Areas.Identity.Data;
 
 namespace MovieProject.Controllers
 {
@@ -59,39 +60,6 @@ namespace MovieProject.Controllers
             ViewBag.Directors = movie.FilmItemCredits.Where(p => p.PartType == PartType.Director).OrderBy(x => x.Person.Surname).ToList();
             ViewBag.Producers = movie.FilmItemCredits.Where(p => p.PartType == PartType.Producer).ToList();
             ViewBag.Writers = movie.FilmItemCredits.Where(p => p.PartType == PartType.Writer).ToList();
-            
-            /* if (User.Identity.IsAuthenticated)
-            {
-                var user = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            
-                UserRating r = new UserRating()
-                {
-                    ApplicationUserId = user,
-                    FilmItem = movie,
-                    Rating = 9
-                };
-                _context.UserRatings.Add(r);
-                _context.SaveChanges();
-
-                List l = new List()
-                {
-                    ApplicationUserId = user,
-                    Name = "First List",
-                    Description = "Best Movies Ever"
-                };
-
-                _context.Lists.Add(l);
-                _context.SaveChanges();
-
-                ListItem li = new ListItem()
-                {
-                    List = l,
-                    FilmItem = movie
-                };
-
-                _context.ListItems.Add(li);
-                _context.SaveChanges();
-            }*/
 
             if (movie == null)
             {
