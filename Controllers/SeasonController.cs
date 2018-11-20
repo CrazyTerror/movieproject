@@ -78,6 +78,9 @@ namespace MovieProject.Controllers
             // Add New Season
             season.SeriesId = series.Id;
             season.Season_SeasonNumber = updatedSeries.Series_SeasonCount;
+            season.Slug = Slug;
+            season.Rel_SeriesId = series.Id;
+            season.Rel_SeriesName = series.Name;
             _context.Seasons.Add(season);
             _context.SaveChanges();
 

@@ -5,12 +5,42 @@
     ViewData["Title"] = @Model.Name + ", a list by " + @UserManager.GetUserName(User);
 }
 
-<div>@UserManager.GetUserName(User)</div>
+<h3>@ViewData["Title"]</h3>
 
 @foreach (var item in Model.ListItems)
 {
-    <div>@item.FilmItem.Name</div>
-    <a asp-action="Details" asp-controller="@item.FilmItem.Discriminator" asp-route-slug="@item.FilmItem.Slug">
-        <img src="/images/filmitem/poster/@(item.FilmItem.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@item.FilmItem.Name" height="127px" width="84px" />
-    </a>
+    @if (item.FilmItem.Discriminator == "Series" || item.FilmItem.Discriminator == "Movie")
+    {
+        <a asp-action="Details" asp-controller="@item.FilmItem.Discriminator" asp-route-slug="@item.FilmItem.Slug">
+            <img src="/images/filmitem/poster/@(item.FilmItem.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@item.FilmItem.Name" height="127px" width="84px" />
+        </a>
+        <div>@(item.FilmItem.Name)</div>
+    } else if (item.FilmItem.Discriminator == "Season")
+    {
+        <a asp-action="Details" asp-controller="@item.FilmItem.Discriminator" asp-route-slug="@item.FilmItem.Slug" asp-route-seasonnumber="@item.FilmItem.Season_SeasonNumber">
+            <img src="/images/filmitem/poster/@(item.FilmItem.Rel_SeriesId).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@item.FilmItem.Name" height="127px" width="84px" />
+        </a>
+        <div>@(item.FilmItem.Name)</div>
+        <div>@(item.FilmItem.Rel_SeriesName)</div>
+    } else if (item.FilmItem.Discriminator == "Episode")
+    {
+        var episodeNumber = (item.FilmItem.Episode_EpisodeNumber < 10 ? "0" + item.FilmItem.Episode_EpisodeNumber : "" + item.FilmItem.Episode_EpisodeNumber);
+        <a asp-action="Details" asp-controller="@item.FilmItem.Discriminator" asp-route-slug="@item.FilmItem.Slug" asp-route-seasonnumber="@item.FilmItem.Episode_SeasonNumber" asp-route-episodenumber="@item.FilmItem.Episode_EpisodeNumber">
+            <img src="/images/filmitem/poster/@(item.FilmItem.Rel_SeriesId).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@item.FilmItem.Name" height="127px" width="84px" />
+        </a>
+        <div>@(item.FilmItem.Episode_SeasonNumber + "x" + @episodeNumber + " " + @item.FilmItem.Name)</div>
+        <div>@(item.FilmItem.Rel_SeriesName)</div>
+    }
+
+    <form asp-action="DeleteListItem" asp-route-id="@item.Id" method="post">
+        <button type="submit" class="btn btn-danger btn-sm">
+            Delete
+        </button>
+    </form>
+    <br>
 }
+
+<div class="text-center">
+    <a asp-action="AddListItem" class="btn btn-primary">Add List Item</a>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</div>

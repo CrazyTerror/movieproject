@@ -27,6 +27,13 @@ namespace MovieProject.Models
         public float? VoteAverage { get; set; }
         public string Slug { get; set; }
         public string Discriminator { get; set; }
+        public int? Rel_SeriesId { get; set; }
+        public string Rel_SeriesName { get; set; }
+        public int? Season_SeasonNumber { get; set; }
+        public int? Season_EpisodeCount { get; set; }
+        public int? Episode_SeasonNumber { get; set; }
+        public int? Episode_EpisodeNumber { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
@@ -60,9 +67,6 @@ namespace MovieProject.Models
 
     public class Season : FilmItem
     {
-        public int? Season_SeasonNumber { get; set; }
-        public int? Season_EpisodeCount { get; set; }
-
         public int SeriesId { get; set; }
         public Series Series { get; set; }
 
@@ -71,9 +75,6 @@ namespace MovieProject.Models
 
     public class Episode : FilmItem
     {
-        public int? Episode_SeasonNumber { get; set; } = null;
-        public int? Episode_EpisodeNumber { get; set; } = null;
-
         public int SeasonId { get; set; }
         public Season Season { get; set; }
     }
@@ -190,7 +191,7 @@ namespace MovieProject.Models
         public int Id { get; set; }
         public string ApplicationUserId { get; set; }
         public string Name { get; set; }
-        //public string Slug { get; set; }
+        public string Slug { get; set; }
         public string Description { get; set; }
         public int ItemCount { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;

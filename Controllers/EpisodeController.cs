@@ -78,7 +78,9 @@ namespace MovieProject.Controllers
             episode.SeasonId = season.Id;
             episode.Episode_SeasonNumber = updatedSeason.Season_SeasonNumber;
             episode.Episode_EpisodeNumber = updatedSeason.Season_EpisodeCount;
-            episode.UpdatedAt = DateTime.Now;
+            episode.Slug = Slug;
+            episode.Rel_SeriesId = series.Id;
+            episode.Rel_SeriesName = series.Name;
             _context.Episodes.Add(episode);
 
             _context.SaveChanges();

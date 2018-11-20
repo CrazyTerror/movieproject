@@ -44,14 +44,26 @@ namespace MovieProject.Migrations
                     b.Property<string>("Discriminator")
                         .IsRequired();
 
+                    b.Property<int?>("Episode_EpisodeNumber");
+
+                    b.Property<int?>("Episode_SeasonNumber");
+
                     b.Property<string>("Name")
                         .IsRequired();
 
                     b.Property<string>("OriginalLanguage");
 
+                    b.Property<int?>("Rel_SeriesId");
+
+                    b.Property<string>("Rel_SeriesName");
+
                     b.Property<DateTime?>("ReleaseDate");
 
                     b.Property<int?>("Runtime");
+
+                    b.Property<int?>("Season_EpisodeCount");
+
+                    b.Property<int?>("Season_SeasonNumber");
 
                     b.Property<string>("Slug");
 
@@ -166,6 +178,8 @@ namespace MovieProject.Migrations
                     b.Property<int>("ItemCount");
 
                     b.Property<string>("Name");
+
+                    b.Property<string>("Slug");
 
                     b.Property<DateTime>("UpdatedAt");
 
@@ -346,10 +360,6 @@ namespace MovieProject.Migrations
                 {
                     b.HasBaseType("MovieProject.Models.FilmItem");
 
-                    b.Property<int?>("Episode_EpisodeNumber");
-
-                    b.Property<int?>("Episode_SeasonNumber");
-
                     b.Property<int>("SeasonId");
 
                     b.HasIndex("SeasonId");
@@ -375,10 +385,6 @@ namespace MovieProject.Migrations
             modelBuilder.Entity("MovieProject.Models.Season", b =>
                 {
                     b.HasBaseType("MovieProject.Models.FilmItem");
-
-                    b.Property<int?>("Season_EpisodeCount");
-
-                    b.Property<int?>("Season_SeasonNumber");
 
                     b.Property<int>("SeriesId");
 
@@ -435,7 +441,7 @@ namespace MovieProject.Migrations
             modelBuilder.Entity("MovieProject.Models.ListItem", b =>
                 {
                     b.HasOne("MovieProject.Models.FilmItem", "FilmItem")
-                        .WithMany()
+                        .WithMany("ListItems")
                         .HasForeignKey("FilmItemId")
                         .OnDelete(DeleteBehavior.Cascade);
 

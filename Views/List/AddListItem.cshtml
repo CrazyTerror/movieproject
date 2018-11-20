@@ -1,0 +1,18 @@
+@{
+    ViewData["Title"] = " - Add List Item";
+}
+<h2 class="text-center">@ViewData["Title"]</h2>
+
+<form class="form-horizontal" asp-action="AddListItem" method="post">
+    <div class="form-group">
+        <label class="col-md-2 control-label">Film Item</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <input name="FilmItem" class="form-control" />
+        </div>
+    </div>
+    <div class="text-center">
+        <button class="btn btn-primary" type="submit">Add List Item</button>
+        <a asp-action="Details" asp-controller="List" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>

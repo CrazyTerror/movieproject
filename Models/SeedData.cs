@@ -326,6 +326,9 @@ namespace MovieProject.Models
                     Season_SeasonNumber = 1,
                     Season_EpisodeCount = 2,
                     Status = Status.Released,
+                    Slug = "game-of-thrones",
+                    Rel_SeriesId = s1.Id,
+                    Rel_SeriesName = s1.Name
                 };
 
                 Season se2 = new Season()
@@ -336,6 +339,9 @@ namespace MovieProject.Models
                     Season_SeasonNumber = 2,
                     Season_EpisodeCount = 2,
                     Status = Status.Released,
+                    Slug = "game-of-thrones",
+                    Rel_SeriesId = s1.Id,
+                    Rel_SeriesName = s1.Name
                 };
 
                 context.FilmItem.Add(se1);
@@ -352,6 +358,9 @@ namespace MovieProject.Models
                     Episode_EpisodeNumber = 1,
                     Runtime = 61,
                     Status = Status.Released,
+                    Slug = "game-of-thrones",
+                    Rel_SeriesId = s1.Id,
+                    Rel_SeriesName = s1.Name
                 };
                 Episode ep2 = new Episode()
                 {
@@ -363,6 +372,9 @@ namespace MovieProject.Models
                     Episode_EpisodeNumber = 2,
                     Runtime = 55,
                     Status = Status.Released,
+                    Slug = "game-of-thrones",
+                    Rel_SeriesId = s1.Id,
+                    Rel_SeriesName = s1.Name
                 };
                 Episode ep11 = new Episode()
                 {
@@ -374,6 +386,9 @@ namespace MovieProject.Models
                     Episode_EpisodeNumber = 1,
                     Runtime = 52,
                     Status = Status.Released,
+                    Slug = "game-of-thrones",
+                    Rel_SeriesId = s1.Id,
+                    Rel_SeriesName = s1.Name
                 };
                 Episode ep12 = new Episode()
                 {
@@ -385,6 +400,9 @@ namespace MovieProject.Models
                     Episode_EpisodeNumber = 2,
                     Runtime = 53,
                     Status = Status.Released,
+                    Slug = "game-of-thrones",
+                    Rel_SeriesId = s1.Id,
+                    Rel_SeriesName = s1.Name
                 };
                 
                 context.FilmItem.Add(ep1);
