@@ -32,9 +32,12 @@
                                 Edit
                             </a>
                             <input type="hidden" name="Id" value="@l.Id" />
-                            <button type="submit" class="btn btn-danger btn-sm">
-                                Delete
-                            </button>
+                            @if (l.Deletable == true)
+                            {
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    Delete
+                                </button>
+                            }
                         </form>
                     </td>
                 </tr>

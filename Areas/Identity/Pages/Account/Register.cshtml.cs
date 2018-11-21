@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using MovieProject.Areas.Identity.Data;
+using MovieProject.Models;
 
 namespace MovieProject.Areas.Identity.Pages.Account
 {
@@ -20,17 +21,20 @@ namespace MovieProject.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly MovieContext _context;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            MovieContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         [BindProperty]
@@ -76,6 +80,18 @@ namespace MovieProject.Areas.Identity.Pages.Account
                     UserName = Input.Username, 
                     Email = Input.Email 
                 };
+                
+                List list = new List()
+                {
+                    ApplicationUserId = user.Id,
+                    Name = "Watchlist",
+                    Slug = "watchlist",
+                    Description = "Movies, shows, seasons, and episodes I plan to watch.",
+                    Deletable = false
+                };
+                _context.Lists.Add(list);
+                _context.SaveChanges();
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

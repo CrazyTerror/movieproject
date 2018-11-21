@@ -27,5 +27,6 @@ namespace MovieProject.Models
         public DbSet<UserRating> UserRatings { get; set; }
         public DbSet<List> Lists { get; set; }
         public DbSet<ListItem> ListItems { get; set; }
+        public DbSet<Review> Reviews { get; set; }
     }
 }

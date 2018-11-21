@@ -193,7 +193,9 @@ namespace MovieProject.Models
         public string Name { get; set; }
         public string Slug { get; set; }
         public string Description { get; set; }
+        public int Likes { get; set; }
         public int ItemCount { get; set; }
+        public bool Deletable { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
@@ -211,22 +213,28 @@ namespace MovieProject.Models
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
 
-/*    public class Review
+    public class Review
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
-        public User User { get; set; }
+        public string ApplicationUserId { get; set; }
+        public int FilmItemId { get; set; }
+        public FilmItem FilmItem { get; set; }
+        public int ShoutId { get; set; }
+        public Review Shout { get; set; }
         public string Comment { get; set; }
+        public int Likes { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
 
-    public class Comment
+    /* public class Reply
     {
         public int Id { get; set; }
-        public User User { get; set; }
+        public string ApplicationUserId { get; set; }
+        public int ReviewId { get; set; }
         public Review Review { get; set; }
         public string Comment { get; set; }
+        public int Likes { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }*/

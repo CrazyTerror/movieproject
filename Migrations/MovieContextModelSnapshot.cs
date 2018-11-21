@@ -173,9 +173,13 @@ namespace MovieProject.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
+                    b.Property<bool>("Deletable");
+
                     b.Property<string>("Description");
 
                     b.Property<int>("ItemCount");
+
+                    b.Property<int>("Likes");
 
                     b.Property<string>("Name");
 
@@ -290,6 +294,34 @@ namespace MovieProject.Migrations
                     b.HasIndex("FilmItemId");
 
                     b.ToTable("Photos");
+                });
+
+            modelBuilder.Entity("MovieProject.Models.Review", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ApplicationUserId");
+
+                    b.Property<string>("Comment");
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<int>("FilmItemId");
+
+                    b.Property<int>("Likes");
+
+                    b.Property<int>("ShoutId");
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FilmItemId");
+
+                    b.HasIndex("ShoutId");
+
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("MovieProject.Models.Trivia", b =>
@@ -463,6 +495,19 @@ namespace MovieProject.Migrations
                     b.HasOne("MovieProject.Models.FilmItem", "FilmItem")
                         .WithMany("Photos")
                         .HasForeignKey("FilmItemId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MovieProject.Models.Review", b =>
+                {
+                    b.HasOne("MovieProject.Models.FilmItem", "FilmItem")
+                        .WithMany()
+                        .HasForeignKey("FilmItemId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MovieProject.Models.Review", "Shout")
+                        .WithMany()
+                        .HasForeignKey("ShoutId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

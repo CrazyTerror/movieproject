@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MovieProject.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -113,7 +113,9 @@ namespace MovieProject.Migrations
                     Name = table.Column<string>(nullable: true),
                     Slug = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
+                    Likes = table.Column<int>(nullable: false),
                     ItemCount = table.Column<int>(nullable: false),
+                    Deletable = table.Column<bool>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false)
                 },
@@ -190,6 +192,37 @@ namespace MovieProject.Migrations
                         name: "FK_Photos_FilmItem_FilmItemId",
                         column: x => x.FilmItemId,
                         principalTable: "FilmItem",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reviews",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ApplicationUserId = table.Column<string>(nullable: true),
+                    FilmItemId = table.Column<int>(nullable: false),
+                    ShoutId = table.Column<int>(nullable: false),
+                    Comment = table.Column<string>(nullable: true),
+                    Likes = table.Column<int>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reviews", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reviews_FilmItem_FilmItemId",
+                        column: x => x.FilmItemId,
+                        principalTable: "FilmItem",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Reviews_Reviews_ShoutId",
+                        column: x => x.ShoutId,
+                        principalTable: "Reviews",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -399,6 +432,16 @@ namespace MovieProject.Migrations
                 column: "FilmItemId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Reviews_FilmItemId",
+                table: "Reviews",
+                column: "FilmItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reviews_ShoutId",
+                table: "Reviews",
+                column: "ShoutId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Trivia_FilmItemId",
                 table: "Trivia",
                 column: "FilmItemId");
@@ -436,6 +479,9 @@ namespace MovieProject.Migrations
 
             migrationBuilder.DropTable(
                 name: "Photos");
+
+            migrationBuilder.DropTable(
+                name: "Reviews");
 
             migrationBuilder.DropTable(
                 name: "Trivia");
