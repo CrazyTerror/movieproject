@@ -6,9 +6,8 @@ using MovieProject.Models;
 
 namespace MovieProject.Data
 {
-    /* public class ApplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser
     {
-        public ICollection<UserRating> UserRatings { get; set; }
-        public ICollection<List> Lists { get; set; }
-    }*/
+        public string Slug { get; set; }
+    }
 }

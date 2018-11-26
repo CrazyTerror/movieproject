@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MovieProject.Data
 {
-    /* public class ApplicationDbContext : IdentityDbContext
+    public class AppIdentityDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options)
             : base(options)
         {
         }
-    }*/
+    }
 }

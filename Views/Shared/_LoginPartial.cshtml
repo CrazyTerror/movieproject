@@ -1,7 +1,5 @@
-@using Microsoft.AspNetCore.Identity
-
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 @if (SignInManager.IsSignedIn(User))
 {
@@ -13,6 +11,14 @@
             <li>
                 <button type="submit" class="btn btn-link navbar-btn navbar-link">Logout</button>
             </li>
+            <!--<li class="dropdown">
+                <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" class="dropdown-toggle" data-toggle="dropdown">@UserManager.GetUserName(User)</a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">Logout</a>
+                    </li>
+                </ul>
+            </li>-->
         </ul>
     </form>
 }

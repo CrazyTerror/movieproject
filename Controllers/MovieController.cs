@@ -17,7 +17,6 @@ using MovieProject.Data;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
-using MovieProject.Areas.Identity.Data;
 
 namespace MovieProject.Controllers
 {

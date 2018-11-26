@@ -9,12 +9,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-//using MovieProject.Data;
+using MovieProject.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MovieProject.Models;
 using Microsoft.AspNetCore.Routing.Constraints;
-using MovieProject.Areas.Identity.Data;
 
 namespace MovieProject
 {
@@ -37,7 +36,7 @@ namespace MovieProject
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<AppIdentityDbContext>(options =>
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
             
@@ -45,11 +44,11 @@ namespace MovieProject
                 options.UseSqlite(
                     Configuration["Data:MovieDB:ConnectionString"]));
 
-            services.AddDefaultIdentity<IdentityUser>(config =>
+            services.AddIdentity<ApplicationUser, IdentityRole>(config =>
                 {
                     config.User.RequireUniqueEmail = true;
                 })
-                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddEntityFrameworkStores<AppIdentityDbContext>()
                 .AddDefaultTokenProviders();
             
             services.AddMvc()

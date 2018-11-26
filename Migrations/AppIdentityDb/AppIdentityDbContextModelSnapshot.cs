@@ -3,12 +3,12 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MovieProject.Areas.Identity.Data;
+using MovieProject.Data;
 
-namespace MovieProject.Migrations.ApplicationDb
+namespace MovieProject.Migrations.AppIdentityDb
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(AppIdentityDbContext))]
+    partial class AppIdentityDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -123,7 +123,7 @@ namespace MovieProject.Migrations.ApplicationDb
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("MovieProject.Areas.Identity.Data.ApplicationUser", b =>
+            modelBuilder.Entity("MovieProject.Data.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -156,6 +156,8 @@ namespace MovieProject.Migrations.ApplicationDb
 
                     b.Property<string>("SecurityStamp");
 
+                    b.Property<string>("Slug");
+
                     b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<string>("UserName")
@@ -183,7 +185,7 @@ namespace MovieProject.Migrations.ApplicationDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("MovieProject.Areas.Identity.Data.ApplicationUser")
+                    b.HasOne("MovieProject.Data.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -191,7 +193,7 @@ namespace MovieProject.Migrations.ApplicationDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("MovieProject.Areas.Identity.Data.ApplicationUser")
+                    b.HasOne("MovieProject.Data.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -204,7 +206,7 @@ namespace MovieProject.Migrations.ApplicationDb
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("MovieProject.Areas.Identity.Data.ApplicationUser")
+                    b.HasOne("MovieProject.Data.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -212,7 +214,7 @@ namespace MovieProject.Migrations.ApplicationDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("MovieProject.Areas.Identity.Data.ApplicationUser")
+                    b.HasOne("MovieProject.Data.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
