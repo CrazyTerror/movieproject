@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MovieProject.Models;
 using Microsoft.AspNetCore.Routing.Constraints;
+using MovieProject.Infrastructure;
 
 namespace MovieProject
 {
@@ -50,6 +51,8 @@ namespace MovieProject
                 })
                 .AddEntityFrameworkStores<AppIdentityDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, MyUserClaimsPrincipalFactory>();
             
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
@@ -78,6 +81,7 @@ namespace MovieProject
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+            //AppIdentityDbContext.CreateAdminAccount(app.ApplicationServices, Configuration).Wait();
 
             app.UseMvc(routes =>
             {

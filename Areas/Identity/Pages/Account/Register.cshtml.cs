@@ -80,6 +80,8 @@ namespace MovieProject.Areas.Identity.Pages.Account
                     Email = Input.Email 
                 };
 
+                var role = "Users";
+
                 List list = new List()
                 {
                     ApplicationUserId = user.Id,
@@ -95,6 +97,7 @@ namespace MovieProject.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+                    IdentityResult res = await _userManager.AddToRoleAsync(user, role);
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.Page(
