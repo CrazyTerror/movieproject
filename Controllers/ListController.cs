@@ -50,50 +50,67 @@ namespace MovieProject.Controllers
             var list = _context.Lists.Include(li => li.ListItems).ThenInclude(f => f.FilmItem)
                                      .Where(u => u.ApplicationUserId == user.Id)
                                      .FirstOrDefault(l => l.Slug == listName);
-            System.Console.WriteLine(list.Name);
+                                     
             return View(list);
         }
 
         [HttpGet("users/{Slug}/lists/create")]
-        public ViewResult Create()
+        public IActionResult Create(string Slug)
         {
-            return View();
+            var user = _userManager.Users.FirstOrDefault(u => u.Slug == Slug);
+            if (user.Id == _userManager.GetUserId(User))
+            {
+                return View();
+            } else
+            {
+                return RedirectToAction("Index", new { Slug = Slug});
+            }
         }
 
         [HttpPost("users/{Slug}/lists/create")]
-        public IActionResult Create(List list)
+        public IActionResult Create(string Slug, List list)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            list.Slug = UrlEncoder.ListSlugSearch(_context, list, userId);
-            list.ApplicationUserId = userId;
+            var user = _userManager.Users.FirstOrDefault(u => u.Slug == Slug);
 
-            _context.Lists.Add(list);
-            _context.SaveChanges();
-            TempData["message"] = $"{list.Name} has been created";
+            if (user.Id == _userManager.GetUserId(User))
+            {
+                list.Slug = UrlEncoder.ListSlugSearch(_context, list, user.Id);
+                list.ApplicationUserId = user.Id;
 
+                _context.Lists.Add(list);
+                _context.SaveChanges();
+                TempData["message"] = $"{list.Name} has been created";
+
+            } 
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet("users/{Slug}/lists/{listName}/edit")]
-        public ViewResult Edit(string listName)
+        public IActionResult Edit(string Slug, string listName)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var list = _context.Lists.Where(l => l.Slug == listName).Where(u => u.ApplicationUserId == userId).FirstOrDefault();
+            var user = _userManager.Users.FirstOrDefault(u => u.Slug == Slug);
+            var list = _context.Lists.Where(l => l.Slug == listName).Where(u => u.ApplicationUserId == user.Id).FirstOrDefault();
 
-            return View(list);
+            if (user.Id == _userManager.GetUserId(User))
+            {
+                return View(list);
+            } else
+            {
+                return RedirectToAction("Details", new { Slug = Slug, listName = listName});
+            }
         }
 
         [HttpPost("users/{Slug}/lists/{listName}/edit")]
-        public IActionResult Edit(List tempList)
+        public IActionResult Edit(string Slug, List tempList)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = _userManager.Users.FirstOrDefault(u => u.Slug == Slug);
             var list = _context.Lists.FirstOrDefault(l => l.Id == tempList.Id);
 
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && user.Id == _userManager.GetUserId(User))
             {
                 _context.Lists.Attach(list);
                 list.Name = tempList.Name;
-                list.Slug = UrlEncoder.ListSlugSearch(_context, tempList, userId);
+                list.Slug = UrlEncoder.ListSlugSearch(_context, tempList, user.Id);
                 list.Description = tempList.Description;
                 list.UpdatedAt = DateTime.Now;
                 _context.SaveChanges();
@@ -107,11 +124,12 @@ namespace MovieProject.Controllers
         }
 
         [HttpPost("users/{Slug}/lists/{id}/delete")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(string Slug, int id)
         {
+            var user = _userManager.Users.FirstOrDefault(u => u.Slug == Slug);
             var list = _context.Lists.Find(id);
 
-            if (list != null)
+            if (list != null && user.Id == list.ApplicationUserId)
             {
                 _context.Lists.Remove(list);
                 _context.SaveChanges();
@@ -119,34 +137,46 @@ namespace MovieProject.Controllers
                 TempData["message"] = $"{list.Name} was deleted";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", new { Slug = Slug});
         }
 
         [HttpGet("users/{Slug}/lists/{listName}/add")]
-        public ViewResult AddListItem()
+        public IActionResult AddListItem(string Slug, string listName)
         {
-            return View();
+            var user = _userManager.Users.FirstOrDefault(u => u.Slug == Slug);
+
+            if (user.Id == _userManager.GetUserId(User))
+            {
+                return View();
+            } else
+            {
+                return RedirectToAction("Details", new { Slug = Slug, listName = listName});
+            }
         }
 
         [HttpPost("users/{Slug}/lists/{listName}/add")]
-        public IActionResult AddListItem(string listName)
+        public IActionResult AddListItem(string Slug, string listName, string id = null)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var list = _context.Lists.Where(l => l.Slug == listName).Where(u => u.ApplicationUserId == userId).FirstOrDefault();
+            var user = _userManager.Users.FirstOrDefault(u => u.Slug == Slug);
+            var list = _context.Lists.Where(l => l.Slug == listName).Where(u => u.ApplicationUserId == user.Id).FirstOrDefault();
             var filmItem = _context.FilmItem.Where(f => f.Name == Request.Form["FilmItem"].ToString()).FirstOrDefault();
 
-            ListMethods.SaveListItem(_context, list, filmItem);
-            TempData["message"] = $"{filmItem.Name} is added to {list.Name}";
+            if (user.Id == _userManager.GetUserId(User))
+            {
+                ListMethods.SaveListItem(_context, list, filmItem);
+                TempData["message"] = $"{filmItem.Name} is added to {list.Name}";
+            }
 
             return RedirectToAction("Details", "List", new { listName = listName });
         }
 
         [HttpPost("users/{Slug}/lists/{listName}/{Id}/delete")]
-        public IActionResult DeleteListItem(string listName, int Id)
+        public IActionResult DeleteListItem(string Slug, string listName, int Id)
         {
+            var user = _userManager.Users.FirstOrDefault(u => u.Slug == Slug);
             var listItem = _context.ListItems.Include(l => l.List).Include(f => f.FilmItem).FirstOrDefault(li => li.Id == Id);
 
-            if (listItem != null)
+            if (listItem != null && user.Id == _userManager.GetUserId(User))
             {
                 ListMethods.EditListAfterDeletingListItem(_context, listItem);
                 _context.ListItems.Remove(listItem);
