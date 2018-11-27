@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MovieProject.Controllers
 {
+    [Authorize(Roles = "Admins, Users")]
     public class MovieController : Controller
     {
         private readonly MovieContext _context;
@@ -41,6 +42,7 @@ namespace MovieProject.Controllers
         }
 
         [HttpGet("movies/{Slug}")]
+        [AllowAnonymous]
         public ViewResult Details(string Slug)
         {
             var movie = _context.Movies.Include(mg => mg.FilmItemGenres).ThenInclude(g => g.Genre)
@@ -143,6 +145,7 @@ namespace MovieProject.Controllers
         }
 
         [HttpPost("movies/{id}/Delete")]
+        [Authorize(Roles = "Admins")]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
@@ -307,6 +310,7 @@ namespace MovieProject.Controllers
         [HttpGet("movies/{Slug}/comments")]
         public ViewResult Comments()
         {
+            // TODO
             return View();
         }
 

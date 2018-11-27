@@ -54,15 +54,6 @@ namespace MovieProject.Controllers
             return View(ratings);
         }
 
-        [HttpGet("users/{slug}/listss")]
-        public ViewResult Lists(string Slug)
-        {
-            var user = _userManager.Users.Where(u => u.Slug == Slug).FirstOrDefault();
-            var lists = _context.Lists.Where(u => u.ApplicationUserId == user.Id).ToList();
-
-            return View(lists);
-        }
-
         [HttpGet("users/{slug}/comments")]
         public ViewResult Comments(string Slug)
         {

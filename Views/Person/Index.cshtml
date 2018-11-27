@@ -12,8 +12,11 @@
             <tr>
                 <th scope="col">Person</th>
                 <th scope="col">Year</th>
-                <th scope="col"></th>
-                <th scope="col"></th>
+                @if (User.Identity.IsAuthenticated == true)
+                {
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -23,23 +26,33 @@
                     <td>
                         <a asp-controller="Person" asp-action="Details" asp-route-slug="@p.Slug">@p.FirstName @p.Surname</a>
                     </td>
-                    <td>
-                        <form asp-action="Delete" asp-route-id="@p.Id" method="post">
-                            <a asp-action="Edit" class="btn btn-sm btn-warning" asp-route-slug="@p.Slug">
-                                Edit
-                            </a>
-                            <input type="hidden" name="Id" value="@p.Id" />
-                            <button type="submit" class="btn btn-danger btn-sm">
-                                Delete
-                            </button>
-                        </form>
-                    </td>
+                    <td>@p.BirthDate.Value.ToString("d MMMM yyyy")</td>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <td>
+                            <form asp-action="Delete" asp-route-id="@p.Id" method="post">
+                                <a asp-action="Edit" class="btn btn-sm btn-warning" asp-route-slug="@p.Slug">
+                                    Edit
+                                </a>
+                                @if (User.IsInRole("Admins"))
+                                {
+                                    <input type="hidden" name="Id" value="@p.Id" />
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        Delete
+                                    </button>
+                                }
+                            </form>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>
     </table>
 }
 
-<div class="text-center">
-    <a asp-controller="Person" asp-action="Create" class="btn btn-primary">Add Person</a>
-</div>
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="text-center">
+        <a asp-controller="Person" asp-action="Create" class="btn btn-primary">Add Person</a>
+    </div>
+}  

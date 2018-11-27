@@ -54,7 +54,7 @@
         <li>
             <label>Genres</label>
             @String.Join(", ", ViewBag.Genres)
-            <a asp-action="Genre">Edit</a>
+            @if (User.Identity.IsAuthenticated) { <a asp-action="Genre">Edit</a> }
         </li>
         <li>
             <label>Status</label> @Model.Status
@@ -87,7 +87,7 @@
     @if (Model.FilmItemCredits.Where(p => p.PartType == PartType.Cast).ToList().Count > 0)
     {
         <h2>Actors</h2>
-        <a asp-action="Credits">Edit</a>
+        @if (User.Identity.IsAuthenticated) { <a asp-action="Credits">Edit</a> }
         @foreach (var actor in @Model.FilmItemCredits.Where(p => p.PartType == PartType.Cast))
         {
             <a asp-action="Details" asp-controller="Person" asp-route-slug="@actor.Person.Slug">
@@ -98,20 +98,23 @@
     }
 </div>
 
-<form class="form-horizontal" asp-action="AddReview" asp-controller="Movie" method="post">
-    <div class="form-group">
-        <input type="hidden" name="ApplicationUserId" value="@UserManager.GetUserId(User)" />
-        <input type="hidden" name="FilmItemId" value="@Model.Id" />
-        <label class="col-md-2 control-label">Review</label>
-        <div class="col-md-8">
-            <span class="text-danger"></span>
-            <textarea name="Comment" class="form-control"></textarea>
+@if (User.Identity.IsAuthenticated)
+{   
+    <form class="form-horizontal" asp-action="AddReview" asp-controller="Movie" method="post">
+        <div class="form-group">
+            <input type="hidden" name="ApplicationUserId" value="@UserManager.GetUserId(User)" />
+            <input type="hidden" name="FilmItemId" value="@Model.Id" />
+            <label class="col-md-2 control-label">Review</label>
+            <div class="col-md-8">
+                <span class="text-danger"></span>
+                <textarea name="Comment" class="form-control"></textarea>
+            </div>
         </div>
-    </div>
-    <div class="text-center">
-        <button class="btn btn-primary" type="submit">Add Review</button>
-    </div>
-</form>
+        <div class="text-center">
+            <button class="btn btn-primary" type="submit">Add Review</button>
+        </div>
+    </form>
+}
 
 <div class="row">
     @foreach (var review in @Model.Reviews.OrderByDescending(x => x.CreatedAt).Take(3))

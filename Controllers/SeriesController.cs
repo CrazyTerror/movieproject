@@ -10,9 +10,11 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MovieProject.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MovieProject.Controllers
 {
+    [Authorize(Roles = "Admins, Users")]
     public class SeriesController : Controller
     {
         private readonly MovieContext _context;
@@ -25,6 +27,7 @@ namespace MovieProject.Controllers
         }
 
         [HttpGet("series")]
+        [AllowAnonymous]
         public ViewResult Index()
         {
             var series = _context.Series.OrderByDescending(item => item.VoteAverage).ToList();
@@ -33,6 +36,7 @@ namespace MovieProject.Controllers
         }
 
         [HttpGet("series/{slug}")]
+        [AllowAnonymous]
         public ViewResult Details(string Slug)
         {
             var series = _context.Series.Include(sg => sg.FilmItemGenres).ThenInclude(g => g.Genre)
@@ -126,6 +130,7 @@ namespace MovieProject.Controllers
         }
 
         [HttpPost("series/{id}/Delete")]
+        [Authorize(Roles = "Admins")]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {

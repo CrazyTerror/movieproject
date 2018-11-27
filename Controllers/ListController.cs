@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using MovieProject.Models;
 
 namespace MovieProject.Controllers
 {
+    [Authorize(Roles = "Admins, Users")]
     public class ListController : Controller
     {
         private readonly MovieContext _context;
@@ -23,6 +25,7 @@ namespace MovieProject.Controllers
         }
 
         [HttpGet("users/{Slug}/lists")]
+        [AllowAnonymous]
         public ViewResult Index(string Slug)
         {
             var user = _userManager.Users.FirstOrDefault(u => u.Slug == Slug);
@@ -39,12 +42,15 @@ namespace MovieProject.Controllers
         }
 
         [HttpGet("users/{Slug}/lists/{listName}")]
-        public ViewResult Details(string listName)
+        [AllowAnonymous]
+        public ViewResult Details(string Slug, string listName)
         {
-            var list = _context.Lists.Include(li => li.ListItems).ThenInclude(f => f.FilmItem)
-                                     .Where(u => u.ApplicationUserId == User.FindFirst(ClaimTypes.NameIdentifier).Value)
-                                     .FirstOrDefault(l => l.Slug == listName);
+            var user = _userManager.Users.FirstOrDefault(u => u.Slug == Slug);
 
+            var list = _context.Lists.Include(li => li.ListItems).ThenInclude(f => f.FilmItem)
+                                     .Where(u => u.ApplicationUserId == user.Id)
+                                     .FirstOrDefault(l => l.Slug == listName);
+            System.Console.WriteLine(list.Name);
             return View(list);
         }
 

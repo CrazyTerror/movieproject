@@ -15,15 +15,20 @@
     <text>@Model.Name</text>
 </div>
 
-<div class="container"></div>
+@if (User.Identity.IsAuthenticated)
+{
     <form asp-action="Delete" method="post">
         <a asp-action="Edit" class="btn btn-sm btn-warning">
             Edit Season
         </a>
-        <button type="submit" class="btn btn-danger btn-sm">
-            Delete Season
-        </button>
+        @if (User.IsInRole("Admins"))
+        {
+            <button type="submit" class="btn btn-danger btn-sm">
+                Delete Season
+            </button>
+        }
     </form>
+}
 
 <text>Season</text>
 @for (var i = 1; i < @ViewBag.SeasonCount + 1; i++)
@@ -97,12 +102,15 @@
     @Model.Episodes.Count @(Model.Episodes.Count > 1 || Model.Episodes.Count == 0 ? "Episodes" : "Episode" )
 </div>
 
-<div class="text-center">
-    <a asp-controller="Episode" asp-action="Create" class="btn btn-primary">Add Episode</a>
-</div>
-<div class="text-center">
-    <a asp-controller="Season" asp-action="Edit" class="btn btn-warning">Edit Season</a>
-</div>
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="text-center">
+        <a asp-controller="Episode" asp-action="Create" class="btn btn-primary">Add Episode</a>
+    </div>
+    <div class="text-center">
+        <a asp-controller="Season" asp-action="Edit" class="btn btn-warning">Edit Season</a>
+    </div>
+}
 
 <div class="row">
     <img src="/images/filmitem/poster/@(Model.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@Model.Name" />

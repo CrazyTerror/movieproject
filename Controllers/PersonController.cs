@@ -11,9 +11,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MovieProject.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MovieProject.Controllers
 {
+    [Authorize(Roles = "Admins, Users")]
     public class PersonController : Controller
     {
         private readonly MovieContext _context;
@@ -26,6 +28,7 @@ namespace MovieProject.Controllers
         }
 
         [HttpGet("person")]
+        [AllowAnonymous]
         public ViewResult Index()
         {
             var people = _context.Persons.OrderBy(n => n.Surname).ToList();
@@ -34,6 +37,7 @@ namespace MovieProject.Controllers
         }
 
         [HttpGet("person/{Slug}")]
+        [AllowAnonymous]
         public ViewResult Details(string Slug)
         {
             var person = _context.Persons.Include(mc => mc.FilmItemCredits).ThenInclude(c => c.FilmItem).FirstOrDefault(p => p.Slug == Slug);
@@ -126,6 +130,7 @@ namespace MovieProject.Controllers
         }
 
         [HttpPost("person/{id}/Delete")]
+        [Authorize(Roles = "Admins")]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {

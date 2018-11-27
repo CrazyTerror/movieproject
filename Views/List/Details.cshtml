@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<ApplicationUser> UserManager
 @{
-    ViewData["Title"] = @Model.Name + ", a list by " + @UserManager.GetUserName(User);
+    ViewData["Title"] = @Model.Name + ", a list by " + UserManager.FindByIdAsync(Model.ApplicationUserId).Result.UserName;
 }
 
 <h3>@ViewData["Title"]</h3>
@@ -32,15 +32,21 @@
         <div>@(item.FilmItem.Rel_SeriesName)</div>
     }
 
-    <form asp-action="DeleteListItem" asp-route-id="@item.Id" method="post">
-        <button type="submit" class="btn btn-danger btn-sm">
-            Delete
-        </button>
-    </form>
+    @if (User.Identity.IsAuthenticated && UserManager.GetUserId(User) == Model.ApplicationUserId)
+    {
+        <form asp-action="DeleteListItem" asp-route-id="@item.Id" method="post">
+            <button type="submit" class="btn btn-danger btn-sm">
+                Delete
+            </button>
+        </form>
+    }
     <br>
 }
 
-<div class="text-center">
-    <a asp-action="AddListItem" class="btn btn-primary">Add List Item</a>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</div>
+@if (User.Identity.IsAuthenticated && UserManager.GetUserId(User) == Model.ApplicationUserId)
+{
+    <div class="text-center">
+        <a asp-action="AddListItem" class="btn btn-primary">Add List Item</a>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+}
