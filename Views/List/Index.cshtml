@@ -27,23 +27,26 @@
                     <td>
                         <a asp-action="Details" asp-route-listname="@l.Slug">@l.Name</a>
                     </td>
-                    <td>@if (l.Privacy == true) { <text>Private </text> } by @UserManager.FindByIdAsync(l.ApplicationUserId).Result.UserName</td>
+                    <td>@if (l.Privacy == true) { <text>Private</text> } <span>by</span> @UserManager.FindByIdAsync(l.ApplicationUserId).Result.UserName</td>
                     <td>@l.Description</td>
                     <td>@l.ItemCount</td>
-                    <td>
-                        <form asp-action="Delete" asp-route-id="@l.Id" method="post">
-                            <a asp-action="Edit" class="btn btn-sm btn-warning" asp-route-listname="@l.Name">
-                                Edit
-                            </a>
-                            <input type="hidden" name="Id" value="@l.Id" />
-                            @if (l.Deletable == true)
-                            {
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    Delete
-                                </button>
-                            }
-                        </form>
-                    </td>
+                    @if (User.Identity.IsAuthenticated && l.ApplicationUserId == UserManager.GetUserId(User))
+                    {
+                        <td>
+                            <form asp-action="Delete" asp-route-id="@l.Id" method="post">
+                                <a asp-action="Edit" class="btn btn-sm btn-warning" asp-route-listname="@l.Slug">
+                                    Edit
+                                </a>
+                                <input type="hidden" name="Id" value="@l.Id" />
+                                @if (l.Deletable == true)
+                                {
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        Delete
+                                    </button>
+                                }
+                            </form>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>
