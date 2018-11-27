@@ -72,7 +72,7 @@ namespace MovieProject.Controllers
         public ViewResult Edit(string listName)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var list = _context.Lists.Where(l => l.Name == listName).Where(u => u.ApplicationUserId == userId).FirstOrDefault();
+            var list = _context.Lists.Where(l => l.Slug == listName).Where(u => u.ApplicationUserId == userId).FirstOrDefault();
 
             return View(list);
         }
