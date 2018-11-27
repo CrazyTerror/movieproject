@@ -18,6 +18,17 @@
             <textarea name="Description" class="form-control"></textarea>
         </div>
     </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label">Privacy</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <select name="Privacy" class="form-control">
+                <option selected disabled>--- Choose ---</option>
+                <option value="false">Public</option>
+                <option value="true">Private</option>
+            </select>
+        </div>
+    </div>
     <div class="text-center">
         <button class="btn btn-primary" type="submit">Create</button>
         <a asp-action="Index" class="btn btn-secondary">Cancel</a>

@@ -88,7 +88,8 @@ namespace MovieProject.Areas.Identity.Pages.Account
                     Name = "Watchlist",
                     Slug = "watchlist",
                     Description = "Movies, shows, seasons, and episodes I plan to watch.",
-                    Deletable = false
+                    Deletable = false,
+                    Privacy = false
                 };
                 _context.Lists.Add(list);
                 _context.SaveChanges();

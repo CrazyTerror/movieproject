@@ -9,8 +9,8 @@ using MovieProject.Models;
 namespace MovieProject.Migrations
 {
     [DbContext(typeof(MovieContext))]
-    [Migration("20181121165006_initial")]
-    partial class initial
+    [Migration("20181127125901_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -181,9 +181,9 @@ namespace MovieProject.Migrations
 
                     b.Property<int>("ItemCount");
 
-                    b.Property<int>("Likes");
-
                     b.Property<string>("Name");
+
+                    b.Property<bool>("Privacy");
 
                     b.Property<string>("Slug");
 
@@ -311,9 +311,7 @@ namespace MovieProject.Migrations
 
                     b.Property<int>("FilmItemId");
 
-                    b.Property<int>("Likes");
-
-                    b.Property<int>("ShoutId");
+                    b.Property<int?>("ShoutId");
 
                     b.Property<DateTime>("UpdatedAt");
 
@@ -503,14 +501,13 @@ namespace MovieProject.Migrations
             modelBuilder.Entity("MovieProject.Models.Review", b =>
                 {
                     b.HasOne("MovieProject.Models.FilmItem", "FilmItem")
-                        .WithMany()
+                        .WithMany("Reviews")
                         .HasForeignKey("FilmItemId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("MovieProject.Models.Review", "Shout")
                         .WithMany()
-                        .HasForeignKey("ShoutId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ShoutId");
                 });
 
             modelBuilder.Entity("MovieProject.Models.Trivia", b =>

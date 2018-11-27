@@ -1,4 +1,6 @@
 @model List<MovieProject.Models.List>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
 
 @{
     ViewData["Title"] = "Lists";
@@ -11,6 +13,7 @@
         <thead>
             <tr>
                 <th scope="col">Lists</th>
+                <th scope="col">User</th>
                 <th scope="col">Description</th>
                 <th scope="col">Items</th>
                 <th scope="col"></th>
@@ -24,6 +27,7 @@
                     <td>
                         <a asp-action="Details" asp-route-listname="@l.Slug">@l.Name</a>
                     </td>
+                    <td>@if (l.Privacy == true) { <text>Private </text> } by @UserManager.FindByIdAsync(l.ApplicationUserId).Result.UserName</td>
                     <td>@l.Description</td>
                     <td>@l.ItemCount</td>
                     <td>

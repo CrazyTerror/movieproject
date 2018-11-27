@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MovieProject.Data;
 using MovieProject.Infrastructure;
 using MovieProject.Models;
 
@@ -12,19 +14,28 @@ namespace MovieProject.Controllers
     public class ListController : Controller
     {
         private readonly MovieContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ListController(MovieContext context)
+        public ListController(MovieContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
-
+            _userManager = userManager;
         }
 
         [HttpGet("users/{Slug}/lists")]
         public ViewResult Index(string Slug)
         {
-            var lists = _context.Lists.Where(u => u.ApplicationUserId == User.FindFirst(ClaimTypes.NameIdentifier).Value).OrderBy(l => l.Name).ToList();
+            var user = _userManager.Users.FirstOrDefault(u => u.Slug == Slug);
 
-            return View(lists);
+            if (user.Id != _userManager.GetUserId(User) || User.Identity.IsAuthenticated == false)
+            {
+                var lists = _context.Lists.Where(u => u.ApplicationUserId == user.Id).Where(p => p.Privacy == false).OrderBy(l => l.Name);
+                return View(lists.ToList());
+            } else 
+            {
+                var lists = _context.Lists.Where(u => u.ApplicationUserId == user.Id).OrderBy(l => l.Name);
+                return View(lists.ToList());
+            }
         }
 
         [HttpGet("users/{Slug}/lists/{listName}")]

@@ -1,0 +1,14 @@
+@model MovieProject.Data.ApplicationUser
+@{
+    ViewData["Title"] = @Model.UserName + "'s profile"; 
+}
+
+<div class="row">
+    <ul>
+        <li><a asp-action="Details">Profile</a></li>
+        <li><a asp-action="History">History</a></li>
+        <li><a asp-action="Ratings">Ratings</a></li>
+        <li><a asp-action="Index" asp-controller="Lists" asp-route-slug="@Model.Slug">Lists</a></li>
+        <li><a asp-action="Comments">Comments</a></li>
+    </ul>
+</div>

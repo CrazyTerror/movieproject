@@ -22,7 +22,7 @@
             @if (User.Identity.IsAuthenticated)
             {
                 <input type="hidden" name="Id" value="@UserManager.GetUserId(User)" />
-                <div>Hello @UserManager.GetUserId(User)</div>
+                <div>Hello @(UserManager.GetUserId(User))</div>
                 <li>
                     <label>Rate</label> 
                     @if (@Model.ReleaseDate < DateTime.Today) 
@@ -30,7 +30,7 @@
                         <select id="rating" name="Rating"></select>
                     } else 
                     { 
-                        <text>You can rate when the series is out</text> 
+                        <div>You can rate when the series is out</div> 
                     }
                 </li>
             }
@@ -95,6 +95,31 @@
             </a>
             <div>@actor.Person.FirstName @actor.Person.Surname - @actor.Character</div>
         }
+    }
+</div>
+
+<form class="form-horizontal" asp-action="AddReview" asp-controller="Movie" method="post">
+    <div class="form-group">
+        <input type="hidden" name="ApplicationUserId" value="@UserManager.GetUserId(User)" />
+        <input type="hidden" name="FilmItemId" value="@Model.Id" />
+        <label class="col-md-2 control-label">Review</label>
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <textarea name="Comment" class="form-control"></textarea>
+        </div>
+    </div>
+    <div class="text-center">
+        <button class="btn btn-primary" type="submit">Add Review</button>
+    </div>
+</form>
+
+<div class="row">
+    @foreach (var review in @Model.Reviews.OrderByDescending(x => x.CreatedAt).Take(3))
+    {
+        var user = @UserManager.FindByIdAsync(review.ApplicationUserId);
+        <div>Review by <a asp-action="Details" asp-controller="User" asp-route-slug="@user.Result.Slug">@user.Result.UserName</a></div> 
+        <div>@review.CreatedAt.ToString("d MMMM yyyy HH:mm")</div>
+        <div>@review.Comment</div>
     }
 </div>
 

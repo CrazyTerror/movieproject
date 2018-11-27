@@ -50,6 +50,7 @@ namespace MovieProject.Controllers
                                        .Include(t => t.Trivia)
                                        .Include(m => m.Media)
                                        .Include(mr => mr.UserRatings)
+                                       .Include(r => r.Reviews)
                                        .FirstOrDefault(m => m.Slug == Slug);
 
             ViewBag.Genres = movie.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();
@@ -301,6 +302,28 @@ namespace MovieProject.Controllers
             {
                 return View(nameof(Index));
             }
+        }
+
+        [HttpGet("movies/{Slug}/comments")]
+        public ViewResult Comments()
+        {
+            return View();
+        }
+
+        [HttpPost("movies/{Slug}/addReview")]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddReview(string Slug)
+        {
+            Review review = new Review
+            {
+                ApplicationUserId = Request.Form["ApplicationUserId"],
+                FilmItemId = int.Parse(Request.Form["FilmItemId"]),
+                Comment = Request.Form["Comment"]
+            };
+            _context.Reviews.Add(review);
+            _context.SaveChanges();
+
+            return RedirectToAction("Details", "Movie", new { Slug = Slug });
         }
     }
 }

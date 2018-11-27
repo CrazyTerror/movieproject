@@ -45,6 +45,7 @@ namespace MovieProject.Models
         public ICollection<Video> Videos { get; set; }
         public ICollection<UserRating> UserRatings { get; set; }
         public ICollection<ListItem> ListItems { get; set; }
+        public ICollection<Review> Reviews { get; set; }
     }
 
     public class Movie : FilmItem
@@ -193,7 +194,7 @@ namespace MovieProject.Models
         public string Name { get; set; }
         public string Slug { get; set; }
         public string Description { get; set; }
-        public int Likes { get; set; }
+        public bool Privacy { get; set; } = true;
         public int ItemCount { get; set; }
         public bool Deletable { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
@@ -219,10 +220,10 @@ namespace MovieProject.Models
         public string ApplicationUserId { get; set; }
         public int FilmItemId { get; set; }
         public FilmItem FilmItem { get; set; }
-        public int ShoutId { get; set; }
-        public Review Shout { get; set; }
+        public int? ShoutId { get; set; }
+        public Review Shout { get; set; } = null;
+        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$")]
         public string Comment { get; set; }
-        public int Likes { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }

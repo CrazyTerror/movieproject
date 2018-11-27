@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MovieProject.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -113,7 +113,7 @@ namespace MovieProject.Migrations
                     Name = table.Column<string>(nullable: true),
                     Slug = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    Likes = table.Column<int>(nullable: false),
+                    Privacy = table.Column<bool>(nullable: false),
                     ItemCount = table.Column<int>(nullable: false),
                     Deletable = table.Column<bool>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
@@ -204,9 +204,8 @@ namespace MovieProject.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     ApplicationUserId = table.Column<string>(nullable: true),
                     FilmItemId = table.Column<int>(nullable: false),
-                    ShoutId = table.Column<int>(nullable: false),
+                    ShoutId = table.Column<int>(nullable: true),
                     Comment = table.Column<string>(nullable: true),
-                    Likes = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false)
                 },
@@ -224,7 +223,7 @@ namespace MovieProject.Migrations
                         column: x => x.ShoutId,
                         principalTable: "Reviews",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
