@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovieProject.Infrastructure;
 using MovieProject.Models;
 
 namespace MovieProject.Controllers
 {
+    [Authorize(Roles = "Admins")]
     public class GenreController : Controller
     {
         private readonly MovieContext _context;

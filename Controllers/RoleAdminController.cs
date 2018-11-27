@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MovieProject.Data;
+using MovieProject.Models;
 
 namespace MovieProject.Controllers
 {
@@ -46,7 +48,8 @@ namespace MovieProject.Controllers
             return View(name);
         }
 
-        /*public async Task<IActionResult> Edit(string id) 
+        [Route("/roles/{id}/edit")]
+        public async Task<IActionResult> Edit(string id) 
         {
             IdentityRole role = await roleManager.FindByIdAsync(id);
             List<ApplicationUser> members = new List<ApplicationUser>();
@@ -66,7 +69,9 @@ namespace MovieProject.Controllers
             });
         }
 
-         [HttpPost]
+        
+        [Route("/roles/{id}/edit")]
+        [HttpPost]
         public async Task<IActionResult> Edit(RoleModificationModel model) 
         {
             IdentityResult result;
@@ -105,7 +110,7 @@ namespace MovieProject.Controllers
             } else {
                 return await Edit(model.RoleId);
             }
-        }*/
+        }
 
         [HttpPost]
         public async Task<IActionResult> Delete(string id) 

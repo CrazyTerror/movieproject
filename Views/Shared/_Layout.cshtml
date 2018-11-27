@@ -33,12 +33,12 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Movie" asp-action="Index">Movies</a></li>
                     <li><a asp-area="" asp-controller="Series" asp-action="Index">Series</a></li>
                     <li><a asp-area="" asp-controller="Person" asp-action="Index">People</a></li>
-                    <li><a asp-area="" asp-controller="Genre" asp-action="Index">Genre</a></li>
                     @if (User.Identity.IsAuthenticated) { <li><a asp-controller="List" asp-action="Index" asp-route-slug="@(User.FindFirst("Slug").Value)">Lists</a></li> }
+                    @if (ViewContext.HttpContext.User.IsInRole("Admins")) { <li><a asp-area="" asp-controller="Genre" asp-action="Index">Genre</a></li> }
+                    @if (ViewContext.HttpContext.User.IsInRole("Admins")) { <li><a asp-controller="RoleAdmin" asp-action="Index">Roles</a></li> }
                 </ul>
                 <partial name="_LoginPartial" />
             </div>

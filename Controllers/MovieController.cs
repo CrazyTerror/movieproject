@@ -36,7 +36,7 @@ namespace MovieProject.Controllers
         public ViewResult Index()
         {
             var movies = _context.Movies.OrderBy(item => item.VoteAverage).ToList();
-            
+
             return View(movies);
         }
 
