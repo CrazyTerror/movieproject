@@ -49,7 +49,8 @@ namespace MovieProject.Controllers
         public ViewResult Ratings(string Slug)
         {
             var user = _userManager.Users.Where(u => u.Slug == Slug).FirstOrDefault();
-            var ratings = _context.UserRatings.Where(u => u.ApplicationUserId == user.Id).ToList();
+            var ratings = _context.UserRatings.Include(u => u.FilmItem).Where(u => u.ApplicationUserId == user.Id).OrderByDescending(x => x.CreatedAt).ToList();
+            ViewBag.User = user.UserName;
 
             return View(ratings);
         }

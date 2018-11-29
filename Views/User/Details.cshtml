@@ -12,3 +12,10 @@
         <li><a asp-action="Comments" asp-route-slug="@Model.Slug">Comments</a></li>
     </ul>
 </div>
+
+<div class="row">About @(Model.UserName)</div>
+<div class="row">Featured List <a asp-controller="List" asp-action="Details" asp-route-slug="@Model.Slug" asp-route-listname="watchlist">Watchlist</a></div>
+<div class="row">
+    <div>Movies rated: <a asp-action="Ratings" asp-route-slug="@Model.Slug">x</a></div>
+    <div>Episodes rated: <a asp-action="Ratings" asp-route-slug="@Model.Slug">y</a></div>
+</div>
