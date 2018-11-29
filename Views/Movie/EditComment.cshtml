@@ -1,0 +1,20 @@
+@model MovieProject.Models.Review
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = @Model.FilmItem.Name + " comment by " + UserManager.FindByIdAsync(Model.ApplicationUserId).Result.UserName;
+}
+
+<form class="form-horizontal" asp-action="EditComment" method="post">
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <div class="form-group">
+        <label class="col-md-2 control-label" asp-for="Comment"></label>
+        <div class="col-md-8">
+            <span asp-validation-for="Comment" class="text-danger"></span>
+            <textarea asp-for="Comment" class="form-control"></textarea>
+        </div>
+    </div>
+    <div class="text-center">
+        <button class="btn btn-primary" type="submit">Save</button>
+        <a asp-action="Details" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>

@@ -38,7 +38,7 @@ namespace MovieProject.Controllers
         [AllowAnonymous]
         public ViewResult Index()
         {
-            var movies = _context.Movies.OrderBy(item => item.VoteAverage).ToList();
+            var movies = _context.Movies.OrderByDescending(item => item.VoteAverage).ToList();
 
             return View(movies);
         }
@@ -327,7 +327,7 @@ namespace MovieProject.Controllers
         {
             var applicationUser = _userManager.GetUserId(User);
             var movie = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
-            
+
             Review review = new Review
             {
                 ApplicationUserId = applicationUser,
@@ -338,6 +338,48 @@ namespace MovieProject.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("Details", "Movie", new { Slug = Slug });
+        }
+
+        [HttpGet("movies/{Slug}/comments/{Id}/edit")]
+        public IActionResult EditComment(string Slug, int Id)
+        {
+            var comment = _context.Reviews.Include(f => f.FilmItem).FirstOrDefault(r => r.Id == Id);
+
+            if (comment != null && comment.ApplicationUserId == _userManager.GetUserId(User))
+            {
+                return View(comment);
+            } else
+            {
+                return RedirectToAction("Details", new { Slug = Slug });
+            }
+        }
+
+        [HttpPost("movies/{Slug}/comments/{Id}/edit")]
+        public IActionResult EditComment(string Slug, int Id, int i = 0)
+        {
+            var comment = _context.Reviews.FirstOrDefault(r => r.Id == Id);
+
+            _context.Reviews.Attach(comment);
+            comment.Comment = Request.Form["Comment"];
+            comment.UpdatedAt = DateTime.Now;
+            _context.SaveChanges();
+
+            return RedirectToAction("Details", new { Slug = Slug});
+        }
+
+        [HttpPost("movies/{Slug}/comments/{Id}/delete")]
+        public IActionResult DeleteComment(string Slug, int Id)
+        {
+            var comment = _context.Reviews.Include(f => f.FilmItem).FirstOrDefault(r => r.Id == Id);
+
+            if (comment != null)
+            {
+                _context.Reviews.Remove(comment);
+                _context.SaveChanges();
+
+                TempData["message"] = $"Your comment on {comment.FilmItem.Name} was deleted";
+            } 
+            return RedirectToAction("Details", new { Slug = Slug});
         }
 
         [HttpPost("movies/{Slug}/addRating")]
