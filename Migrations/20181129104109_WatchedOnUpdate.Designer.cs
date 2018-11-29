@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieProject.Models;
 
 namespace MovieProject.Migrations
 {
     [DbContext(typeof(MovieContext))]
-    partial class MovieContextModelSnapshot : ModelSnapshot
+    [Migration("20181129104109_WatchedOnUpdate")]
+    partial class WatchedOnUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -364,28 +366,6 @@ namespace MovieProject.Migrations
                     b.ToTable("UserRatings");
                 });
 
-            modelBuilder.Entity("MovieProject.Models.UserWatchedFilmItemOn", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("ApplicationUserId");
-
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<int>("FilmItemId");
-
-                    b.Property<DateTime>("UpdatedAt");
-
-                    b.Property<DateTime>("WatchedOn");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FilmItemId");
-
-                    b.ToTable("UserWatching");
-                });
-
             modelBuilder.Entity("MovieProject.Models.Video", b =>
                 {
                     b.Property<int>("Id")
@@ -542,14 +522,6 @@ namespace MovieProject.Migrations
                 {
                     b.HasOne("MovieProject.Models.FilmItem", "FilmItem")
                         .WithMany("UserRatings")
-                        .HasForeignKey("FilmItemId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("MovieProject.Models.UserWatchedFilmItemOn", b =>
-                {
-                    b.HasOne("MovieProject.Models.FilmItem", "FilmItem")
-                        .WithMany()
                         .HasForeignKey("FilmItemId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

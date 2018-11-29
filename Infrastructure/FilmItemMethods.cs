@@ -214,7 +214,19 @@ namespace MovieProject.Infrastructure
             _ctx.SaveChanges();
         }
 
-        public static void AlterRating(MovieContext _ctx, FilmItem filmItem, int rating)
+        public static void AddRating(MovieContext _ctx, FilmItem filmItem, int rating, string user)
+        {
+            UserRating userRating = new UserRating
+            {
+                ApplicationUserId = user,
+                FilmItem = filmItem,
+                Rating = rating
+            };
+            _ctx.UserRatings.Add(userRating);
+            _ctx.SaveChanges();
+        }
+
+        public static void AlterFilmItemAverage(MovieContext _ctx, FilmItem filmItem, int rating)
         {
             _ctx.Attach(filmItem);
             if (filmItem.VoteCount == null)

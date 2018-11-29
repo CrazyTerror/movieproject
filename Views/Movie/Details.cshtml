@@ -122,6 +122,7 @@
 }
 
 <div class="row">
+    <a asp-action="Comments">All @ViewBag.CommentCount Comments</a>
     @foreach (var review in @Model.Reviews.OrderByDescending(x => x.CreatedAt).Take(3))
     {
         var user = @UserManager.FindByIdAsync(review.ApplicationUserId);

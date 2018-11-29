@@ -187,6 +187,17 @@ namespace MovieProject.Models
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
 
+    public class UserWatchedFilmItemOn
+    {
+        public int Id { get; set; }
+        public string ApplicationUserId { get; set; }
+        public int FilmItemId { get; set; }
+        public FilmItem FilmItem { get; set; }
+        public DateTime WatchedOn { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+    }
+
     public class List
     {
         public int Id { get; set; }

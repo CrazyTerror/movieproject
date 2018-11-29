@@ -25,6 +25,7 @@ namespace MovieProject.Models
         public DbSet<Video> Videos { get; set; }
         public DbSet<Trivia> Trivia { get; set; }
         public DbSet<UserRating> UserRatings { get; set; }
+        public DbSet<UserWatchedFilmItemOn> UserWatching { get; set; }
         public DbSet<List> Lists { get; set; }
         public DbSet<ListItem> ListItems { get; set; }
         public DbSet<Review> Reviews { get; set; }

@@ -1,0 +1,36 @@
+@model List<MovieProject.Models.Review>
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "All comments for " + Model.FirstOrDefault().FilmItem.Name + " (" + Model.FirstOrDefault().FilmItem.ReleaseDate.Value.ToString("yyyy") + ")";
+}   
+
+<div class="row">Add Review</div>
+<div class="row">
+    @if (User.Identity.IsAuthenticated)
+    {   
+        <form class="form-horizontal" asp-action="AddReview" asp-controller="Movie" method="post">
+            <div class="form-group">
+                <input type="hidden" name="ApplicationUserId" value="@UserManager.GetUserId(User)" />
+                <input type="hidden" name="FilmItemId" value="@Model.FirstOrDefault().FilmItemId" />
+                <label class="col-md-2 control-label">Review</label>
+                <div class="col-md-8">
+                    <span class="text-danger"></span>
+                    <textarea name="Comment" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="text-center">
+                <button class="btn btn-primary" type="submit">Add Review</button>
+            </div>
+        </form>
+    }
+</div>
+<div class="row">
+    @foreach (var review in Model)
+    {
+        var user = @UserManager.FindByIdAsync(review.ApplicationUserId);
+        <div>Review by <a asp-action="Details" asp-controller="User" asp-route-slug="@user.Result.Slug">@user.Result.UserName</a></div> 
+        <div>@review.CreatedAt.ToString("d MMMM yyyy HH:mm")</div>
+        <div>@review.Comment</div>
+    }
+</div>

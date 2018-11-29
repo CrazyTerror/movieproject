@@ -25,11 +25,13 @@ namespace MovieProject.Controllers
     {
         private readonly MovieContext _context;
         private readonly IHostingEnvironment _env;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public MovieController(MovieContext context, IHostingEnvironment env)
+        public MovieController(MovieContext context, IHostingEnvironment env, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _env = env;
+            _userManager = userManager;
         }
 
         [HttpGet("movies")]
@@ -62,6 +64,7 @@ namespace MovieProject.Controllers
             ViewBag.Directors = movie.FilmItemCredits.Where(p => p.PartType == PartType.Director).OrderBy(x => x.Person.Surname).ToList();
             ViewBag.Producers = movie.FilmItemCredits.Where(p => p.PartType == PartType.Producer).ToList();
             ViewBag.Writers = movie.FilmItemCredits.Where(p => p.PartType == PartType.Writer).ToList();
+            ViewBag.CommentCount = movie.Reviews.Count;
 
             if (movie == null)
             {
@@ -308,10 +311,12 @@ namespace MovieProject.Controllers
         }
 
         [HttpGet("movies/{Slug}/comments")]
-        public ViewResult Comments()
+        public ViewResult Comments(string Slug)
         {
-            // TODO
-            return View();
+            var movie = _context.Movies.Where(m => m.Slug == Slug).FirstOrDefault();
+            var comments = _context.Reviews.Include(r => r.FilmItem).Where(r => r.FilmItem == movie).OrderByDescending(x => x.CreatedAt).ToList();
+
+            return View(comments);
         }
 
         [HttpPost("movies/{Slug}/addReview")]
@@ -336,16 +341,10 @@ namespace MovieProject.Controllers
         {
             var movie = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
             var userRating = int.Parse(Request.Form["Rating"]);
-
-            System.Console.WriteLine(userRating);
-            UserRating rating = new UserRating
-            {
-                ApplicationUserId = Request.Form["ApplicationUserId"],
-                FilmItemId = int.Parse(Request.Form["FilmItemId"]),
-                Rating = userRating
-            };
-            _context.UserRatings.Add(rating);
-            FilmItemMethods.AlterRating(_context, movie, userRating);
+            var user = _userManager.GetUserId(User);
+            
+            FilmItemMethods.AddRating(_context, movie, userRating, user);
+            FilmItemMethods.AlterFilmItemAverage(_context, movie, userRating);
             _context.SaveChanges();
 
             return RedirectToAction("Details", "Movie", new { Slug = Slug });
