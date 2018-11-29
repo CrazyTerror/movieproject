@@ -1,0 +1,40 @@
+@model List<MovieProject.Models.Review>
+
+@{
+    ViewData["Title"] = @ViewBag.User + "'s comments"; 
+}
+
+@if (Model.Count > 0)
+{
+    @foreach (var comment in Model)
+    {
+        if (comment.FilmItem.Discriminator == "Episode")    
+        {
+            <a asp-action="Details" asp-controller="@(comment.FilmItem.Discriminator)" asp-route-slug="@(comment.FilmItem.Slug)">
+                <img src="/images/filmitem/@(comment.FilmItem.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@(comment.FilmItem.Name)" height="78px" width="138px" />
+            </a>
+            <div>@(comment.FilmItem.Episode_SeasonNumber + "x" + comment.FilmItem.Episode_EpisodeNumber + " " + comment.FilmItem.Name)</div>
+            <div>@(comment.FilmItem.Rel_SeriesName)</div>
+        } else if (comment.FilmItem.Discriminator == "Season")
+        {
+            <a asp-action="Details" asp-controller="@(comment.FilmItem.Discriminator)" asp-route-slug="@(comment.FilmItem.Slug)">
+                <img src="/images/filmitem/poster/@(comment.FilmItem.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@(comment.FilmItem.Name)" height="209px" width="138px" />
+            </a>
+            <div>@(comment.FilmItem.Name)</div>
+            <div>@(comment.FilmItem.Rel_SeriesName)</div>
+        } else if (comment.FilmItem.Discriminator == "Movie" || comment.FilmItem.Discriminator == "Series")
+        {
+            <a asp-action="Details" asp-controller="@(comment.FilmItem.Discriminator)" asp-route-slug="@(comment.FilmItem.Slug)">
+                <img src="/images/filmitem/poster/@(comment.FilmItem.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@(comment.FilmItem.Name)" height="209px" width="138px" />
+            </a>
+            <div>@(comment.FilmItem.Name)</div>
+        }
+        <div>Review by @(ViewBag.User)</div>
+        <div>@(comment.CreatedAt.ToString("d MMMM yyyy HH:mm"))</div>
+        <div>@(comment.Comment)</div>
+        <br>
+    }
+} else
+{
+    <div>@ViewBag.User has no ratings</div>
+}

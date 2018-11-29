@@ -59,7 +59,10 @@ namespace MovieProject.Controllers
         public ViewResult Comments(string Slug)
         {
             var user = _userManager.Users.Where(u => u.Slug == Slug).FirstOrDefault();
-            return View();
+            var comments = _context.Reviews.Include(r => r.FilmItem).Where(u => u.ApplicationUserId == user.Id).OrderByDescending(x => x.CreatedAt).ToList();
+            ViewBag.User = user.UserName;
+
+            return View(comments);
         }
     }
 }

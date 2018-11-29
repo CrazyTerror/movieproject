@@ -315,6 +315,8 @@ namespace MovieProject.Controllers
         {
             var movie = _context.Movies.Where(m => m.Slug == Slug).FirstOrDefault();
             var comments = _context.Reviews.Include(r => r.FilmItem).Where(r => r.FilmItem == movie).OrderByDescending(x => x.CreatedAt).ToList();
+            ViewBag.FilmItem = movie.Name;
+            ViewBag.ReleaseYear = movie.ReleaseDate.Value.ToString("yyyy");
 
             return View(comments);
         }
@@ -323,10 +325,13 @@ namespace MovieProject.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult AddReview(string Slug)
         {
+            var applicationUser = _userManager.GetUserId(User);
+            var movie = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
+            
             Review review = new Review
             {
-                ApplicationUserId = Request.Form["ApplicationUserId"],
-                FilmItemId = int.Parse(Request.Form["FilmItemId"]),
+                ApplicationUserId = applicationUser,
+                FilmItem = movie,
                 Comment = Request.Form["Comment"]
             };
             _context.Reviews.Add(review);
