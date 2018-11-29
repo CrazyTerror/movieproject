@@ -22,22 +22,31 @@
             @if (User.Identity.IsAuthenticated)
             {
                 <li>
-                    <label>Rate</label> 
+                    <label>Rating</label> 
                     @if (@Model.ReleaseDate < DateTime.Today) 
                     { 
-                        <form class="form-horizontal" asp-action="AddRating" asp-controller="Movie" method="post">
-                            <div class="form-group">
-                                <input type="hidden" name="ApplicationUserId" value="@UserManager.GetUserId(User)" />
-                                <input type="hidden" name="FilmItemId" value="@Model.Id" />
-                                <div class="col-md-8">
-                                    <span class="text-danger"></span>
-                                    <select id="rating" name="Rating"></select>
+                        @if (Model.UserRatings.Where(ur => ur.ApplicationUserId == UserManager.GetUserId(User)).ToList().Count > 0)
+                        {
+                            <div>You rated this movie: @(Model.UserRatings.Where(ur => ur.ApplicationUserId == UserManager.GetUserId(User)).FirstOrDefault().Rating)</div>
+                            <form class="form-horizontal" asp-action="DeleteRating" asp-controller="Movie" method="post">
+                                <input class="btn btn-danger" type="submit" value="Delete" />
+                            </form>
+                        } else
+                        {
+                            <form class="form-horizontal" asp-action="AddRating" asp-controller="Movie" method="post">
+                                <div class="form-group">
+                                    <input type="hidden" name="ApplicationUserId" value="@UserManager.GetUserId(User)" />
+                                    <input type="hidden" name="FilmItemId" value="@Model.Id" />
+                                    <div class="col-md-8">
+                                        <span class="text-danger"></span>
+                                        <select id="rating" name="Rating"></select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="text-center">
-                                <button class="btn btn-primary" type="submit">Add Rating</button>
-                            </div>
-                        </form>
+                                <div class="text-center">
+                                    <button class="btn btn-primary" type="submit">Add Rating</button>
+                                </div>
+                            </form>
+                        }
                     } else 
                     { 
                         <div>You can rate when the series is out</div> 

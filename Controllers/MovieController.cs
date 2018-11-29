@@ -396,5 +396,23 @@ namespace MovieProject.Controllers
 
             return RedirectToAction("Details", "Movie", new { Slug = Slug });
         }
+
+        [HttpPost("movies/{Slug}/deleteRating")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteRating(string Slug)
+        {
+            var movie = _context.Movies.FirstOrDefault(f => f.Slug == Slug);
+            var userRating = _context.UserRatings.Include(f => f.FilmItem).Where(m => m.FilmItem == movie).Where(u => u.ApplicationUserId == _userManager.GetUserId(User)).FirstOrDefault();
+
+            if (userRating != null)
+            {
+                _context.UserRatings.Remove(userRating);
+                FilmItemMethods.CalculateFilmItemAverageAfterDeletion(_context, movie, userRating.Rating);
+                _context.SaveChanges();
+                TempData["message"] = $"Your rating on {userRating.FilmItem.Name} was deleted";
+            }
+
+            return RedirectToAction("Details", "Movie", new { Slug = Slug });
+        }
     }
 }

@@ -229,21 +229,36 @@ namespace MovieProject.Infrastructure
         public static void AlterFilmItemAverage(MovieContext _ctx, FilmItem filmItem, int rating)
         {
             _ctx.Attach(filmItem);
-            if (filmItem.VoteCount == null)
+            if (filmItem.VoteCount == null && filmItem.VoteAverage == null)
             {
                 filmItem.VoteCount = 1;
-            } else {
-                filmItem.VoteCount++;
-            }
-
-            if (filmItem.VoteAverage == null)
-            {
                 filmItem.VoteAverage = rating;
             } else {
-                filmItem.VoteAverage = (filmItem.VoteAverage + rating) / filmItem.VoteCount;
+                var totalRating = filmItem.VoteAverage * filmItem.VoteCount;
+                filmItem.VoteCount++;
+                filmItem.VoteAverage = (totalRating + rating) / filmItem.VoteCount;
             }
             
             filmItem.UpdatedAt = DateTime.Now;
+            _ctx.SaveChanges();
+        }
+
+        public static void CalculateFilmItemAverageAfterDeletion(MovieContext _ctx, FilmItem filmItem, int rating)
+        {
+            _ctx.Attach(filmItem);
+
+            if (filmItem.VoteCount == 1)
+            {
+                filmItem.VoteCount = null;
+                filmItem.VoteAverage = null;
+            } else 
+            {
+                var totalRating = filmItem.VoteAverage * filmItem.VoteCount;
+                filmItem.VoteCount--;
+                filmItem.VoteAverage = (totalRating - rating) / filmItem.VoteCount;
+            }
+            filmItem.UpdatedAt = DateTime.Now;
+
             _ctx.SaveChanges();
         }
     }
