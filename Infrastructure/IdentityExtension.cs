@@ -18,6 +18,8 @@ namespace MovieProject.Infrastructure
         protected override async Task<ClaimsIdentity> GenerateClaimsAsync(ApplicationUser user) {
             var identity = await base.GenerateClaimsAsync(user);
             identity.AddClaim(new Claim("Slug", user.Slug));
+            identity.AddClaim(new Claim("CreatedAt", user.CreatedAt.ToString("d MMMM yyyy")));
+            identity.AddClaim(new Claim("UpdatedAt", user.UpdatedAt.ToString("d MMMM yyyy")));
             return identity;
         }
     } 

@@ -133,6 +133,8 @@ namespace MovieProject.Migrations.AppIdentityDb
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
+                    b.Property<DateTime>("CreatedAt");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256);
 
@@ -159,6 +161,8 @@ namespace MovieProject.Migrations.AppIdentityDb
                     b.Property<string>("Slug");
 
                     b.Property<bool>("TwoFactorEnabled");
+
+                    b.Property<DateTime>("UpdatedAt");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256);

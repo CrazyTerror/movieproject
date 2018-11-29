@@ -21,13 +21,23 @@
             </li>
             @if (User.Identity.IsAuthenticated)
             {
-                <input type="hidden" name="Id" value="@UserManager.GetUserId(User)" />
-                <div>Hello @(UserManager.GetUserId(User))</div>
                 <li>
                     <label>Rate</label> 
                     @if (@Model.ReleaseDate < DateTime.Today) 
                     { 
-                        <select id="rating" name="Rating"></select>
+                        <form class="form-horizontal" asp-action="AddRating" asp-controller="Movie" method="post">
+                            <div class="form-group">
+                                <input type="hidden" name="ApplicationUserId" value="@UserManager.GetUserId(User)" />
+                                <input type="hidden" name="FilmItemId" value="@Model.Id" />
+                                <div class="col-md-8">
+                                    <span class="text-danger"></span>
+                                    <select id="rating" name="Rating"></select>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button class="btn btn-primary" type="submit">Add Rating</button>
+                            </div>
+                        </form>
                     } else 
                     { 
                         <div>You can rate when the series is out</div> 
@@ -37,11 +47,6 @@
         </ul>
     </div>
 </div>
-
-@if (Model.UserRatings.Where(i => i.ApplicationUserId == UserManager.GetUserId(User)).ToList().Count > 0)
-{
-    <div>@Model.UserRatings.Where(i => i.ApplicationUserId == UserManager.GetUserId(User)).First().Rating</div>
-}
 
 <div>
     <ul>

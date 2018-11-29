@@ -329,5 +329,26 @@ namespace MovieProject.Controllers
 
             return RedirectToAction("Details", "Movie", new { Slug = Slug });
         }
+
+        [HttpPost("movies/{Slug}/addRating")]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddRating(string Slug)
+        {
+            var movie = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
+            var userRating = int.Parse(Request.Form["Rating"]);
+
+            System.Console.WriteLine(userRating);
+            UserRating rating = new UserRating
+            {
+                ApplicationUserId = Request.Form["ApplicationUserId"],
+                FilmItemId = int.Parse(Request.Form["FilmItemId"]),
+                Rating = userRating
+            };
+            _context.UserRatings.Add(rating);
+            FilmItemMethods.AlterRating(_context, movie, userRating);
+            _context.SaveChanges();
+
+            return RedirectToAction("Details", "Movie", new { Slug = Slug });
+        }
     }
 }

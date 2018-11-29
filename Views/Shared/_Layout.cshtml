@@ -29,7 +29,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">MovieProject</a>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a asp-controller="Dashboard" asp-action="Index" class="navbar-brand">MovieProject</a>
+                } else
+                {
+                    <a asp-controller="Home" asp-action="Index" class="navbar-brand">MovieProject</a>
+                }
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">

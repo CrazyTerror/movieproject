@@ -11,5 +11,7 @@ namespace MovieProject.Data
     public class ApplicationUser : IdentityUser
     {
         public string Slug { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
 }

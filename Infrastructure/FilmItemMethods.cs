@@ -213,5 +213,26 @@ namespace MovieProject.Infrastructure
 
             _ctx.SaveChanges();
         }
+
+        public static void AlterRating(MovieContext _ctx, FilmItem filmItem, int rating)
+        {
+            _ctx.Attach(filmItem);
+            if (filmItem.VoteCount == null)
+            {
+                filmItem.VoteCount = 1;
+            } else {
+                filmItem.VoteCount++;
+            }
+
+            if (filmItem.VoteAverage == null)
+            {
+                filmItem.VoteAverage = rating;
+            } else {
+                filmItem.VoteAverage = (filmItem.VoteAverage + rating) / filmItem.VoteCount;
+            }
+            
+            filmItem.UpdatedAt = DateTime.Now;
+            _ctx.SaveChanges();
+        }
     }
 }

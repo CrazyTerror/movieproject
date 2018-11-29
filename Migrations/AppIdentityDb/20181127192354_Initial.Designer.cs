@@ -9,8 +9,8 @@ using MovieProject.Data;
 namespace MovieProject.Migrations.AppIdentityDb
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    [Migration("20181126111535_InitialUser")]
-    partial class InitialUser
+    [Migration("20181127192354_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -135,6 +135,8 @@ namespace MovieProject.Migrations.AppIdentityDb
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
+                    b.Property<DateTime>("CreatedAt");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256);
 
@@ -161,6 +163,8 @@ namespace MovieProject.Migrations.AppIdentityDb
                     b.Property<string>("Slug");
 
                     b.Property<bool>("TwoFactorEnabled");
+
+                    b.Property<DateTime>("UpdatedAt");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
