@@ -213,5 +213,26 @@ namespace MovieProject.Infrastructure
 
             _ctx.SaveChanges();
         }
+
+        public static void AddMediaEntry(MovieContext _ctx, FilmItem item = null, Person person = null)
+        {
+            if (item != null)
+            {
+                Media media = new Media
+                {
+                    FilmItem = item
+                };
+                _ctx.Media.Add(media);
+            } else if (person != null)
+            {
+                Media media = new Media
+                {
+                    Person = person
+                };
+                _ctx.Media.Add(media);
+            }
+
+            _ctx.SaveChanges();
+        }
     }
 }

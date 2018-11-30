@@ -39,7 +39,7 @@ namespace MovieProject.Models
 
         public ICollection<FilmItemCredits> FilmItemCredits { get; set; }
         public ICollection<FilmItemGenre> FilmItemGenres { get; set; }
-        public ICollection<Media> Media { get; set; }
+        public Media Media { get; set; }
         public ICollection<Trivia> Trivia { get; set; }
         public ICollection<Photo> Photos { get; set; }
         public ICollection<Video> Videos { get; set; }
@@ -92,6 +92,10 @@ namespace MovieProject.Models
         public string Twitter { get; set; }
         public string Facebook { get; set; }
         public string Instagram { get; set; }
+        public int? FilmItemId { get; set; }
+        public FilmItem FilmItem { get; set; } = null;
+        public int? PersonId { get; set; }
+        public Person Person { get; set; } = null;
     }
 
     public class Person
@@ -114,6 +118,7 @@ namespace MovieProject.Models
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
         public ICollection<FilmItemCredits> FilmItemCredits { get; set; }
+        public Media Media { get; set; }
     }
     
     public class Genre

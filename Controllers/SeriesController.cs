@@ -57,6 +57,7 @@ namespace MovieProject.Controllers
             ViewBag.Year = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("yyyy") : "");
             ViewBag.Premiere = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("dd MMMM yyyy") : "");
             ViewBag.TotalRuntime = FilmItemMethods.CalculateSeriesTotalRuntime(series);
+            ViewBag.CommentCount = series.Reviews.Count;
 
             return View(series);
         }
@@ -83,6 +84,7 @@ namespace MovieProject.Controllers
                 series.FirstAirDate = DateTime.Parse(Request.Form["ReleaseDate"]);
             }
             _context.Series.Add(series);
+            FilmItemMethods.AddMediaEntry(_context, series);
             _context.SaveChanges();
 
             var images = HttpContext.Request.Form.Files; 
@@ -206,6 +208,15 @@ namespace MovieProject.Controllers
             ViewBag.ReleaseYear = series.ReleaseDate.Value.ToString("yyyy");
 
             return View(comments);
+        }
+
+        [HttpGet("series/{Slug}/media")]
+        public ViewResult Media(string Slug)
+        {
+            var series = _context.Series.Where(m => m.Slug == Slug).FirstOrDefault();
+            var media = _context.Media.Include(r => r.FilmItem).Where(r => r.FilmItem == series).FirstOrDefault();
+
+            return View(media);
         }
     }
 }

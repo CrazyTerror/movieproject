@@ -40,7 +40,9 @@ namespace MovieProject.Controllers
         [AllowAnonymous]
         public ViewResult Details(string Slug)
         {
-            var person = _context.Persons.Include(mc => mc.FilmItemCredits).ThenInclude(c => c.FilmItem).FirstOrDefault(p => p.Slug == Slug);
+            var person = _context.Persons.Include(mc => mc.FilmItemCredits).ThenInclude(c => c.FilmItem)
+                                         .Include(m => m.Media)
+                                         .FirstOrDefault(p => p.Slug == Slug);
                                    
             List<int> filmItemIds = new List<int>();
             foreach (var filmItem in person.FilmItemCredits)
@@ -83,6 +85,7 @@ namespace MovieProject.Controllers
             }
 
             _context.Persons.Add(person);
+            FilmItemMethods.AddMediaEntry(_context, null, person);
             _context.SaveChanges();
 
             var images = HttpContext.Request.Form.Files;
@@ -236,6 +239,15 @@ namespace MovieProject.Controllers
             {
                 return View("Error");
             }
+        }
+
+        [HttpGet("person/{Slug}/media")]
+        public ViewResult Media(string Slug)
+        {
+            var person = _context.Persons.Where(m => m.Slug == Slug).FirstOrDefault();
+            var media = _context.Media.Include(r => r.Person).Where(r => r.Person == person).FirstOrDefault();
+
+            return View(media);
         }
     }
 }

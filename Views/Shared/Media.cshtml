@@ -1,0 +1,69 @@
+@model MovieProject.Models.Media
+@{
+    ViewData["Title"] = "Media";
+}
+<h2 class="text-center">Edit @ViewData["Title"]</h2>
+
+<form class="form-horizontal" asp-action="EditMedia" asp-controller="Media" method="post">
+    <input type="hidden" name="MediaId" value="@Model.Id" />
+    <div class="form-group">
+        <label class="col-md-2 control-label" asp-for="IMDB"></label>
+        <div class="col-md-8">
+            <span asp-validation-for="IMDB" class="text-danger"></span>
+            <input asp-for="IMDB" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label" asp-for="TMDB"></label>
+        <div class="col-md-8">
+            <span asp-validation-for="TMDB" class="text-danger"></span>
+            <input asp-for="TMDB" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label" asp-for="Trakt"></label>
+        <div class="col-md-8">
+            <span asp-validation-for="Trakt" class="text-danger"></span>
+            <input asp-for="Trakt" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label" asp-for="OfficialSite"></label>
+        <div class="col-md-8">
+            <span asp-validation-for="OfficialSite" class="text-danger"></span>
+            <input asp-for="OfficialSite" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label" asp-for="Wikipedia"></label>
+        <div class="col-md-8">
+            <span asp-validation-for="Wikipedia" class="text-danger"></span>
+            <input asp-for="Wikipedia" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label" asp-for="Twitter"></label>
+        <div class="col-md-8">
+            <span asp-validation-for="Twitter" class="text-danger"></span>
+            <input asp-for="Twitter" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label" asp-for="Facebook"></label>
+        <div class="col-md-8">
+            <span asp-validation-for="Facebook" class="text-danger"></span>
+            <input asp-for="Facebook" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label" asp-for="Instagram"></label>
+        <div class="col-md-8">
+            <span asp-validation-for="Instagram" class="text-danger"></span>
+            <input asp-for="Instagram" class="form-control" />
+        </div>
+    </div>
+    <div class="text-center">
+        <button class="btn btn-primary" type="submit">Save</button>
+        <a asp-action="Details" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>

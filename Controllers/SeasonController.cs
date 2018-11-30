@@ -50,6 +50,9 @@ namespace MovieProject.Controllers
             var season = _context.Seasons.Include(ep => ep.Episodes)
                                          .Include(mr => mr.UserRatings)
                                          .Include(r => r.Reviews)
+                                         .Include(m => m.Media)
+                                         .Include(v => v.Videos)
+                                         .Include(p => p.Photos)
                                          .Where(x => x.Season_SeasonNumber == SeasonNumber)
                                          .Where(y => y.SeriesId == series.Id)
                                          .FirstOrDefault();
@@ -59,6 +62,8 @@ namespace MovieProject.Controllers
             ViewBag.Series = series.Name;
             ViewBag.SeasonCount = series.Series_SeasonCount;
             ViewBag.TotalRuntime = FilmItemMethods.CalculateSeasonTotalRuntime(season);
+            ViewBag.CommentCount = season.Reviews.Count;
+
             var firstEpisode = season.Episodes.OrderBy(e => e.ReleaseDate).First().ReleaseDate;
             if (firstEpisode.HasValue)
             {
@@ -92,6 +97,7 @@ namespace MovieProject.Controllers
             season.Rel_SeriesId = series.Id;
             season.Rel_SeriesName = series.Name;
             _context.Seasons.Add(season);
+            FilmItemMethods.AddMediaEntry(_context, season);
             _context.SaveChanges();
 
             var images = HttpContext.Request.Form.Files; 
@@ -169,6 +175,15 @@ namespace MovieProject.Controllers
             ViewBag.ReleaseYear = season.ReleaseDate.Value.ToString("yyyy");
 
             return View(comments);
+        }
+
+        [HttpGet("series/{Slug}/seasons/{SeasonNumber}/media")]
+        public ViewResult Media(string Slug, int SeasonNumber)
+        {
+            var season = _context.Seasons.Where(m => m.Slug == Slug).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
+            var media = _context.Media.Include(r => r.FilmItem).Where(r => r.FilmItem == season).FirstOrDefault();
+
+            return View(media);
         }
     }
 }

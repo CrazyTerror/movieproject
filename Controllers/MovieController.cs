@@ -95,6 +95,7 @@ namespace MovieProject.Controllers
             }
             
             _context.Movies.Add(movie);
+            FilmItemMethods.AddMediaEntry(_context, movie);
             _context.SaveChanges();
 
             var images = HttpContext.Request.Form.Files;
@@ -219,6 +220,15 @@ namespace MovieProject.Controllers
             ViewBag.ReleaseYear = movie.ReleaseDate.Value.ToString("yyyy");
 
             return View(comments);
+        }
+
+        [HttpGet("movies/{Slug}/media")]
+        public ViewResult Media(string Slug)
+        {
+            var movie = _context.Movies.Where(m => m.Slug == Slug).FirstOrDefault();
+            var media = _context.Media.Include(r => r.FilmItem).Where(r => r.FilmItem == movie).FirstOrDefault();
+
+            return View(media);
         }
     }
 }
