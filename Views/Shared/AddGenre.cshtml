@@ -3,7 +3,8 @@
 }
 <h2 class="text-center">@ViewData["Title"]</h2>
 
-<form class="form-horizontal" asp-action="AddGenre" method="post">
+<form class="form-horizontal" asp-action="AddGenreToFilmItem" asp-controller="Genre" method="post">
+    <input type="hidden" name="FilmItemId" value="@ViewBag.FilmItem.Id"/>
     <div class="form-group">
         <label class="col-md-2 control-label">Genre</label>
         <div class="col-md-8">

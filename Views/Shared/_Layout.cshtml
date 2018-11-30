@@ -45,6 +45,7 @@
                     @if (User.Identity.IsAuthenticated) { <li><a asp-controller="List" asp-action="Index" asp-route-slug="@(User.FindFirst("Slug").Value)">Lists</a></li> }
                     @if (ViewContext.HttpContext.User.IsInRole("Admins")) { <li><a asp-area="" asp-controller="Genre" asp-action="Index">Genre</a></li> }
                     @if (ViewContext.HttpContext.User.IsInRole("Admins")) { <li><a asp-controller="RoleAdmin" asp-action="Index">Roles</a></li> }
+                    @if (ViewContext.HttpContext.User.IsInRole("Admins")) { <li><a asp-controller="User" asp-action="Index">Users</a></li> }
                 </ul>
                 <partial name="_LoginPartial" />
             </div>

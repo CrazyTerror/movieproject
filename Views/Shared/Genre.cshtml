@@ -18,14 +18,13 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var genre in Model.FilmItemGenres.Select(g => g.Genre))
+            @foreach (var genre in Model.FilmItemGenres)
             {
                 <tr>
+                    <td>@genre.Genre.Name</td>
                     <td>
-                        <text>@genre.Name</text>
-                    </td>
-                    <td>
-                        <form asp-action="Genre" asp-route-id="@genre.Id" method="post">
+                        <form asp-action="DeleteGenreFromFilmItem" asp-controller="Genre" method="post">
+                            <input type="hidden" name="GenreId" value="@genre.Id" />
                             <button type="submit" class="btn btn-danger btn-sm">
                                 Delete
                             </button>

@@ -45,6 +45,8 @@ namespace MovieProject.Controllers
                                         .Include(m => m.Media)
                                         .Include(v => v.Videos)
                                         .Include(p => p.Photos)
+                                        .Include(mr => mr.UserRatings)
+                                        .Include(r => r.Reviews)
                                         .FirstOrDefault(s => s.Slug == Slug);
 
             ViewBag.Genres = series.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();
@@ -157,26 +159,6 @@ namespace MovieProject.Controllers
             var series = _context.Series.Include(fig => fig.FilmItemGenres).ThenInclude(g => g.Genre).FirstOrDefault(m => m.Slug == Slug);
 
             return View(series);
-        } 
-        
-        [HttpPost("series/{Slug}/genres/{Id}")]
-        [ValidateAntiForgeryToken]
-        public IActionResult Genre(string Slug, int Id = 0)
-        {
-            var series = _context.Series.FirstOrDefault(m => m.Slug == Slug);
-            var filmItemGenre = _context.FilmItemGenres.Include(g => g.Genre).Where(f => f.FilmItemId == series.Id).Where(g => g.GenreId == Id).FirstOrDefault();
-
-            if (filmItemGenre != null)
-            {   
-                TempData["message"] = $"Deleted genre '{filmItemGenre.Genre.Name}' from {series.Name}";  
-                _context.FilmItemGenres.Remove(filmItemGenre);
-                _context.SaveChanges();
-
-                return RedirectToAction("Details", "Series", new { Slug = Slug });
-            } else
-            {
-                return View(nameof(Index));
-            }
         }
 
         [HttpGet("series/{Slug}/genres/add")]
@@ -186,27 +168,6 @@ namespace MovieProject.Controllers
             ViewBag.Genres = new SelectList((_context.Genres.OrderBy(x => x.Name)), "Id", "Name");
 
             return View();
-        }
-
-        [HttpPost("series/{Slug}/genres/add")]
-        [ValidateAntiForgeryToken]
-        public IActionResult AddGenre(string Slug, int i = 0)
-        {
-            var series = _context.Series.FirstOrDefault(m => m.Slug == Slug);
-            var currentGenres = _context.FilmItemGenres.Where(m => m.FilmItemId == series.Id).Select(g => g.GenreId).ToList();
-            
-            foreach (var newGenre in Request.Form["Genre"])
-            {
-                if (currentGenres.Contains(int.Parse(newGenre)))
-                {
-                    continue;
-                } else
-                {
-                    FilmItemMethods.SaveFilmItemGenres(_context, series, newGenre);
-                }
-                TempData["message"] = $"Added new genres to {series.Name}";
-            }   
-            return RedirectToAction("Details", "Series", new { Slug = Slug });
         }
 
         [HttpGet("series/{Slug}/credits")]

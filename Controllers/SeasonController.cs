@@ -44,6 +44,8 @@ namespace MovieProject.Controllers
         {
             var series = _context.Series.Include(fig => fig.FilmItemGenres).ThenInclude(g => g.Genre).FirstOrDefault(s => s.Slug == Slug);
             var season = _context.Seasons.Include(ep => ep.Episodes)
+                                         .Include(mr => mr.UserRatings)
+                                         .Include(r => r.Reviews)
                                          .Where(x => x.Season_SeasonNumber == SeasonNumber)
                                          .Where(y => y.SeriesId == series.Id)
                                          .FirstOrDefault();

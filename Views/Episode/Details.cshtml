@@ -1,4 +1,5 @@
 @model MovieProject.Models.Episode
+@inject UserManager<ApplicationUser> UserManager
 @{
     ViewData["Title"] = @ViewBag.Series + " " + @Model.Episode_SeasonNumber + "x" + @ViewBag.Episode + " \"" +  @Model.Name + "\"";
     string selected = "color:red;";
@@ -29,9 +30,10 @@
     <label>Votes</label> @if (@Model.VoteAverage != null) { @Model.VoteCount } else { <text>No votes</text>}
 </div>
 
-<div class="row">
-    <label>Rate</label> @if (@Model.ReleaseDate < DateTime.Today) { <text>Rate Now</text> } else { <text>Rate after release date</text>}
-</div>
+@if (User.Identity.IsAuthenticated)
+{
+    @await Html.PartialAsync("_RatingPartial", Model)
+}
 
 <div class="row">
     <label>Aired</label> @(Model.ReleaseDate.HasValue ? Model.ReleaseDate.Value.ToString("d MMMM yyyy") : "")
@@ -69,3 +71,14 @@
     </form>
 }
 
+@section Scripts
+{
+    <script>
+        var select = '';
+        for (i=1; i<=10; i++)
+        {
+            select += '<option val=' + i + '>' + i + '</option>';
+        }
+        $('#rating').html(select);
+    </script>
+}

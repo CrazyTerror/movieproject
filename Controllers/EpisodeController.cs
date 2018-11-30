@@ -46,7 +46,11 @@ namespace MovieProject.Controllers
         {
             var series = _context.Series.Include(fig => fig.FilmItemGenres).ThenInclude(g => g.Genre).FirstOrDefault(s => s.Slug == Slug);
             var season = _context.Seasons.Where(srs => srs.SeriesId == series.Id).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
-            var episode = _context.Episodes.Where(s => s.SeasonId == season.Id).Where(ep => ep.Episode_EpisodeNumber == EpisodeNumber).FirstOrDefault();
+            var episode = _context.Episodes.Include(mr => mr.UserRatings)
+                                           .Include(r => r.Reviews)
+                                           .Where(s => s.SeasonId == season.Id)
+                                           .Where(ep => ep.Episode_EpisodeNumber == EpisodeNumber)
+                                           .FirstOrDefault();
 
             if (episode.Episode_EpisodeNumber < 10)
             {

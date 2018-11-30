@@ -1,0 +1,35 @@
+@model MovieProject.Models.FilmItem
+@inject UserManager<ApplicationUser> UserManager
+
+<li>
+    <label>Rating</label> 
+    @if (@Model.ReleaseDate < DateTime.Today) 
+    { 
+        @if (Model.UserRatings.Where(ur => ur.ApplicationUserId == UserManager.GetUserId(User)).ToList().Count > 0)
+        {
+            <div>You rated this season: @(Model.UserRatings.Where(ur => ur.ApplicationUserId == UserManager.GetUserId(User)).FirstOrDefault().Rating)</div>
+            <form class="form-horizontal" asp-action="DeleteRating" asp-controller="User" method="post">
+                <input type="hidden" name="FilmItemId" value="@Model.Id" />
+                <input class="btn btn-danger" type="submit" value="Delete" />
+            </form>
+        } else
+        {
+            <form class="form-horizontal" asp-controller="User" asp-action="AddRating" method="post">
+                <div class="form-group">
+                    <input type="hidden" name="ApplicationUserId" value="@UserManager.GetUserId(User)" />
+                    <input type="hidden" name="FilmItemId" value="@Model.Id" />
+                    <div class="col-md-8">
+                        <span class="text-danger"></span>
+                        <select id="rating" name="Rating"></select>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-primary" type="submit">Add Rating</button>
+                </div>
+            </form>
+        }
+    } else 
+    { 
+        <div>You can rate when the series is out</div> 
+    }
+</li>

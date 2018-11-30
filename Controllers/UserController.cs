@@ -22,6 +22,14 @@ namespace MovieProject.Controllers
             _userManager = userManager;
         }
 
+        [HttpGet("users")]
+        [Authorize(Roles = "Admins")]
+        public ViewResult Index()
+        {
+            var users = _userManager.Users.ToList();
+            return View(users);
+        }
+
         [HttpGet("users/{Slug}")]
         public ViewResult Details(string Slug)
         {
@@ -63,6 +71,39 @@ namespace MovieProject.Controllers
             ViewBag.User = user.UserName;
 
             return View(comments);
+        }
+
+        [HttpPost("addRating")]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddRating()
+        {
+            var filmItem = _context.FilmItem.FirstOrDefault(f => f.Id == int.Parse(Request.Form["FilmItemId"]));
+            var userRating = int.Parse(Request.Form["Rating"]);
+            var user = _userManager.GetUserId(User);
+            
+            FilmItemMethods.AddRating(_context, filmItem, userRating, user);
+            FilmItemMethods.AlterFilmItemAverage(_context, filmItem, userRating);
+            _context.SaveChanges();
+
+            return Redirect(Request.Headers["Referer"]);
+        }
+
+        [HttpPost("deleteRating")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteRating()
+        {
+            var filmItem = _context.FilmItem.FirstOrDefault(f => f.Id == int.Parse(Request.Form["FilmItemId"]));
+            var userRating = _context.UserRatings.Include(f => f.FilmItem).Where(m => m.FilmItem == filmItem).Where(u => u.ApplicationUserId == _userManager.GetUserId(User)).FirstOrDefault();
+
+            if (userRating != null)
+            {
+                _context.UserRatings.Remove(userRating);
+                FilmItemMethods.CalculateFilmItemAverageAfterDeletion(_context, filmItem, userRating.Rating);
+                _context.SaveChanges();
+                TempData["message"] = $"Your rating on {userRating.FilmItem.Name} was deleted";
+            }
+
+            return Redirect(Request.Headers["Referer"]);
         }
     }
 }

@@ -1,4 +1,5 @@
 @model MovieProject.Models.Series
+@inject UserManager<ApplicationUser> UserManager
 @{
     ViewData["Title"] = @Model.Name + " (" + ViewBag.Year + ")";
 }
@@ -17,9 +18,10 @@
             <label>Votes</label>
             @if (@Model.VoteCount != null) { @Model.VoteCount } else { <text>No votes</text> }
         </li>
-        <li>
-            <label>Rate</label> @if (@Model.FirstAirDate < DateTime.Today) { <text>You can rate now</text> } else { <text>You can rate when the series is out</text> }
-        </li>
+        @if (User.Identity.IsAuthenticated)
+        {
+            @await Html.PartialAsync("_RatingPartial", Model)
+        }
         <li>
             <label>Premiered</label> @ViewBag.Premiere
         </li>
@@ -84,3 +86,15 @@
 <div>
     <img src="/images/filmitem/poster/@(Model.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@Model.Name">
 </div>
+
+@section Scripts
+{
+    <script>
+        var select = '';
+        for (i=1; i<=10; i++)
+        {
+            select += '<option val=' + i + '>' + i + '</option>';
+        }
+        $('#rating').html(select);
+    </script>
+}

@@ -186,47 +186,6 @@ namespace MovieProject.Controllers
             return View();
         }
 
-        [HttpPost("movies/{Slug}/genres/add")]
-        [ValidateAntiForgeryToken]
-        public IActionResult AddGenre(string Slug, int i = 0)
-        {
-            var movie = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
-            var currentGenres = _context.FilmItemGenres.Where(m => m.FilmItemId == movie.Id).Select(g => g.GenreId).ToList();
-            
-            foreach (var newGenre in Request.Form["Genre"])
-            {
-                if (currentGenres.Contains(int.Parse(newGenre)))
-                {
-                    continue;
-                } else
-                {
-                    FilmItemMethods.SaveFilmItemGenres(_context, movie, newGenre);
-                }
-                TempData["message"] = $"Added new genres to {movie.Name}";
-            }   
-            return RedirectToAction("Details", "Movie", new { Slug = Slug });
-        }
-
-        [HttpPost("movies/{Slug}/genres/{Id}")]
-        [ValidateAntiForgeryToken]
-        public IActionResult Genre(string Slug, int Id = 0)
-        {
-            var movie = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
-            var filmItemGenre = _context.FilmItemGenres.Include(g => g.Genre).Where(f => f.FilmItemId == movie.Id).Where(g => g.GenreId == Id).FirstOrDefault();
-
-            if (filmItemGenre != null)
-            {   
-                TempData["message"] = $"Deleted genre '{filmItemGenre.Genre.Name}' from {movie.Name}";  
-                _context.FilmItemGenres.Remove(filmItemGenre);
-                _context.SaveChanges();
-
-                return RedirectToAction("Details", "Movie", new { Slug = Slug });
-            } else
-            {
-                return View(nameof(Index));
-            }
-        }
-
         [HttpGet("movies/{Slug}/credits/add")]
         public ViewResult AddCredit(string Slug)
         {
@@ -311,6 +270,7 @@ namespace MovieProject.Controllers
         }
 
         [HttpGet("movies/{Slug}/comments")]
+        [AllowAnonymous]
         public ViewResult Comments(string Slug)
         {
             var movie = _context.Movies.Where(m => m.Slug == Slug).FirstOrDefault();
@@ -380,39 +340,6 @@ namespace MovieProject.Controllers
                 TempData["message"] = $"Your comment on {comment.FilmItem.Name} was deleted";
             } 
             return RedirectToAction("Details", new { Slug = Slug});
-        }
-
-        [HttpPost("movies/{Slug}/addRating")]
-        [ValidateAntiForgeryToken]
-        public IActionResult AddRating(string Slug)
-        {
-            var movie = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
-            var userRating = int.Parse(Request.Form["Rating"]);
-            var user = _userManager.GetUserId(User);
-            
-            FilmItemMethods.AddRating(_context, movie, userRating, user);
-            FilmItemMethods.AlterFilmItemAverage(_context, movie, userRating);
-            _context.SaveChanges();
-
-            return RedirectToAction("Details", "Movie", new { Slug = Slug });
-        }
-
-        [HttpPost("movies/{Slug}/deleteRating")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteRating(string Slug)
-        {
-            var movie = _context.Movies.FirstOrDefault(f => f.Slug == Slug);
-            var userRating = _context.UserRatings.Include(f => f.FilmItem).Where(m => m.FilmItem == movie).Where(u => u.ApplicationUserId == _userManager.GetUserId(User)).FirstOrDefault();
-
-            if (userRating != null)
-            {
-                _context.UserRatings.Remove(userRating);
-                FilmItemMethods.CalculateFilmItemAverageAfterDeletion(_context, movie, userRating.Rating);
-                _context.SaveChanges();
-                TempData["message"] = $"Your rating on {userRating.FilmItem.Name} was deleted";
-            }
-
-            return RedirectToAction("Details", "Movie", new { Slug = Slug });
         }
     }
 }

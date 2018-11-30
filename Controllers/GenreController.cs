@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MovieProject.Infrastructure;
 using MovieProject.Models;
 
@@ -105,6 +106,44 @@ namespace MovieProject.Controllers
             } else {
                 return View("Index");
             }
+        }
+        
+        [HttpPost("addGenre")]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddGenreToFilmItem()
+        {
+            var filmItem = _context.FilmItem.FirstOrDefault(m => m.Id == int.Parse(Request.Form["FilmItemId"]));
+            var currentGenres = _context.FilmItemGenres.Where(m => m.FilmItemId == filmItem.Id).Select(g => g.GenreId).ToList();
+            
+            foreach (var newGenre in Request.Form["Genre"])
+            {
+                if (currentGenres.Contains(int.Parse(newGenre)))
+                {
+                    continue;
+                } else
+                {
+                    FilmItemMethods.SaveFilmItemGenres(_context, filmItem, newGenre);
+                }
+                TempData["message"] = $"Added new genres to {filmItem.Name}";
+            }
+            
+            return RedirectToAction("Details", filmItem.Discriminator, new { Slug = filmItem.Slug });
+        }
+
+        [HttpPost("deleteGenre")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteGenreFromFilmItem()
+        {
+            var filmItemGenre = _context.FilmItemGenres.Include(f => f.FilmItem).Include(g => g.Genre).FirstOrDefault(g => g.Id == int.Parse(Request.Form["GenreId"]));
+
+            if (filmItemGenre != null)
+            {   
+                TempData["message"] = $"Deleted genre '{filmItemGenre.Genre.Name}' from {filmItemGenre.FilmItem.Name}";  
+                _context.FilmItemGenres.Remove(filmItemGenre);
+                _context.SaveChanges();
+            } 
+
+            return RedirectToAction("Details", filmItemGenre.FilmItem.Discriminator, new { Slug = filmItemGenre.FilmItem.Slug });
         }
     }
 }
