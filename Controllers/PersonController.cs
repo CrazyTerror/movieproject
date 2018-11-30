@@ -179,12 +179,12 @@ namespace MovieProject.Controllers
             {
                 FilmItemMethods.SaveFilmItemCredits(_context, filmItem, person, partType, character);
                 TempData["message"] = $"You added {person.FirstName} {person.Surname} to {filmItem.Name} as {(PartType) partType}"; 
-                return RedirectToAction("Details", "Person", new { Slug = Slug });
             } else
             {
                 TempData["message"] = $"You made an error filling in the Film Item or Character"; 
-                return RedirectToAction("AddCredit", "Person", new { Slug = Slug});
             }
+            
+            return RedirectToAction("Details", "Person", new { Slug = Slug });
         }
 
         [HttpGet("person/{Slug}/credits/{Id}/edit")]

@@ -32,10 +32,11 @@
                         <text>@fic.Character</text>
                     </td>
                     <td>
-                        <form asp-action="Credits" asp-route-id="@fic.Id" method="post">
+                        <form asp-action="DeleteCredit" asp-controller="Credit" method="post">
                             <a asp-action="EditCredit" class="btn btn-sm btn-warning" asp-route-id="@fic.Id">
                                 Edit
                             </a>
+                            <input type="hidden" name="FicId" value="@fic.Id" />
                             <button type="submit" class="btn btn-danger btn-sm">
                                 Delete
                             </button>
