@@ -1,0 +1,16 @@
+@model MovieProject.Models.FilmItem
+
+<div class="row">
+    @if (Model.FilmItemCredits.Where(p => p.PartType == PartType.Cast).ToList().Count > 0)
+    {
+        <h2>Actors</h2>
+        @if (User.Identity.IsAuthenticated) { <a asp-action="Credits">Edit</a> }
+        @foreach (var actor in @Model.FilmItemCredits.Where(p => p.PartType == PartType.Cast))
+        {
+            <a asp-action="Details" asp-controller="Person" asp-route-slug="@actor.Person.Slug">
+                <img src="/images/person/poster/@(actor.Person.Id).jpg" onerror="this.src='/images/person/poster/template.jpg';this.onerror='';" alt="@actor.Person.FirstName @actor.Person.Surname" height="127px" width="84px" />
+            </a>
+            <div>@actor.Person.FirstName @actor.Person.Surname - @actor.Character</div>
+        }
+    }
+</div>

@@ -425,6 +425,78 @@ namespace MovieProject.Models
                 
                 context.FilmItemCredits.Add(fica1);
                 context.FilmItemCredits.Add(fica2);
+
+                Media media1 = new Media
+                {
+                    FilmItem = m1
+                };
+                Media media2 = new Media
+                {
+                    FilmItem = m2
+                };
+                Media media3 = new Media
+                {
+                    FilmItem = s1
+                };
+                Media media4 = new Media
+                {
+                    FilmItem = se1
+                };
+                Media media5 = new Media
+                {
+                    FilmItem = se2
+                };
+                Media media6 = new Media
+                {
+                    FilmItem = ep1
+                };
+                Media media7 = new Media
+                {
+                    FilmItem = ep2
+                };
+                Media media8 = new Media
+                {
+                    FilmItem = ep11
+                };
+                Media media9 = new Media
+                {
+                    FilmItem = ep12
+                };
+                Media media10 = new Media
+                {
+                    Person = a1
+                };
+                Media media11 = new Media
+                {
+                    Person = a2
+                };
+                Media media12 = new Media
+                {
+                    Person = a3
+                };
+                Media media13 = new Media
+                {
+                    Person = a4
+                };
+                Media media14 = new Media
+                {
+                    Person = a5
+                };
+                
+                context.Media.Add(media1);
+                context.Media.Add(media2);
+                context.Media.Add(media3);
+                context.Media.Add(media4);
+                context.Media.Add(media5);
+                context.Media.Add(media6);
+                context.Media.Add(media7);
+                context.Media.Add(media8);
+                context.Media.Add(media9);
+                context.Media.Add(media10);
+                context.Media.Add(media11);
+                context.Media.Add(media12);
+                context.Media.Add(media13);
+                context.Media.Add(media14);
                 
                 context.SaveChanges();
             }

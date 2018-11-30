@@ -1,0 +1,11 @@
+@model MovieProject.Models.FilmItem
+
+@if (Model.Videos.Count > 0)
+{
+    <h4>Videos</h4>
+    @foreach (var video in @Model.Videos)
+    {
+        <iframe width="560" height="315" src="@video.Path" frameborder="0" allow="accelerometer; encrypted-media; picture-in-picture"></iframe>
+        <h6>@video.Description</h6>
+    }
+}

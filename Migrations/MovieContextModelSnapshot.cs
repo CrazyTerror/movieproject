@@ -229,6 +229,8 @@ namespace MovieProject.Migrations
 
                     b.Property<string>("OfficialSite");
 
+                    b.Property<int?>("PersonId");
+
                     b.Property<string>("TMDB");
 
                     b.Property<string>("Trakt");
@@ -240,6 +242,8 @@ namespace MovieProject.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FilmItemId");
+
+                    b.HasIndex("PersonId");
 
                     b.ToTable("Media");
                 });
@@ -505,9 +509,13 @@ namespace MovieProject.Migrations
 
             modelBuilder.Entity("MovieProject.Models.Media", b =>
                 {
-                    b.HasOne("MovieProject.Models.FilmItem")
+                    b.HasOne("MovieProject.Models.FilmItem", "FilmItem")
                         .WithMany("Media")
                         .HasForeignKey("FilmItemId");
+
+                    b.HasOne("MovieProject.Models.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonId");
                 });
 
             modelBuilder.Entity("MovieProject.Models.Photo", b =>

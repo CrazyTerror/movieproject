@@ -29,6 +29,7 @@ namespace MovieProject.Controllers
         public ViewResult Index(string Slug)
         {
             var user = _userManager.Users.FirstOrDefault(u => u.Slug == Slug);
+            ViewBag.User = user.Id;
 
             if (user.Id != _userManager.GetUserId(User) || User.Identity.IsAuthenticated == false)
             {

@@ -14,10 +14,10 @@
     <a asp-controller="Season" asp-action="Details">@ViewBag.Season</a>
 </div>
 <div class="row">
-    <text>@(Model.Episode_SeasonNumber + "x" + ViewBag.Episode) @Model.Name</text>
+    @(Model.Episode_SeasonNumber + "x" + ViewBag.Episode) @Model.Name
 </div>
 
-<text>Episode</text>
+<div>Episode</div>
 @for (var i = 1; i < @ViewBag.EpisodeCount + 1; i++)
 {
     <a style="@(i == @Model.Episode_EpisodeNumber ? @selected : null )" asp-action="Details" asp-controller="Episode" asp-route-episodenumber="@i">@i</a>
@@ -32,7 +32,7 @@
 
 @if (User.Identity.IsAuthenticated)
 {
-    @await Html.PartialAsync("_RatingPartial", Model)
+    @await Html.PartialAsync("_FilmItemRatingPartial", Model)
 }
 
 <div class="row">
@@ -71,7 +71,11 @@
     </form>
 }
 
-@await Html.PartialAsync("_CommentPartial", Model)
+@await Html.PartialAsync("_FilmItemVideoPartial", Model)
+
+@await Html.PartialAsync("_FilmItemCommentPartial", Model)
+
+@await Html.PartialAsync("_MediaPartial", Model.Media)
 
 @section Scripts
 {

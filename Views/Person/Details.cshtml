@@ -67,6 +67,8 @@
     <a asp-action="Credits" asp-controller="Person">Edit</a>
 }
 
+@await Html.PartialAsync("_MediaPartial", Model.Media)
+
 @if (Model.FilmItemCredits.Where(s => s.PartType == PartType.Cast).ToList().Count > 0)
 {
     <div id="actor">Actor</div>

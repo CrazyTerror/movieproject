@@ -53,7 +53,7 @@
     </table>
 }
 
-@if (User.Identity.IsAuthenticated && (Model.Select(x => x.ApplicationUserId).First() == UserManager.GetUserId(User)))
+@if (User.Identity.IsAuthenticated && ViewBag.User == UserManager.GetUserId(User))
 {
     <div class="text-center">
         <a asp-action="Create" class="btn btn-primary">Add List</a>

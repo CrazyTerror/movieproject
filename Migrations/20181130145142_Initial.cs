@@ -147,33 +147,6 @@ namespace MovieProject.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Media",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    IMDB = table.Column<string>(nullable: true),
-                    TMDB = table.Column<string>(nullable: true),
-                    Trakt = table.Column<string>(nullable: true),
-                    OfficialSite = table.Column<string>(nullable: true),
-                    Wikipedia = table.Column<string>(nullable: true),
-                    Twitter = table.Column<string>(nullable: true),
-                    Facebook = table.Column<string>(nullable: true),
-                    Instagram = table.Column<string>(nullable: true),
-                    FilmItemId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Media", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Media_FilmItem_FilmItemId",
-                        column: x => x.FilmItemId,
-                        principalTable: "FilmItem",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Photos",
                 columns: table => new
                 {
@@ -265,6 +238,29 @@ namespace MovieProject.Migrations
                     table.PrimaryKey("PK_UserRatings", x => x.Id);
                     table.ForeignKey(
                         name: "FK_UserRatings_FilmItem_FilmItemId",
+                        column: x => x.FilmItemId,
+                        principalTable: "FilmItem",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserWatching",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ApplicationUserId = table.Column<string>(nullable: true),
+                    FilmItemId = table.Column<int>(nullable: false),
+                    WatchedOn = table.Column<DateTime>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserWatching", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserWatching_FilmItem_FilmItemId",
                         column: x => x.FilmItemId,
                         principalTable: "FilmItem",
                         principalColumn: "Id",
@@ -380,6 +376,40 @@ namespace MovieProject.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Media",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    IMDB = table.Column<string>(nullable: true),
+                    TMDB = table.Column<string>(nullable: true),
+                    Trakt = table.Column<string>(nullable: true),
+                    OfficialSite = table.Column<string>(nullable: true),
+                    Wikipedia = table.Column<string>(nullable: true),
+                    Twitter = table.Column<string>(nullable: true),
+                    Facebook = table.Column<string>(nullable: true),
+                    Instagram = table.Column<string>(nullable: true),
+                    FilmItemId = table.Column<int>(nullable: true),
+                    PersonId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Media", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Media_FilmItem_FilmItemId",
+                        column: x => x.FilmItemId,
+                        principalTable: "FilmItem",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Media_Persons_PersonId",
+                        column: x => x.PersonId,
+                        principalTable: "Persons",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_FilmItem_SeasonId",
                 table: "FilmItem",
@@ -426,6 +456,11 @@ namespace MovieProject.Migrations
                 column: "FilmItemId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Media_PersonId",
+                table: "Media",
+                column: "PersonId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Photos_FilmItemId",
                 table: "Photos",
                 column: "FilmItemId");
@@ -448,6 +483,11 @@ namespace MovieProject.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_UserRatings_FilmItemId",
                 table: "UserRatings",
+                column: "FilmItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserWatching_FilmItemId",
+                table: "UserWatching",
                 column: "FilmItemId");
 
             migrationBuilder.CreateIndex(
@@ -489,16 +529,19 @@ namespace MovieProject.Migrations
                 name: "UserRatings");
 
             migrationBuilder.DropTable(
-                name: "Videos");
+                name: "UserWatching");
 
             migrationBuilder.DropTable(
-                name: "Persons");
+                name: "Videos");
 
             migrationBuilder.DropTable(
                 name: "Genres");
 
             migrationBuilder.DropTable(
                 name: "Lists");
+
+            migrationBuilder.DropTable(
+                name: "Persons");
 
             migrationBuilder.DropTable(
                 name: "FilmItem");

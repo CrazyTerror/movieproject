@@ -13,7 +13,7 @@
     <a asp-controller="Series" asp-action="Details">@ViewBag.Series</a>
 </div>
 <div class="row">
-    <text>@Model.Name</text>
+    @Model.Name
 </div>
 
 @if (User.Identity.IsAuthenticated)
@@ -31,7 +31,7 @@
     </form>
 }
 
-<text>Season</text>
+<div>Season</div>
 @for (var i = 1; i < @ViewBag.SeasonCount + 1; i++)
 {
     <a style="@(i == @Model.Season_SeasonNumber ? @selected : null )" asp-action="Details" asp-controller="Season" asp-route-seasonnumber="@i">@i </a>
@@ -49,7 +49,7 @@
 
 @if (User.Identity.IsAuthenticated)
 {
-    @await Html.PartialAsync("_RatingPartial", Model)
+    @await Html.PartialAsync("_FilmItemRatingPartial", Model)
 }
 
 <div class="row">
@@ -113,7 +113,11 @@
     </div>
 }
 
-@await Html.PartialAsync("_CommentPartial", Model)
+@await Html.PartialAsync("_FilmItemVideoPartial", Model)
+
+@await Html.PartialAsync("_FilmItemCommentPartial", Model)
+
+@await Html.PartialAsync("_MediaPartial", Model.Media)
 
 <div class="row">
     <img src="/images/filmitem/poster/@(Model.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@Model.Name" />
