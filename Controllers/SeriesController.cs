@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MovieProject.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using MovieProject.Data;
 
 namespace MovieProject.Controllers
 {
@@ -19,11 +21,13 @@ namespace MovieProject.Controllers
     {
         private readonly MovieContext _context;
         private readonly IHostingEnvironment _env;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public SeriesController(MovieContext context, IHostingEnvironment env)
+        public SeriesController(MovieContext context, IHostingEnvironment env, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _env = env;
+            _userManager = userManager;
         }
 
         [HttpGet("series")]
@@ -145,12 +149,9 @@ namespace MovieProject.Controllers
                 _context.SaveChanges();
 
                 TempData["message"] = $"{series.Name} was deleted";
-
-                return RedirectToAction(nameof(Index));
-            } else 
-            {
-                return View(nameof(Index));
-            }
+            } 
+            
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet("series/{Slug}/genres")]
@@ -192,6 +193,18 @@ namespace MovieProject.Controllers
             var filmItemCredit = _context.FilmItemCredits.Include(p => p.Person).Include(f => f.FilmItem).FirstOrDefault(fic => fic.Id == Id);
 
             return View(filmItemCredit);
+        }
+
+        [HttpGet("series/{Slug}/comments")]
+        [AllowAnonymous]
+        public ViewResult Comments(string Slug)
+        {
+            var series = _context.Series.Where(m => m.Slug == Slug).FirstOrDefault();
+            var comments = _context.Reviews.Include(r => r.FilmItem).Where(r => r.FilmItem == series).OrderByDescending(x => x.CreatedAt).ToList();
+            ViewBag.FilmItem = series;
+            ViewBag.ReleaseYear = series.ReleaseDate.Value.ToString("yyyy");
+
+            return View(comments);
         }
     }
 }

@@ -82,45 +82,7 @@
     }
 </div>
 
-@if (User.Identity.IsAuthenticated)
-{   
-    <form class="form-horizontal" asp-action="AddReview" asp-controller="Movie" method="post">
-        <div class="form-group">
-            <input type="hidden" name="ApplicationUserId" value="@UserManager.GetUserId(User)" />
-            <input type="hidden" name="FilmItemId" value="@Model.Id" />
-            <label class="col-md-2 control-label">Review</label>
-            <div class="col-md-8">
-                <span class="text-danger"></span>
-                <textarea name="Comment" class="form-control"></textarea>
-            </div>
-        </div>
-        <div class="text-center">
-            <button class="btn btn-primary" type="submit">Add Review</button>
-        </div>
-    </form>
-}
-
-<div class="row">
-    <a asp-action="Comments">All @ViewBag.CommentCount Comments</a>
-    @foreach (var review in @Model.Reviews.OrderByDescending(x => x.CreatedAt).Take(3))
-    {
-        var user = @UserManager.FindByIdAsync(review.ApplicationUserId);
-        <div>Review by <a asp-action="Details" asp-controller="User" asp-route-slug="@user.Result.Slug">@user.Result.UserName</a></div>
-        @if (review.ApplicationUserId == UserManager.GetUserId(User) || User.IsInRole("Admins"))
-        {
-            <form asp-action="DeleteComment" asp-route-id="@review.Id" method="post">
-                <a asp-action="EditComment" class="btn btn-sm btn-warning" asp-route-id="@review.Id">
-                    Edit
-                </a>
-                <button type="submit" class="btn btn-danger btn-sm">
-                    Delete
-                </button>
-            </form>
-        } 
-        <div>@review.CreatedAt.ToString("d MMMM yyyy HH:mm")</div>
-        <div>@review.Comment</div>
-    }
-</div>
+@await Html.PartialAsync("_CommentPartial", Model)
 
 <div>
     <img src="/images/filmitem/poster/@(Model.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@Model.Name">

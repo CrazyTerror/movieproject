@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MovieProject.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using MovieProject.Data;
 
 namespace MovieProject.Controllers
 {
@@ -19,11 +21,13 @@ namespace MovieProject.Controllers
     {
         private readonly MovieContext _context;
         private readonly IHostingEnvironment _env;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public EpisodeController(MovieContext context, IHostingEnvironment env)
+        public EpisodeController(MovieContext context, IHostingEnvironment env, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _env = env;
+            _userManager = userManager;
         }
 
         [HttpGet("series/{Slug}/seasons/{SeasonNumber}/episodes")]
@@ -166,12 +170,21 @@ namespace MovieProject.Controllers
                 _context.SaveChanges();
 
                 TempData["message"] = $"Episode {episode.Episode_EpisodeNumber} - {episode.Name} from {series.Name} - {season.Name} was deleted";
+            } 
+            
+            return RedirectToAction("Details", "Season", new { Slug = Slug, SeasonNumber = SeasonNumber});
+        }
 
-                return RedirectToAction("Details", "Season", new { Slug = Slug, SeasonNumber = SeasonNumber});
-            } else 
-            {
-                return RedirectToAction("Details", "Season", new { Slug = Slug, SeasonNumber = SeasonNumber});
-            }
+        [HttpGet("series/{Slug}/seasons/{SeasonNumber}/episodes/{EpisodeNumber}/comments")]
+        [AllowAnonymous]
+        public ViewResult Comments(string Slug, int SeasonNumber, int EpisodeNumber)
+        {
+            var episode = _context.Episodes.Where(e => e.Slug == Slug).Where(e => e.Episode_EpisodeNumber == EpisodeNumber).FirstOrDefault();
+            var comments = _context.Reviews.Include(r => r.FilmItem).Where(r => r.FilmItem == episode).OrderByDescending(x => x.CreatedAt).ToList();
+            ViewBag.FilmItem = episode;
+            ViewBag.ReleaseYear = episode.ReleaseDate.Value.ToString("yyyy");
+
+            return View(comments);
         }
     }
 }

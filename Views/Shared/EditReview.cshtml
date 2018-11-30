@@ -1,0 +1,26 @@
+@model MovieProject.Models.Review
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = @Model.FilmItem.Name + " comment by " + UserManager.FindByIdAsync(Model.ApplicationUserId).Result.UserName;
+}
+
+<form class="form-horizontal" asp-action="EditReview" asp-controller="Review" method="post">
+    <input type="hidden" name="ReviewId" value="@Model.Id" />
+    <div class="form-group">
+        <label class="col-md-2 control-label" asp-for="Comment"></label>
+        <div class="col-md-8">
+            <span asp-validation-for="Comment" class="text-danger"></span>
+            <textarea asp-for="Comment" class="form-control"></textarea>
+        </div>
+    </div>
+    <div class="text-center">
+        <button class="btn btn-primary" type="submit">Save</button>
+        @if (Model.FilmItem.Discriminator == "Series" || Model.FilmItem.Discriminator == "Movie") {   
+            <a asp-action="Details" asp-controller="@Model.FilmItem.Discriminator" asp-route-slug="@Model.FilmItem.Slug" class="btn btn-secondary">Cancel</a>
+        } else if (Model.FilmItem.Discriminator == "Season") {
+            <a asp-action="Details" asp-controller="@Model.FilmItem.Discriminator" asp-route-slug="@Model.FilmItem.Slug" asp-route-seasonnumber="@Model.FilmItem.Season_SeasonNumber" class="btn btn-secondary">Cancel</a>
+        } else if (Model.FilmItem.Discriminator == "Episode") {
+            <a asp-action="Details" asp-controller="@Model.FilmItem.Discriminator" asp-route-slug="@Model.FilmItem.Slug" asp-route-seasonnumber="@Model.FilmItem.Episode_SeasonNumber" asp-route-episodenumber="@Model.FilmItem.Episode_EpisodeNumber" class="btn btn-secondary">Cancel</a>
+        }
+    </div>
+</form>

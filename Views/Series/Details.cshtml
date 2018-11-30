@@ -83,6 +83,8 @@
     </div>
 }
 
+@await Html.PartialAsync("_CommentPartial", Model)
+
 <div>
     <img src="/images/filmitem/poster/@(Model.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@Model.Name">
 </div>

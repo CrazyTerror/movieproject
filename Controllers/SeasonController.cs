@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MovieProject.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using MovieProject.Data;
 
 namespace MovieProject.Controllers
 {
@@ -19,11 +21,13 @@ namespace MovieProject.Controllers
     {
         private readonly MovieContext _context;
         private readonly IHostingEnvironment _env;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public SeasonController(MovieContext context, IHostingEnvironment env)
+        public SeasonController(MovieContext context, IHostingEnvironment env, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _env = env;
+            _userManager = userManager;
         }
 
         [HttpGet("series/{Slug}/seasons")]
@@ -150,12 +154,21 @@ namespace MovieProject.Controllers
                 _context.SaveChanges();
                 
                 TempData["message"] = $"{series.Name} - {season.Name} was deleted";
+            } 
+            
+            return RedirectToAction("Details", "Series", new { Slug = Slug});
+        }
 
-                return RedirectToAction("Details", "Series", new { Slug = Slug});
-            } else 
-            {
-                return View("Error");
-            }
+        [HttpGet("series/{Slug}/seasons/{SeasonNumber}/comments")]
+        [AllowAnonymous]
+        public ViewResult Comments(string Slug, int SeasonNumber)
+        {
+            var season = _context.Seasons.Where(s => s.Slug == Slug).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
+            var comments = _context.Reviews.Include(r => r.FilmItem).Where(r => r.FilmItem == season).OrderByDescending(x => x.CreatedAt).ToList();
+            ViewBag.FilmItem = season;
+            ViewBag.ReleaseYear = season.ReleaseDate.Value.ToString("yyyy");
+
+            return View(comments);
         }
     }
 }

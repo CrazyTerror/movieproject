@@ -2,15 +2,18 @@
 @inject UserManager<ApplicationUser> UserManager
 
 @{
-    ViewData["Title"] = "All comments for " + ViewBag.FilmItem + " (" + ViewBag.ReleaseYear + ")";
+    ViewData["Title"] = "All comments for " + ViewBag.FilmItem.Name + " (" + ViewBag.ReleaseYear + ")";
 }   
+
+<a href="" onClick="history.go(-1); return false;">Cancel</a> 
 
 @if (User.Identity.IsAuthenticated)
 {   
     <div class="row">Add Review</div>
     <div class="row">
-        <form class="form-horizontal" asp-action="AddReview" asp-controller="Movie" method="post">
+        <form class="form-horizontal" asp-action="AddReview" asp-controller="Review" method="post">
             <div class="form-group">
+                <input type="hidden" name="FilmItemId" value="@ViewBag.FilmItem.Id"/>
                 <label class="col-md-2 control-label">Review</label>
                 <div class="col-md-8">
                     <span class="text-danger"></span>

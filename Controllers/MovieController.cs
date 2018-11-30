@@ -110,7 +110,7 @@ namespace MovieProject.Controllers
 
             TempData["message"] = $"{movie.Name} has been created";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", new { Slug = movie.Slug});
         }
 
         [HttpGet("movies/{Slug}/edit")]
@@ -142,7 +142,7 @@ namespace MovieProject.Controllers
 
                 TempData["message"] = $"{movie.Name} has been changed";
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", new { Slug = movie.Slug});
             } 
             return View(movie);
         }
@@ -162,11 +162,9 @@ namespace MovieProject.Controllers
                 _context.SaveChanges();
 
                 TempData["message"] = $"{movie.Name} was deleted";
+            } 
 
-                return RedirectToAction(nameof(Index));
-            } else {
-                return View("Index");
-            }
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet("movies/{Slug}/genres")]
@@ -216,71 +214,10 @@ namespace MovieProject.Controllers
         {
             var movie = _context.Movies.Where(m => m.Slug == Slug).FirstOrDefault();
             var comments = _context.Reviews.Include(r => r.FilmItem).Where(r => r.FilmItem == movie).OrderByDescending(x => x.CreatedAt).ToList();
-            ViewBag.FilmItem = movie.Name;
+            ViewBag.FilmItem = movie;
             ViewBag.ReleaseYear = movie.ReleaseDate.Value.ToString("yyyy");
 
             return View(comments);
-        }
-
-        [HttpPost("movies/{Slug}/addReview")]
-        [ValidateAntiForgeryToken]
-        public IActionResult AddReview(string Slug)
-        {
-            var applicationUser = _userManager.GetUserId(User);
-            var movie = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
-
-            Review review = new Review
-            {
-                ApplicationUserId = applicationUser,
-                FilmItem = movie,
-                Comment = Request.Form["Comment"]
-            };
-            _context.Reviews.Add(review);
-            _context.SaveChanges();
-
-            return RedirectToAction("Details", "Movie", new { Slug = Slug });
-        }
-
-        [HttpGet("movies/{Slug}/comments/{Id}/edit")]
-        public IActionResult EditComment(string Slug, int Id)
-        {
-            var comment = _context.Reviews.Include(f => f.FilmItem).FirstOrDefault(r => r.Id == Id);
-
-            if (comment != null && comment.ApplicationUserId == _userManager.GetUserId(User))
-            {
-                return View(comment);
-            } else
-            {
-                return RedirectToAction("Details", new { Slug = Slug });
-            }
-        }
-
-        [HttpPost("movies/{Slug}/comments/{Id}/edit")]
-        public IActionResult EditComment(string Slug, int Id, int i = 0)
-        {
-            var comment = _context.Reviews.FirstOrDefault(r => r.Id == Id);
-
-            _context.Reviews.Attach(comment);
-            comment.Comment = Request.Form["Comment"];
-            comment.UpdatedAt = DateTime.Now;
-            _context.SaveChanges();
-
-            return RedirectToAction("Details", new { Slug = Slug});
-        }
-
-        [HttpPost("movies/{Slug}/comments/{Id}/delete")]
-        public IActionResult DeleteComment(string Slug, int Id)
-        {
-            var comment = _context.Reviews.Include(f => f.FilmItem).FirstOrDefault(r => r.Id == Id);
-
-            if (comment != null)
-            {
-                _context.Reviews.Remove(comment);
-                _context.SaveChanges();
-
-                TempData["message"] = $"Your comment on {comment.FilmItem.Name} was deleted";
-            } 
-            return RedirectToAction("Details", new { Slug = Slug});
         }
     }
 }
