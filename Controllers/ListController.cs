@@ -163,7 +163,7 @@ namespace MovieProject.Controllers
 
             if (user.Id == _userManager.GetUserId(User))
             {
-                ListMethods.SaveListItem(_context, list, filmItem);
+                SaveListItem(list, filmItem);
                 TempData["message"] = $"{filmItem.Name} is added to {list.Name}";
             }
 
@@ -178,13 +178,43 @@ namespace MovieProject.Controllers
 
             if (listItem != null && user.Id == _userManager.GetUserId(User))
             {
-                ListMethods.EditListAfterDeletingListItem(_context, listItem);
+                EditListAfterDeletingListItem(listItem);
                 _context.ListItems.Remove(listItem);
                 _context.SaveChanges();
                 TempData["message"] = $"Removed {listItem.FilmItem.Name} from '{listItem.List.Name}'"; 
             } 
 
             return RedirectToAction("Details", "List", new { listName = listName });
+        }
+
+        public void SaveListItem(List list, FilmItem filmItem)
+        {
+            var filmItemAlreadyInList = _context.ListItems.Where(l => l.List == list).Where(f => f.FilmItem == filmItem).FirstOrDefault();
+
+            if (filmItem != null && filmItemAlreadyInList == null)
+            {
+                ListItem li = new ListItem()
+                {
+                    FilmItem = filmItem,
+                    List = list
+                };
+
+                _context.ListItems.Add(li);
+                _context.SaveChanges();
+
+                _context.Lists.Attach(list);
+                list.ItemCount++;
+                list.UpdatedAt = DateTime.Now;
+                _context.SaveChanges();
+            }
+        }
+
+        public void EditListAfterDeletingListItem(ListItem listItem)
+        {
+            var list = listItem.List;
+            _context.Lists.Attach(list);
+            listItem.List.ItemCount--;
+            _context.SaveChanges();
         }
     }
 }
