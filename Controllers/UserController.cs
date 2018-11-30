@@ -78,14 +78,21 @@ namespace MovieProject.Controllers
         public IActionResult AddRating()
         {
             var filmItem = _context.FilmItem.FirstOrDefault(f => f.Id == int.Parse(Request.Form["FilmItemId"]));
-            var userRating = int.Parse(Request.Form["Rating"]);
+            var rating = int.Parse(Request.Form["Rating"]);
             var user = _userManager.GetUserId(User);
             
-            FilmItemMethods.AddRating(_context, filmItem, userRating, user);
-            FilmItemMethods.AlterFilmItemAverage(_context, filmItem, userRating);
+            UserRating userRating = new UserRating
+            {
+                ApplicationUserId = user,
+                FilmItem = filmItem,
+                Rating = rating
+            };
+            _context.UserRatings.Add(userRating);
+            
+            AlterFilmItemAverage(filmItem, rating);
             _context.SaveChanges();
 
-            return Redirect(Request.Headers["Referer"]);
+            return RedirectToAction("Details", filmItem.Discriminator, new { Slug = filmItem.Slug});
         }
 
         [HttpPost("deleteRating")]
@@ -98,12 +105,48 @@ namespace MovieProject.Controllers
             if (userRating != null)
             {
                 _context.UserRatings.Remove(userRating);
-                FilmItemMethods.CalculateFilmItemAverageAfterDeletion(_context, filmItem, userRating.Rating);
+                CalculateFilmItemAverageAfterDeletion(filmItem, userRating.Rating);
                 _context.SaveChanges();
                 TempData["message"] = $"Your rating on {userRating.FilmItem.Name} was deleted";
             }
 
-            return Redirect(Request.Headers["Referer"]);
+            return RedirectToAction("Details", filmItem.Discriminator, new { Slug = filmItem.Slug});
+        }
+
+        public void AlterFilmItemAverage(FilmItem filmItem, int rating)
+        {
+            _context.Attach(filmItem);
+            if (filmItem.VoteCount == null && filmItem.VoteAverage == null)
+            {
+                filmItem.VoteCount = 1;
+                filmItem.VoteAverage = rating;
+            } else {
+                var totalRating = filmItem.VoteAverage * filmItem.VoteCount;
+                filmItem.VoteCount++;
+                filmItem.VoteAverage = (totalRating + rating) / filmItem.VoteCount;
+            }
+            
+            filmItem.UpdatedAt = DateTime.Now;
+            _context.SaveChanges();
+        }
+
+        public void CalculateFilmItemAverageAfterDeletion(FilmItem filmItem, int rating)
+        {
+            _context.Attach(filmItem);
+
+            if (filmItem.VoteCount == 1)
+            {
+                filmItem.VoteCount = null;
+                filmItem.VoteAverage = null;
+            } else 
+            {
+                var totalRating = filmItem.VoteAverage * filmItem.VoteCount;
+                filmItem.VoteCount--;
+                filmItem.VoteAverage = (totalRating - rating) / filmItem.VoteCount;
+            }
+            filmItem.UpdatedAt = DateTime.Now;
+
+            _context.SaveChanges();
         }
     }
 }

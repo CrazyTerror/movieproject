@@ -152,6 +152,7 @@ namespace MovieProject.Controllers
         }
 
         [HttpGet("person/{Slug}/credits")]
+        [AllowAnonymous]
         public ViewResult Credits(string Slug)
         {
             var person = _context.Persons.Include(mc => mc.FilmItemCredits).ThenInclude(c => c.FilmItem).FirstOrDefault(p => p.Slug == Slug);
@@ -177,6 +178,7 @@ namespace MovieProject.Controllers
 
             if (filmItem != null && person != null && character != null && (partType >= 1 && partType <= 7 ))
             {
+                //CreditController
                 FilmItemMethods.SaveFilmItemCredits(_context, filmItem, person, partType, character);
                 TempData["message"] = $"You added {person.FirstName} {person.Surname} to {filmItem.Name} as {(PartType) partType}"; 
             } else

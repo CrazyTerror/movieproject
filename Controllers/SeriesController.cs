@@ -172,6 +172,7 @@ namespace MovieProject.Controllers
         }
 
         [HttpGet("series/{Slug}/credits")]
+        [AllowAnonymous]
         public ViewResult Credits(string Slug)
         {
             var series = _context.Series.Include(fic => fic.FilmItemCredits).ThenInclude(p => p.Person).FirstOrDefault(m => m.Slug == Slug);
