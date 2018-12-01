@@ -1,6 +1,7 @@
 @model MovieProject.Models.Person
 @{
     ViewData["Title"] = @Model.FirstName + " " + @Model.Surname; 
+    var partTypes = Enum.GetValues(typeof(PartType));
 }
 
 <div class="row">
@@ -23,13 +24,10 @@
 }
 
 <ul>
-    @if (Model.FilmItemCredits.Where(s => s.PartType == PartType.Cast).ToList().Count > 0) { <li><a href="#actor">Actor</a></li> }
-    @if (Model.FilmItemCredits.Where(s => s.PartType == PartType.Director).ToList().Count > 0) { <li><a href="#director">Director</a></li> }
-    @if (Model.FilmItemCredits.Where(s => s.PartType == PartType.Producer).ToList().Count > 0) { <li><a href="#producer">Producer</a></li> }
-    @if (Model.FilmItemCredits.Where(s => s.PartType == PartType.Writer).ToList().Count > 0) { <li><a href="#writer">Writer</a></li> }
-    @if (Model.FilmItemCredits.Where(s => s.PartType == PartType.Editor).ToList().Count > 0) { <li><a href="#editor">Editor</a></li> }
-    @if (Model.FilmItemCredits.Where(s => s.PartType == PartType.CostumeDesigner).ToList().Count > 0) { <li><a href="#designer">Costume Designer</a></li> }
-    @if (Model.FilmItemCredits.Where(s => s.PartType == PartType.Composer).ToList().Count > 0) { <li><a href="#composer">Composer</a></li> }
+    @foreach (var partType in partTypes)
+    {
+        @if (Model.FilmItemCredits.Where(s => s.PartType == (PartType) partType).ToList().Count > 0) { <li><a href="#@partType">@partType</a></li> }
+    }
 </ul>
 
 <div class="row">
@@ -69,88 +67,21 @@
 
 @await Html.PartialAsync("_MediaPartial", Model.Media)
 
-@if (Model.FilmItemCredits.Where(s => s.PartType == PartType.Cast).ToList().Count > 0)
+@foreach (var partType in partTypes)
 {
-    <div id="actor">Actor</div>
-    @foreach (var item in Model.FilmItemCredits.Where(p => p.PartType == PartType.Cast).OrderByDescending(f => f.FilmItem.ReleaseDate))
+    @if (Model.FilmItemCredits.Where(s => s.PartType == (PartType) partType).ToList().Count > 0)
     {
-        <a asp-action="Details" asp-controller="@item.FilmItem.Discriminator" asp-route-slug="@item.FilmItem.Slug">
-            <img src="/images/filmitem/poster/@(item.FilmItem.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@item.FilmItem.Name" width="200px" height="300px"/>
-        </a>
-        <div>@item.FilmItem.Name</div>
-        <div>@(item.FilmItem.ReleaseDate.HasValue ? @item.FilmItem.ReleaseDate.Value.ToString("yyyy") : "")</div>
-        <div>@item.Character</div>
-        <hr>
-    }
-}
-
-@if (Model.FilmItemCredits.Where(s => s.PartType == PartType.Director).ToList().Count > 0)
-{
-    <div id="director">Directing</div>
-    @foreach (var item in Model.FilmItemCredits.Where(p => p.PartType == PartType.Director).OrderByDescending(f => f.FilmItem.ReleaseDate))
-    {
-        <a asp-action="Details" asp-controller="@item.FilmItem.Discriminator" asp-route-slug="@item.FilmItem.Slug">
-            <img src="/images/filmitem/poster/@(item.FilmItem.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@item.FilmItem.Name" width="200px" height="300px"/>
-        </a>
-        <div>@item.FilmItem.Name</div>
-        <div>@(item.FilmItem.ReleaseDate.HasValue ? @item.FilmItem.ReleaseDate.Value.ToString("yyyy") : "")</div>
-        <hr>
-    }
-}
-
-@if (Model.FilmItemCredits.Where(s => s.PartType == PartType.Producer).ToList().Count > 0)
-{
-    <div id="producer">Producer</div>
-    @foreach (var item in Model.FilmItemCredits.Where(p => p.PartType == PartType.Producer).OrderByDescending(f => f.FilmItem.ReleaseDate))
-    {
-        <a asp-action="Details" asp-controller="@item.FilmItem.Discriminator" asp-route-slug="@item.FilmItem.Slug">
-            <img src="/images/filmitem/poster/@(item.FilmItem.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@item.FilmItem.Name" width="200px" height="300px"/>
-        </a>
-        <div>@item.FilmItem.Name</div>
-        <div>@(item.FilmItem.ReleaseDate.HasValue ? @item.FilmItem.ReleaseDate.Value.ToString("yyyy") : "")</div>
-        <hr>
-    }
-}
-
-@if (Model.FilmItemCredits.Where(s => s.PartType == PartType.Composer).ToList().Count > 0)
-{
-    <div id="Composer">Composer</div>
-    @foreach (var item in Model.FilmItemCredits.Where(p => p.PartType == PartType.Composer).OrderByDescending(f => f.FilmItem.ReleaseDate))
-    {
-        <a asp-action="Details" asp-controller="@item.FilmItem.Discriminator" asp-route-slug="@item.FilmItem.Slug">
-            <img src="/images/filmitem/poster/@(item.FilmItem.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@item.FilmItem.Name" width="200px" height="300px"/>
-        </a>
-        <div>@item.FilmItem.Name</div>
-        <div>@(item.FilmItem.ReleaseDate.HasValue ? @item.FilmItem.ReleaseDate.Value.ToString("yyyy") : "")</div>
-        <hr>
-    }
-}
-
-@if (Model.FilmItemCredits.Where(s => s.PartType == PartType.Writer).ToList().Count > 0)
-{
-    <div id="writer">Writer</div>
-    @foreach (var item in Model.FilmItemCredits.Where(p => p.PartType == PartType.Writer).OrderByDescending(f => f.FilmItem.ReleaseDate))
-    {
-        <a asp-action="Details" asp-controller="@item.FilmItem.Discriminator" asp-route-slug="@item.FilmItem.Slug">
-            <img src="/images/filmitem/poster/@(item.FilmItem.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@item.FilmItem.Name" width="200px" height="300px"/>
-        </a>
-        <div>@item.FilmItem.Name</div>
-        <div>@(item.FilmItem.ReleaseDate.HasValue ? @item.FilmItem.ReleaseDate.Value.ToString("yyyy") : "")</div>
-        <hr>
-    }
-}
-
-@if (Model.FilmItemCredits.Where(s => s.PartType == PartType.Editor).ToList().Count > 0)
-{
-    <div id="editor">Editor</div>
-    @foreach (var item in Model.FilmItemCredits.Where(p => p.PartType == PartType.Editor).OrderByDescending(f => f.FilmItem.ReleaseDate))
-    {
-        <a asp-action="Details" asp-controller="@item.FilmItem.Discriminator" asp-route-slug="@item.FilmItem.Slug">
-            <img src="/images/filmitem/poster/@(item.FilmItem.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@item.FilmItem.Name" width="200px" height="300px"/>
-        </a>
-        <div>@item.FilmItem.Name</div>
-        <div>@(item.FilmItem.ReleaseDate.HasValue ? @item.FilmItem.ReleaseDate.Value.ToString("yyyy") : "")</div>
-        <hr>
+        <div id="@partType">@partType</div>
+        @foreach (var item in Model.FilmItemCredits.Where(p => p.PartType == (PartType) partType).OrderByDescending(f => f.FilmItem.ReleaseDate))
+        {
+            <a asp-action="Details" asp-controller="@item.FilmItem.Discriminator" asp-route-slug="@item.FilmItem.Slug">
+                <img src="/images/filmitem/poster/@(item.FilmItem.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@item.FilmItem.Name" width="200px" height="300px"/>
+            </a>
+            <div>@item.FilmItem.Name</div>
+            <div>@(item.FilmItem.ReleaseDate.HasValue ? @item.FilmItem.ReleaseDate.Value.ToString("yyyy") : "")</div>
+            <div>@item.Character</div>
+            <hr>
+        }
     }
 }
 
