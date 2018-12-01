@@ -1,0 +1,16 @@
+@model MovieProject.Models.FilmItem
+@inject UserManager<ApplicationUser> UserManager
+
+<div class="row">
+    <a asp-action="Lists">All @ViewBag.ListCount Lists</a>
+    @if (Model.ListItems.Select(li => li.List).ToList().Count > 0)
+    {
+        @foreach (var item in Model.ListItems.Where(l => l.List.Privacy == false).Select(li => li.List).Take(3))
+        {
+            var user = @UserManager.FindByIdAsync(item.ApplicationUserId);
+            <div><a asp-action="Details" asp-controller="List" asp-route-slug="@user.Result.Slug" asp-route-listname="@item.Slug">@item.Name</a></div>
+            <div>by <a asp-action="Details" asp-controller="User" asp-route-slug="@user.Result.Slug">@user.Result.UserName</a></div>
+            <div>@item.ItemCount</div>
+        }
+    }
+</div>

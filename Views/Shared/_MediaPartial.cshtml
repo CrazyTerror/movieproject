@@ -4,37 +4,40 @@
     var id = Model.PersonId != null ? Model.PersonId : Model.FilmItemId;
 }
 
-<a asp-action="Media">Edit Media</a>
-<br>
+@if (User.Identity.IsAuthenticated)
+{  
+    <a asp-action="Media">Edit Media</a>
+    <br>
 
-@if (Model.IMDB != null) {
-    <div><a href="@Model.IMDB">IMDB</a></div>
-}
+    @if (Model.IMDB != null) {
+        <div><a href="@Model.IMDB">IMDB</a></div>
+    }
 
-@if (Model.TMDB != null) {
-    <div><a href="@Model.TMDB">TMDB</a></div>
-}
+    @if (Model.TMDB != null) {
+        <div><a href="@Model.TMDB">TMDB</a></div>
+    }
 
-@if (Model.Trakt != null) {
-    <div><a href="@Model.Trakt">Trakt</a></div>
-}
+    @if (Model.Trakt != null) {
+        <div><a href="@Model.Trakt">Trakt</a></div>
+    }
 
-@if (Model.Facebook != null) {
-    <div><a href="@Model.Facebook">Facebook</a></div>
-}
+    @if (Model.Facebook != null) {
+        <div><a href="@Model.Facebook">Facebook</a></div>
+    }
 
-@if (Model.Twitter != null) {
-    <div><a href="@Model.Twitter">Twitter</a></div>
-}
+    @if (Model.Twitter != null) {
+        <div><a href="@Model.Twitter">Twitter</a></div>
+    }
 
-@if (Model.Instagram != null) {
-    <div><a href="@Model.Instagram">Instagram</a></div>
-}
+    @if (Model.Instagram != null) {
+        <div><a href="@Model.Instagram">Instagram</a></div>
+    }
 
-@if (Model.OfficialSite != null) {
-    <div><a href="@Model.OfficialSite">Official Site</a></div>
-}
+    @if (Model.OfficialSite != null) {
+        <div><a href="@Model.OfficialSite">Official Site</a></div>
+    }
 
-@if (Model.Wikipedia != null) {
-    <div><a href="@Model.Wikipedia">Wikipedia</a></div>
+    @if (Model.Wikipedia != null) {
+        <div><a href="@Model.Wikipedia">Wikipedia</a></div>
+    }
 }

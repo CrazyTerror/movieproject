@@ -51,6 +51,7 @@ namespace MovieProject.Controllers
                                         .Include(p => p.Photos)
                                         .Include(mr => mr.UserRatings)
                                         .Include(r => r.Reviews)
+                                        .Include(l => l.ListItems).ThenInclude(l => l.List)
                                         .FirstOrDefault(s => s.Slug == Slug);
 
             ViewBag.Genres = series.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();
@@ -58,6 +59,7 @@ namespace MovieProject.Controllers
             ViewBag.Premiere = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("dd MMMM yyyy") : "");
             ViewBag.TotalRuntime = FilmItemMethods.CalculateSeriesTotalRuntime(series);
             ViewBag.CommentCount = series.Reviews.Count;
+            ViewBag.ListCount = series.ListItems.Select(l => l.List).ToList().Count;
 
             return View(series);
         }
@@ -217,6 +219,17 @@ namespace MovieProject.Controllers
             var media = _context.Media.Include(r => r.FilmItem).Where(r => r.FilmItem == series).FirstOrDefault();
 
             return View(media);
+        }
+
+        [HttpGet("series/{Slug}/lists")]
+        public ViewResult Lists(string Slug)
+        {
+            var series = _context.Series.Include(f => f.ListItems).ThenInclude(li => li.List).FirstOrDefault(m => m.Slug == Slug);
+
+            ViewBag.FilmItem = series;
+            ViewBag.ReleaseYear = series.ReleaseDate.Value.ToString("yyyy");
+
+            return View(series);
         }
     }
 }

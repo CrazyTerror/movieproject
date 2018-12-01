@@ -53,6 +53,7 @@ namespace MovieProject.Controllers
                                          .Include(m => m.Media)
                                          .Include(v => v.Videos)
                                          .Include(p => p.Photos)
+                                         .Include(l => l.ListItems).ThenInclude(l => l.List)
                                          .Where(x => x.Season_SeasonNumber == SeasonNumber)
                                          .Where(y => y.SeriesId == series.Id)
                                          .FirstOrDefault();
@@ -63,6 +64,7 @@ namespace MovieProject.Controllers
             ViewBag.SeasonCount = series.Series_SeasonCount;
             ViewBag.TotalRuntime = FilmItemMethods.CalculateSeasonTotalRuntime(season);
             ViewBag.CommentCount = season.Reviews.Count;
+            ViewBag.ListCount = season.ListItems.Select(l => l.List).ToList().Count;
 
             var firstEpisode = season.Episodes.OrderBy(e => e.ReleaseDate).First().ReleaseDate;
             if (firstEpisode.HasValue)
@@ -184,6 +186,17 @@ namespace MovieProject.Controllers
             var media = _context.Media.Include(r => r.FilmItem).Where(r => r.FilmItem == season).FirstOrDefault();
 
             return View(media);
+        }
+
+        [HttpGet("series/{Slug}/seasons/{SeasonNumber}/lists")]
+        public ViewResult Lists(string Slug, int SeasonNumber)
+        {
+            var season = _context.Seasons.Include(f => f.ListItems).ThenInclude(li => li.List).Where(s => s.Slug == Slug).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
+
+            ViewBag.FilmItem = season;
+            ViewBag.ReleaseYear = season.ReleaseDate.Value.ToString("yyyy");
+
+            return View(season);
         }
     }
 }
