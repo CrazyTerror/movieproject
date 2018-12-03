@@ -44,6 +44,7 @@ namespace MovieProject.Models
         public ICollection<Photo> Photos { get; set; }
         public ICollection<Video> Videos { get; set; }
         public ICollection<UserRating> UserRatings { get; set; }
+        public ICollection<UserWatchedFilmItemOn> UserWatchedOn { get; set; }
         public ICollection<ListItem> ListItems { get; set; }
         public ICollection<Review> Reviews { get; set; }
     }

@@ -204,6 +204,7 @@ namespace MovieProject.Controllers
         }
 
         [HttpGet("series/{Slug}/seasons/{SeasonNumber}/episodes/{EpisodeNumber}/lists")]
+        [AllowAnonymous]
         public ViewResult Lists(string Slug, int SeasonNumber, int EpisodeNumber)
         {
             var episode = _context.Episodes.Include(f => f.ListItems).ThenInclude(li => li.List).Where(s => s.Slug == Slug).Where(s => s.Episode_SeasonNumber == SeasonNumber).Where(e => e.Episode_EpisodeNumber == EpisodeNumber).FirstOrDefault();
@@ -217,6 +218,60 @@ namespace MovieProject.Controllers
             }
 
             return View(episode);
+        }
+
+        [HttpGet("series/{Slug}/seasons/{SeasonNumber}/episodes/{EpisodeNumber}/listsModal")]
+        public IActionResult ListsModal(string Slug, int SeasonNumber, int EpisodeNumber)
+        {
+            var series = _context.Series.FirstOrDefault(s => s.Slug == Slug);
+            var season = _context.Seasons.Where(s => s.Slug == Slug).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
+            var episode = _context.Episodes.Where(e => e.Slug == Slug).Where(e => e.Episode_SeasonNumber == SeasonNumber).Where(e => e.Episode_EpisodeNumber == EpisodeNumber).FirstOrDefault();
+            var lists = _context.Lists.Include(li => li.ListItems).ThenInclude(m => m.FilmItem).Where(a => a.ApplicationUserId == _userManager.GetUserId(User)).ToList();
+            
+            var episodeString = "";
+            if (episode.Episode_EpisodeNumber < 10) {
+                episodeString = "0" + episode.Episode_EpisodeNumber;
+            } else {
+                episodeString = episode.Episode_EpisodeNumber.ToString();
+            }
+            ViewBag.FilmItem = series.Name + " - " + episode.Episode_SeasonNumber + "x" + episodeString + " \"" + episode.Name + "\"";
+            ViewBag.FilmItemId = episode.Id;
+
+            var listsHavingFilmItem = 0;
+            foreach (var list in lists)
+            {
+                foreach (var listItem in list.ListItems)
+                {
+                    if (listItem.FilmItemId == episode.Id) {
+                        listsHavingFilmItem++;
+                    }
+                }
+            }
+            ViewBag.ListsWithFilmItem = listsHavingFilmItem;
+
+            return PartialView("_FilmItemListsModalPartial", lists);
+        }
+
+        [HttpPost("series/{Slug}/seasons/{SeasonNumber}/episodes/{EpisodeNumber}/listsModal")]
+        public IActionResult ListsModal(string Slug, int SeasonNumber, int EpisodeNumber, bool check = false)
+        {
+            var listsChecked = Request.Form["Lists"].ToList();
+            var episode = _context.Episodes.Where(s => s.Slug == Slug).Where(s => s.Episode_SeasonNumber == SeasonNumber).Where(s => s.Episode_EpisodeNumber == EpisodeNumber).FirstOrDefault();
+            var lists = _context.Lists.Include(li => li.ListItems).Where(u => u.ApplicationUserId == _userManager.GetUserId(User)).ToList();
+
+            foreach (var list in lists)
+            {
+                var itemInList = list.ListItems.Where(m => m.FilmItem == episode).FirstOrDefault();
+                if (itemInList != null && !listsChecked.Contains(list.Id.ToString())) //unchecked -> checked
+                {
+                    FilmItemMethods.RemoveListItem(_context, itemInList);
+                } else if (itemInList == null && listsChecked.Contains(list.Id.ToString())) //checked -> unchecked
+                {
+                    FilmItemMethods.SaveListItem(_context, list, episode);
+                }
+            }
+
+            return RedirectToAction("Details", new { Slug = Slug });
         }
     }
 }

@@ -189,6 +189,7 @@ namespace MovieProject.Controllers
         }
 
         [HttpGet("series/{Slug}/seasons/{SeasonNumber}/lists")]
+        [AllowAnonymous]
         public ViewResult Lists(string Slug, int SeasonNumber)
         {
             var season = _context.Seasons.Include(f => f.ListItems).ThenInclude(li => li.List).Where(s => s.Slug == Slug).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
@@ -197,6 +198,52 @@ namespace MovieProject.Controllers
             ViewBag.ReleaseYear = season.ReleaseDate.Value.ToString("yyyy");
 
             return View(season);
+        }
+
+        [HttpGet("series/{Slug}/seasons/{SeasonNumber}/listsModal")]
+        public IActionResult ListsModal(string Slug, int SeasonNumber)
+        {
+            var series = _context.Series.FirstOrDefault(s => s.Slug == Slug);
+            var season = _context.Seasons.Where(s => s.Slug == Slug).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
+            var lists = _context.Lists.Include(li => li.ListItems).ThenInclude(m => m.FilmItem).Where(a => a.ApplicationUserId == _userManager.GetUserId(User)).ToList();
+            ViewBag.FilmItem = series.Name + " - " + season.Name;
+            ViewBag.FilmItemId = season.Id;
+
+            var listsHavingFilmItem = 0;
+            foreach (var list in lists)
+            {
+                foreach (var listItem in list.ListItems)
+                {
+                    if (listItem.FilmItemId == season.Id) {
+                        listsHavingFilmItem++;
+                    }
+                }
+            }
+            ViewBag.ListsWithFilmItem = listsHavingFilmItem;
+
+            return PartialView("_FilmItemListsModalPartial", lists);
+        }
+
+        [HttpPost("series/{Slug}/seasons/{SeasonNumber}/listsModal")]
+        public IActionResult ListsModal(string Slug, int SeasonNumber, bool check = false)
+        {
+            var listsChecked = Request.Form["Lists"].ToList();
+            var season = _context.Seasons.Where(s => s.Slug == Slug).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
+            var lists = _context.Lists.Include(li => li.ListItems).Where(u => u.ApplicationUserId == _userManager.GetUserId(User)).ToList();
+
+            foreach (var list in lists)
+            {
+                var itemInList = list.ListItems.Where(m => m.FilmItem == season).FirstOrDefault();
+                if (itemInList != null && !listsChecked.Contains(list.Id.ToString())) //unchecked -> checked
+                {
+                    FilmItemMethods.RemoveListItem(_context, itemInList);
+                } else if (itemInList == null && listsChecked.Contains(list.Id.ToString())) //checked -> unchecked
+                {
+                    FilmItemMethods.SaveListItem(_context, list, season);
+                }
+            }
+
+            return RedirectToAction("Details", new { Slug = Slug });
         }
     }
 }

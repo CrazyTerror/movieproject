@@ -234,5 +234,37 @@ namespace MovieProject.Infrastructure
 
             _ctx.SaveChanges();
         }
+
+        public static void SaveListItem(MovieContext _ctx, List list, FilmItem filmItem)
+        {
+            var filmItemAlreadyInList = _ctx.ListItems.Where(l => l.List == list).Where(f => f.FilmItem == filmItem).FirstOrDefault();
+
+            if (filmItem != null && filmItemAlreadyInList == null)
+            {
+                ListItem li = new ListItem()
+                {
+                    FilmItem = filmItem,
+                    List = list
+                };
+
+                _ctx.ListItems.Add(li);
+                _ctx.SaveChanges();
+
+                _ctx.Lists.Attach(list);
+                list.ItemCount++;
+                list.UpdatedAt = DateTime.Now;
+                _ctx.SaveChanges();
+            }
+        }
+
+        public static void RemoveListItem(MovieContext _ctx, ListItem item)
+        {
+            _ctx.ListItems.Remove(item);
+            
+            _ctx.Lists.Attach(item.List);
+            item.List.ItemCount--;
+
+            _ctx.SaveChanges();
+        }
     }
 }

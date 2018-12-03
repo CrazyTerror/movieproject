@@ -222,6 +222,7 @@ namespace MovieProject.Controllers
         }
 
         [HttpGet("series/{Slug}/lists")]
+        [AllowAnonymous]
         public ViewResult Lists(string Slug)
         {
             var series = _context.Series.Include(f => f.ListItems).ThenInclude(li => li.List).FirstOrDefault(m => m.Slug == Slug);
@@ -230,6 +231,51 @@ namespace MovieProject.Controllers
             ViewBag.ReleaseYear = series.ReleaseDate.Value.ToString("yyyy");
 
             return View(series);
+        }
+
+        [HttpGet("series/{Slug}/listsModal")]
+        public IActionResult ListsModal(string Slug)
+        {
+            var series = _context.Series.FirstOrDefault(s => s.Slug == Slug);
+            var lists = _context.Lists.Include(li => li.ListItems).ThenInclude(m => m.FilmItem).Where(a => a.ApplicationUserId == _userManager.GetUserId(User)).ToList();
+            ViewBag.FilmItem = series.Name;
+            ViewBag.FilmItemId = series.Id;
+
+            var listsHavingFilmItem = 0;
+            foreach (var list in lists)
+            {
+                foreach (var listItem in list.ListItems)
+                {
+                    if (listItem.FilmItemId == series.Id) {
+                        listsHavingFilmItem++;
+                    }
+                }
+            }
+            ViewBag.ListsWithFilmItem = listsHavingFilmItem;
+
+            return PartialView("_FilmItemListsModalPartial", lists);
+        }
+
+        [HttpPost("series/{Slug}/listsModal")]
+        public IActionResult ListsModal(string Slug, bool check = false)
+        {
+            var listsChecked = Request.Form["Lists"].ToList();
+            var series = _context.Series.FirstOrDefault(m => m.Slug == Slug);
+            var lists = _context.Lists.Include(li => li.ListItems).Where(u => u.ApplicationUserId == _userManager.GetUserId(User)).ToList();
+
+            foreach (var list in lists)
+            {
+                var itemInList = list.ListItems.Where(m => m.FilmItem == series).FirstOrDefault();
+                if (itemInList != null && !listsChecked.Contains(list.Id.ToString())) //unchecked -> checked
+                {
+                    FilmItemMethods.RemoveListItem(_context, itemInList);
+                } else if (itemInList == null && listsChecked.Contains(list.Id.ToString())) //checked -> unchecked
+                {
+                    FilmItemMethods.SaveListItem(_context, list, series);
+                }
+            }
+
+            return RedirectToAction("Details", new { Slug = Slug });
         }
     }
 }

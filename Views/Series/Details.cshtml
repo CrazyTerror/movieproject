@@ -60,6 +60,14 @@
     </div>
 }
 
+@if (User.Identity.IsAuthenticated)
+{
+    <div id="modal-placeholder"></div>
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" data-url="@Url.Action("ListsModal", new { Slug = Model.Slug })">
+        Add To List
+    </button>
+}
+
 @await Html.PartialAsync("_FilmItemVideoPartial", Model)
 
 @await Html.PartialAsync("_FilmItemCastPartial", Model)

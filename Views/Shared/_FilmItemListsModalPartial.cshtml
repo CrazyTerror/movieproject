@@ -1,0 +1,33 @@
+@model List<MovieProject.Models.List>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Add @ViewBag.FilmItem to List</h4>
+            </div>
+            <div class="modal-body">
+                <h5>Listed on @ViewBag.ListsWithFilmItem of @Model.Count lists</h5>
+                <form class="form-horizontal" asp-action="ListsModal" method="post" enctype="multipart/form-data">
+                    @foreach (var list in Model)
+                    {
+                        var isItemInList = list.ListItems.Where(l => l.FilmItemId == ViewBag.FilmItemId).FirstOrDefault();
+
+                        <div class="radio">
+                            <label>
+                                <input type="checkbox" name="Lists" id="Lists" value="@list.Id" @Html.Raw(isItemInList != null ? "checked=\"checked\"" : "")>
+                                @list.Name
+                            </label>
+                        </div>
+                    }
+                    <div class="text-center">
+                        <button class="btn btn-primary" type="submit">Save Changes</button>
+                        <button type="button" data-dismiss="modal" class="btn btn-default">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>    

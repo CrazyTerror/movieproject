@@ -71,6 +71,14 @@
     </form>
 }
 
+@if (User.Identity.IsAuthenticated)
+{
+    <div id="modal-placeholder"></div>
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" data-url="@Url.Action("ListsModal", new { Slug = Model.Slug, SeasonNumber = Model.Episode_SeasonNumber, EpisodeNumber = Model.Episode_EpisodeNumber })">
+        Add To List
+    </button>
+}
+
 @await Html.PartialAsync("_FilmItemVideoPartial", Model)
 
 @await Html.PartialAsync("_FilmItemCommentPartial", Model)
