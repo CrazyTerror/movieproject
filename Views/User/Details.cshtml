@@ -1,21 +1,191 @@
-@model MovieProject.Data.ApplicationUser
+@model MovieProject.Models.UserInfoViewModel
 @{
-    ViewData["Title"] = @Model.UserName + "'s profile"; 
+    ViewData["Title"] = @Model.User.UserName + "'s profile"; 
+    var XLabels = Newtonsoft.Json.JsonConvert.SerializeObject( Model.RatingDistribution.Select( x => x.Value ).ToList() );  
+    var YValues = Newtonsoft.Json.JsonConvert.SerializeObject( Model.RatingDistribution.Select( x => x.Count ).ToList() );
 }
 
+<div class="container">
 <div class="row">
     <ul>
-        <li><a asp-action="Details" asp-route-slug="@Model.Slug">Profile</a></li>
-        <li><a asp-action="History" asp-route-slug="@Model.Slug">History</a></li>
-        <li><a asp-action="Ratings" asp-route-slug="@Model.Slug">Ratings</a></li>
-        <li><a asp-action="Index" asp-controller="List" asp-route-slug="@Model.Slug">Lists</a></li>
-        <li><a asp-action="Comments" asp-route-slug="@Model.Slug">Comments</a></li>
+        <li><a asp-action="Details" asp-route-slug="@Model.User.Slug">Profile</a></li>
+        <li><a asp-action="History" asp-route-slug="@Model.User.Slug">History</a></li>
+        <li><a asp-action="Ratings" asp-route-slug="@Model.User.Slug">Ratings</a></li>
+        <li><a asp-action="Index" asp-controller="List" asp-route-slug="@Model.User.Slug">Lists</a></li>
+        <li><a asp-action="Comments" asp-route-slug="@Model.User.Slug">Comments</a></li>
     </ul>
 </div>
 
-<div class="row">About @(Model.UserName)</div>
-<div class="row">Featured List <a asp-controller="List" asp-action="Details" asp-route-slug="@Model.Slug" asp-route-listname="watchlist">Watchlist</a></div>
+<div class="row">About @(Model.User.UserName)</div>
+<div class="row">Featured List <a asp-controller="List" asp-action="Details" asp-route-slug="@Model.User.Slug" asp-route-listname="watchlist">Watchlist</a></div>
 <div class="row">
-    <div>Movies rated: <a asp-action="Ratings" asp-route-slug="@Model.Slug">x</a></div>
-    <div>Episodes rated: <a asp-action="Ratings" asp-route-slug="@Model.Slug">y</a></div>
+    <div>Movies rated: <a asp-action="Ratings" asp-route-slug="@Model.User.Slug">x</a></div>
+    <div>Episodes rated: <a asp-action="Ratings" asp-route-slug="@Model.User.Slug">y</a></div>
+    <br>
 </div>
+
+<div class="row">
+    Last Watched
+    @if (Model.LastWatchedFilmItem.FilmItem.Discriminator == "Movie" || Model.LastWatchedFilmItem.FilmItem.Discriminator == "Series")
+    {
+        <a asp-action="Details" asp-controller="@(Model.LastWatchedFilmItem.FilmItem.Discriminator)" asp-route-slug="@(Model.LastWatchedFilmItem.FilmItem.Slug)">
+            <img src="/images/filmitem/poster/@(Model.LastWatchedFilmItem.FilmItem.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@(Model.LastWatchedFilmItem.FilmItem.Name)" height="127px" width="84px" />
+            @Model.LastWatchedFilmItem.FilmItem.Name
+        </a>
+        <a asp-action="Details" asp-controller="@(Model.LastWatchedFilmItem.FilmItem.Discriminator)" asp-route-slug="@(Model.LastWatchedFilmItem.FilmItem.Slug)">@Model.LastWatchedFilmItem.FilmItem.Discriminator Info</a>
+    } else if (Model.LastWatchedFilmItem.FilmItem.Discriminator == "Episode") {
+        var episodeNumber = (Model.LastWatchedFilmItem.FilmItem.Episode_EpisodeNumber < 10 ? "0" + Model.LastWatchedFilmItem.FilmItem.Episode_EpisodeNumber : "" + Model.LastWatchedFilmItem.FilmItem.Episode_EpisodeNumber);
+        <a asp-action="Details" asp-controller="@Model.LastWatchedFilmItem.FilmItem.Discriminator" asp-route-slug="@Model.LastWatchedFilmItem.FilmItem.Slug" asp-route-seasonnumber="@Model.LastWatchedFilmItem.FilmItem.Episode_SeasonNumber" asp-route-episodenumber="@Model.LastWatchedFilmItem.FilmItem.Episode_EpisodeNumber">
+            <img src="/images/filmitem/poster/@(Model.LastWatchedFilmItem.FilmItem.Rel_SeriesId).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@Model.LastWatchedFilmItem.FilmItem.Name" height="127px" width="84px" />
+        </a>
+        <a asp-action="Details" asp-controller="Series" asp-route-slug="@(Model.LastWatchedFilmItem.FilmItem.Slug)">@Model.LastWatchedFilmItem.FilmItem.Rel_SeriesName</a>
+        <a asp-action="Details" asp-controller="@Model.LastWatchedFilmItem.FilmItem.Discriminator" asp-route-slug="@Model.LastWatchedFilmItem.FilmItem.Slug" asp-route-seasonnumber="@Model.LastWatchedFilmItem.FilmItem.Episode_SeasonNumber" asp-route-episodenumber="@Model.LastWatchedFilmItem.FilmItem.Episode_EpisodeNumber">@(Model.LastWatchedFilmItem.FilmItem.Episode_SeasonNumber + "x" + @episodeNumber + " " + @Model.LastWatchedFilmItem.FilmItem.Name)</a>
+        <a asp-action="Details" asp-controller="@Model.LastWatchedFilmItem.FilmItem.Discriminator" asp-route-slug="@Model.LastWatchedFilmItem.FilmItem.Slug" asp-route-seasonnumber="@Model.LastWatchedFilmItem.FilmItem.Episode_SeasonNumber" asp-route-episodenumber="@Model.LastWatchedFilmItem.FilmItem.Episode_EpisodeNumber">@Model.LastWatchedFilmItem.FilmItem.Discriminator Info</a>
+    } else if (Model.LastWatchedFilmItem.FilmItem.Discriminator == "Season") {
+        <a asp-action="Details" asp-controller="@Model.LastWatchedFilmItem.FilmItem.Discriminator" asp-route-slug="@Model.LastWatchedFilmItem.FilmItem.Slug" asp-route-seasonnumber="@Model.LastWatchedFilmItem.FilmItem.Season_SeasonNumber">
+            <img src="/images/filmitem/poster/@(Model.LastWatchedFilmItem.FilmItem.Rel_SeriesId).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@Model.LastWatchedFilmItem.FilmItem.Name" height="127px" width="84px" />
+        </a>
+        <a asp-action="Details" asp-controller="Series" asp-route-slug="@(Model.LastWatchedFilmItem.FilmItem.Slug)">@Model.LastWatchedFilmItem.FilmItem.Rel_SeriesName</a>
+        <a asp-action="Details" asp-controller="@Model.LastWatchedFilmItem.FilmItem.Discriminator" asp-route-slug="@Model.LastWatchedFilmItem.FilmItem.Slug" asp-route-seasonnumber="@Model.LastWatchedFilmItem.FilmItem.Season_SeasonNumber">@Model.LastWatchedFilmItem.FilmItem.Name</a>
+        <a asp-action="Details" asp-controller="@Model.LastWatchedFilmItem.FilmItem.Discriminator" asp-route-slug="@Model.LastWatchedFilmItem.FilmItem.Slug" asp-route-seasonnumber="@Model.LastWatchedFilmItem.FilmItem.Season_SeasonNumber">@Model.LastWatchedFilmItem.FilmItem.Discriminator Info</a>
+    }
+    <br>
+</div>
+
+<div class="row">
+    Recently watched movies
+    @foreach (var movie in Model.UserLatestSeenMovies)
+    {
+        <a asp-action="Details" asp-controller="@(movie.FilmItem.Discriminator)" asp-route-slug="@(movie.FilmItem.Slug)">
+            <img src="/images/filmitem/poster/@(movie.FilmItem.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@(movie.FilmItem.Name)" height="127px" width="84px" />
+        </a>
+        <a asp-action="Details" asp-controller="@(movie.FilmItem.Discriminator)" asp-route-slug="@(movie.FilmItem.Slug)">
+            <div>@movie.FilmItem.Name</div>
+            <div>@movie.WatchedOn.ToString("d MMMM yyyy")</div>
+        </a>
+    }
+    <br>
+</div>
+
+<div class="row">
+    Recently watched episodes
+    @foreach (var episode in Model.UserLatestSeenEpisodes)
+    {
+        var episodeNumber = (episode.FilmItem.Episode_EpisodeNumber < 10 ? "0" + episode.FilmItem.Episode_EpisodeNumber : "" + episode.FilmItem.Episode_EpisodeNumber);
+        <a asp-action="Details" asp-controller="@episode.FilmItem.Discriminator" asp-route-slug="@episode.FilmItem.Slug" asp-route-seasonnumber="@episode.FilmItem.Episode_SeasonNumber" asp-route-episodenumber="@episode.FilmItem.Episode_EpisodeNumber">
+            <img src="/images/filmitem/poster/@(episode.FilmItem.Rel_SeriesId).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@episode.FilmItem.Name" height="127px" width="84px" />
+        </a>
+        <a asp-action="Details" asp-controller="@episode.FilmItem.Discriminator" asp-route-slug="@episode.FilmItem.Slug" asp-route-seasonnumber="@episode.FilmItem.Episode_SeasonNumber" asp-route-episodenumber="@episode.FilmItem.Episode_EpisodeNumber">
+            <div>@(episode.FilmItem.Episode_SeasonNumber + "x" + @episodeNumber + " " + episode.FilmItem.Name)</div>
+            <div>@episode.FilmItem.Rel_SeriesName</div>
+            <div>@episode.WatchedOn.ToString("d MMMM yyyy")</div>
+        </a>
+    }
+    <br>
+</div>
+
+<div class="row">
+    Rating Distribution:
+    <div class="chart-container">  
+        <canvas id="chart" style="width:400px; height:200px"></canvas>  
+    </div>  
+</div>
+
+<div class="row">
+    @(Model.User.UserName + "'s favorites")
+    <div>
+        Series
+        @foreach (var series in Model.UserFavoriteSeries)
+        {
+            <a asp-action="Details" asp-controller="@(series.FilmItem.Discriminator)" asp-route-slug="@(series.FilmItem.Slug)">
+                <img src="/images/filmitem/poster/@(series.FilmItem.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@(series.FilmItem.Name)" height="127px" width="84px" />
+            </a>
+            @series.Rating
+        }
+    </div>
+    <div>
+        Movies
+        @foreach (var movie in Model.UserFavoriteMovies)
+        {
+            <a asp-action="Details" asp-controller="@(movie.FilmItem.Discriminator)" asp-route-slug="@(movie.FilmItem.Slug)">
+                <img src="/images/filmitem/poster/@(movie.FilmItem.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@(movie.FilmItem.Name)" height="127px" width="84px" />
+            </a>
+            @movie.Rating
+        }
+    </div>
+    <br>
+</div>
+
+</div>
+
+@section Scripts {
+    <script type="text/javascript">  
+        $(function () {  
+            var chartName = "chart";  
+                var ctx = document.getElementById(chartName).getContext('2d');  
+                var data = {  
+                        labels: @Html.Raw(XLabels),  
+                        datasets: [{  
+                            label: "Ratings",  
+                            backgroundColor: [  
+                                'rgba(255, 99, 132, 0.2)',  
+                                'rgba(54, 162, 235, 0.2)',  
+                                'rgba(255, 206, 86, 0.2)',  
+                                'rgba(0, 0, 0, 0.8)',  
+                                'rgba(153, 102, 255, 0.2)',  
+                                'rgba(255, 159, 64, 0.2)',  
+                                'rgba(255, 0, 0)',  
+                                'rgba(0, 255, 0)',  
+                                'rgba(0, 0, 255)',  
+                                'rgba(192, 192, 192)',  
+                            ],  
+                            borderColor: [  
+                                'rgba(255,99,132,1)',  
+                                'rgba(54, 162, 235, 1)',  
+                                'rgba(255, 206, 86, 1)',  
+                                'rgba(75, 192, 192, 1)',  
+                                'rgba(153, 102, 255, 1)',  
+                                'rgba(255, 159, 64, 1)',  
+                                'rgba(255, 0, 0)',  
+                                'rgba(0, 255, 0)',  
+                                'rgba(0, 0, 255)',  
+                                'rgba(192, 192, 192)',
+                            ],  
+                            borderWidth: 1,  
+                            data: @Html.Raw(YValues)  
+                        }]  
+                };  
+  
+                var options = {  
+                    maintainAspectRatio: false,  
+                    scales: {  
+                        yAxes: [{  
+                            ticks: {  
+                                min: 0,  
+                                beginAtZero: true  
+                            },  
+                            gridLines: {  
+                                display: true,  
+                                color: "rgba(255,99,164,0.2)"  
+                            }  
+                        }],  
+                        xAxes: [{  
+                            ticks: {  
+                                min: 0,  
+                                beginAtZero: true  
+                            },  
+                            gridLines: {  
+                                display: false  
+                            }  
+                        }]  
+                    }  
+                };  
+  
+                var myChart = new  Chart(ctx, {  
+                    options: options,  
+                    data: data,  
+                    type:'bar'  
+                });  
+        });  
+</script>  
+}

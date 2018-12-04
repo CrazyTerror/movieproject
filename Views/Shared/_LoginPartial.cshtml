@@ -33,3 +33,31 @@ else
         <li><a asp-area="Identity" asp-page="/Account/Login">Login</a></li>
     </ul>
 }
+
+@*@if (User.Identity.IsAuthenticated) 
+{
+    var user = @UserManager.GetUserId(User);
+    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
+        <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="User" asp-action="Details" asp-route-slug="@UserManager.Users.Where(u => u.Id == user).FirstOrDefault().Slug">@UserManager.GetUserName(User)</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @(UserManager.GetUserName(User))!</a>
+        </li>
+        <li class="nav-item">
+            <button type="submit" class="btn btn-link navbar-btn navbar-link">Logout</button>
+        </li>
+    </ul>
+    </form>
+} else
+{
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+    </ul>
+}*@

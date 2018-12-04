@@ -52,6 +52,55 @@
         </div>
     </nav>
 
+    <!--<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">MovieProject</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="navbarNavDropdown" class="navbar-collapse collapse">
+            <ul class="navbar-nav mr-auto">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item active">
+                        <a class="nav-link" asp-controller="Dashboard" asp-action="Index">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                } else
+                {
+                    <li class="nav-item active">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                }
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Movie" asp-action="Index">Movies</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Series" asp-action="Index">Series</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Person" asp-action="Index">People</a>
+                </li>
+                @if (User.Identity.IsAuthenticated) { 
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="List" asp-action="Index" asp-route-slug="@(User.FindFirst("Slug").Value)">Lists</a>
+                    </li>
+                }
+                @if (User.IsInRole("Admins")) {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Genre" asp-action="Index">Genres</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="RoleAdmin" asp-action="Index">Roles</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="User" asp-action="Index">Users</a>
+                    </li>
+                }
+
+            </ul>
+            <partial name="_LoginPartial" />
+        </div>
+    </nav>-->
+
     <partial name="_CookieConsentPartial" />
 
     <div class="container-fluid body-content">
@@ -70,7 +119,8 @@
             </div>
             <div class="col-md-2" style="background-color:yellow;">3 of 3</div>
         </div>
-
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
