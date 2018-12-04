@@ -26,13 +26,55 @@ namespace MovieProject.Controllers
         [HttpGet("dashboard")]
         public ViewResult Index()
         {
+            var episodesWatched = 0;
+            int? episodeTimeWatched = 0;
+            var seriesWatched = 0;
+            var moviesWatched = 0;
+            int? moviesTimeWatched = 0;
+
             var user = _userManager.Users.FirstOrDefault(u => u.Id == _userManager.GetUserId(User));
             
             ViewBag.Ratings = _context.UserRatings.Where(u => u.ApplicationUserId == user.Id);
-            var episodeTimeWatched = 0;
-            var episodesWatched = 0;
-            var showsWatched = 0;
+            var filmItems = _context.UserWatching.Include(f => f.FilmItem).Where(u => u.ApplicationUserId == user.Id).ToList();
+
+            foreach (var filmItemWatched in filmItems)
+            {
+                if (filmItemWatched.FilmItem.Discriminator == "Movie") {
+                    moviesWatched++;
+                    moviesTimeWatched += filmItemWatched.FilmItem.Runtime;
+                } else if (filmItemWatched.FilmItem.Discriminator == "Episode") {
+                    episodesWatched++;
+                    episodeTimeWatched += filmItemWatched.FilmItem.Runtime;
+                } else if (filmItemWatched.FilmItem.Discriminator == "Series") {
+                    seriesWatched++;
+                }
+            }
+
+            ViewBag.EpisodesWatched = episodesWatched;
+            ViewBag.EpisodeTimeWatched = CalculateInDays(episodeTimeWatched);
+            ViewBag.SeriesWatched = seriesWatched;
+            ViewBag.MoviesWatched = moviesWatched;
+            ViewBag.MoviesTimeWatched = CalculateInDays(moviesTimeWatched);
+            
             return View(user);
+        }
+
+        public string CalculateInDays(int? totalTime)
+        {
+            int? days = totalTime / 1440;
+            int? hours = (totalTime % 1440)/60;
+            int? minutes = totalTime % 60;
+
+            if (days != 0)
+            {
+                return string.Format("{0} days, {1} hours, {2} mins watching", days, hours, minutes);
+            } else if (days == 0 && hours != 0)
+            {
+                return string.Format("{0} hours, {1} mins watching", hours, minutes);
+            } else 
+            {
+                return string.Format("{0} mins watching", minutes);
+            }
         }
     }
 }
