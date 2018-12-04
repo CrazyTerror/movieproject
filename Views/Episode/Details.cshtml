@@ -73,6 +73,17 @@
 
 @if (User.Identity.IsAuthenticated)
 {
+    <form class="form-horizontal" asp-action="HistoryModal" asp-controller="User" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="FilmItemId" value="@Model.Id" />
+        <div class="col-md-8">
+            <span class="text-danger"></span>
+            <input type="date" name="WatchedOn" />
+        </div>
+        <div class="text-center">
+            <button class="btn btn-primary" type="submit">Save Changes</button>
+        </div>
+    </form>
+    
     <div id="modal-placeholder"></div>
     <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" data-url="@Url.Action("ListsModal", new { Slug = Model.Slug, SeasonNumber = Model.Episode_SeasonNumber, EpisodeNumber = Model.Episode_EpisodeNumber })">
         Add To List
