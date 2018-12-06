@@ -3,6 +3,22 @@ using Microsoft.AspNetCore.Http;
 
 namespace MovieProject.Models
 {
+    public class PersonDetailsViewModel
+    {
+        public Person Person { get; set; }
+        public int FilmItemId { get; set; }
+        public int Age { get; set; }
+        public Array PartTypes { get; set; }
+        public PersonWatchedByUser PersonWatchedByUser { get; set; }
+    }
+
+    public class PersonWatchedByUser
+    {
+        public int UserWatchedOfPerson { get; set; }
+        public int TotalFilmItems { get; set; }
+        public double PercentageWatchedByUser { get; set; }
+    }
+
     public class EditPersonInfoViewModel
     {
         public int Id { get; set; }

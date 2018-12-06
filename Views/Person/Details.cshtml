@@ -1,16 +1,15 @@
-@model MovieProject.Models.Person
+@model MovieProject.Models.PersonDetailsViewModel
 @{
-    ViewData["Title"] = @Model.FirstName + " " + @Model.Surname; 
-    var partTypes = Enum.GetValues(typeof(PartType));
+    ViewData["Title"] = @Model.Person.FirstName + " " + @Model.Person.Surname; 
 }
 
 <div class="row">
-    <img src="/images/filmitem/@(ViewBag.FilmItemId).jpg" onerror="this.src='/images/person/template.jpg';this.onerror='';" alt="@Model.FirstName @Model.Surname" width="100%">
+    <img src="/images/filmitem/@(Model.FilmItemId).jpg" onerror="this.src='/images/person/template.jpg';this.onerror='';" alt="@Model.Person.FirstName @Model.Person.Surname" width="100%">
 </div>
 
 @if (User.Identity.IsAuthenticated)
 {
-    <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+    <form asp-action="Delete" asp-route-id="@Model.Person.Id" method="post">
         <a asp-action="Edit" class="btn btn-sm btn-warning">
             Edit Person
         </a>
@@ -24,40 +23,42 @@
 }
 
 <ul>
-    @foreach (var partType in partTypes)
+    @foreach (var partType in Model.PartTypes)
     {
-        @if (Model.FilmItemCredits.Where(s => s.PartType == (PartType) partType).ToList().Count > 0) { <li><a href="#@partType">@partType</a></li> }
+        @if (Model.Person.FilmItemCredits.Where(s => s.PartType == (PartType) partType).ToList().Count > 0) { 
+            <li><a href="#@partType">@partType</a></li> 
+        }
     }
 </ul>
 
 <div class="row">
-    Actor: @Model.FirstName @Model.Surname
+    Actor: @Model.Person.FirstName @Model.Person.Surname
 </div>
 
 <div class="row">
-    <label>Age</label> @ViewBag.Age
+    <label>Age</label> @Model.Age
 </div>
 
 <div class="row">
     <label>Born</label>
-    <text>@(Model.BirthDate.HasValue ? Model.BirthDate.Value.ToString("d MMMM yyyy") : "")</text>
-    @if (Model.BirthPlace != null)
+    <text>@(Model.Person.BirthDate.HasValue ? Model.Person.BirthDate.Value.ToString("d MMMM yyyy") : "")</text>
+    @if (Model.Person.BirthPlace != null)
     {
         <text>in</text>
-        <text>@Model.BirthPlace</text>
+        <text>@Model.Person.BirthPlace</text>
     }
 </div>
 
 <div class="row">
-@if (Model.DeathDate != null)
+@if (Model.Person.DeathDate != null)
 {
     <label>Death</label>
-    <text>@Model.DeathDate.HasValue ? Model.DeathDate.Value.ToString("d MMMM yyyy")</text>
+    <text>@Model.Person.DeathDate.HasValue ? Model.DeathDate.Value.ToString("d MMMM yyyy")</text>
 } 
 </div>
 
 <div class="row">
-    @Model.Biography
+    @Model.Person.Biography
 </div>
 
 @if (User.Identity.IsAuthenticated) 
@@ -65,14 +66,14 @@
     <a asp-action="Credits" asp-controller="Person">Edit</a>
 }
 
-@await Html.PartialAsync("_MediaPartial", Model.Media)
+@await Html.PartialAsync("_MediaPartial", Model.Person.Media)
 
-@foreach (var partType in partTypes)
+@foreach (var partType in Model.PartTypes)
 {
-    @if (Model.FilmItemCredits.Where(s => s.PartType == (PartType) partType).ToList().Count > 0)
+    @if (Model.Person.FilmItemCredits.Where(s => s.PartType == (PartType) partType).ToList().Count > 0)
     {
         <div id="@partType">@partType</div>
-        @foreach (var item in Model.FilmItemCredits.Where(p => p.PartType == (PartType) partType).OrderByDescending(f => f.FilmItem.ReleaseDate))
+        @foreach (var item in Model.Person.FilmItemCredits.Where(p => p.PartType == (PartType) partType).OrderByDescending(f => f.FilmItem.ReleaseDate))
         {
             <a asp-action="Details" asp-controller="@item.FilmItem.Discriminator" asp-route-slug="@item.FilmItem.Slug">
                 <img src="/images/filmitem/poster/@(item.FilmItem.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@item.FilmItem.Name" width="200px" height="300px"/>
@@ -86,5 +87,12 @@
 }
 
 <div class="row">
-    <img src="/images/person/poster/@(Model.Id).jpg" onerror="this.src='/images/person/poster/template.jpg';this.onerror='';" alt="@Model.FirstName @Model.Surname" width="200px" height="300px">
+    <img src="/images/person/poster/@(Model.Person.Id).jpg" onerror="this.src='/images/person/poster/template.jpg';this.onerror='';" alt="@Model.Person.FirstName @Model.Person.Surname" width="200px" height="300px">
 </div>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div>Stats</div>
+    <div>Seen: @(Model.PersonWatchedByUser.PercentageWatchedByUser + "%")</div>
+    <div>Seen: @(Model.PersonWatchedByUser.UserWatchedOfPerson + "/" + Model.PersonWatchedByUser.TotalFilmItems)</div>
+}

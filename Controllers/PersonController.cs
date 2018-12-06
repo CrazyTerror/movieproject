@@ -12,6 +12,8 @@ using MovieProject.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using MovieProject.Data;
 
 namespace MovieProject.Controllers
 {
@@ -20,11 +22,13 @@ namespace MovieProject.Controllers
     {
         private readonly MovieContext _context;
         private readonly IHostingEnvironment _env;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public PersonController(MovieContext context, IHostingEnvironment env)
+        public PersonController(MovieContext context, IHostingEnvironment env, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _env = env;
+            _userManager = userManager;
         }
 
         [HttpGet("person")]
@@ -43,26 +47,19 @@ namespace MovieProject.Controllers
             var person = _context.Persons.Include(mc => mc.FilmItemCredits).ThenInclude(c => c.FilmItem)
                                          .Include(m => m.Media)
                                          .FirstOrDefault(p => p.Slug == Slug);
-                                   
-            List<int> filmItemIds = new List<int>();
-            foreach (var filmItem in person.FilmItemCredits)
-            {
-                filmItemIds.Add(filmItem.FilmItemId);
-            }
-            
-            if (filmItemIds.Count > 0)
-            {
-                Random rand = new Random();
-                int i = rand.Next(filmItemIds.Count);
-                ViewBag.FilmItemId = filmItemIds[i];
-            }
 
-            if (person.BirthDate != null)
-            {
-                ViewBag.Age = PersonMethods.CalculatePersonAge(person);
-            }
+            var user = _userManager.GetUserId(User);
 
-            return View(person);
+            PersonDetailsViewModel personDetailsViewModel = new PersonDetailsViewModel
+            {
+                Person = person,
+                FilmItemId = PersonMethods.GetRandomBackground(person),
+                Age = PersonMethods.CalculatePersonAge(person),
+                PersonWatchedByUser = PersonMethods.GetUserStats(_context, person, user),
+                PartTypes = Enum.GetValues(typeof(PartType))
+            };
+
+            return View(personDetailsViewModel);
         }
 
         [HttpGet("person/create")]
