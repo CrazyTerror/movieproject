@@ -35,23 +35,17 @@ namespace MovieProject.Controllers
         public ViewResult Details(string Slug)
         {
             var user = _userManager.Users.Where(u => u.Slug == Slug).FirstOrDefault();
-            var ratingDistribution = _context.UserRatings.Where(u => u.ApplicationUserId == user.Id).GroupBy(ur => ur.Rating).Select(grp => new RatingDistribution { Value = grp.Key, Count = grp.Count()}).ToList();
-            var recentlyWatchedMovies = _context.UserWatching.Include(f => f.FilmItem).Where(f => f.FilmItem.Discriminator == "Movie").OrderByDescending(uw => uw.WatchedOn).Take(5).ToList();
-            var recentlyWatchedEpisodes = _context.UserWatching.Include(f => f.FilmItem).Where(f => f.FilmItem.Discriminator == "Episode").OrderByDescending(uw => uw.WatchedOn).Take(5).ToList();
-            var userFavoriteMovies = _context.UserRatings.Include(f => f.FilmItem).Where(u => u.ApplicationUserId == user.Id).Where(f => f.FilmItem.Discriminator == "Movie").OrderByDescending(r => r.Rating).Take(5).ToList();
-            var userFavoriteSeries = _context.UserRatings.Include(f => f.FilmItem).Where(u => u.ApplicationUserId == user.Id).Where(f => f.FilmItem.Discriminator == "Series").OrderByDescending(r => r.Rating).Take(5).ToList();
-            var lastWatchedItem = _context.UserWatching.Include(f => f.FilmItem).OrderByDescending(uw => uw.WatchedOn).First();
-            //var mostWatchedMovie = _context.UserWatching.Include(f => f.FilmItem).Where(u => u.ApplicationUserId == user.Id).Where(f => f.FilmItem.Discriminator == "Movie").GroupBy(uw => uw.FilmItemId).Select(grp => new MostWatchedMovie { Movie = grp.}).First();
 
             UserInfoViewModel ivm = new UserInfoViewModel
             {
                 User = user,
-                RatingDistribution = LoadFullGraph(ratingDistribution),
-                UserLatestSeenMovies = recentlyWatchedMovies,
-                UserLatestSeenEpisodes = recentlyWatchedEpisodes,
-                UserFavoriteMovies = userFavoriteMovies,
-                UserFavoriteSeries = userFavoriteSeries,
-                LastWatchedFilmItem = lastWatchedItem
+                RatingDistribution = GetRatingDistribution(user),
+                UserLatestSeenMovies = GetLastWatchedMovies(user),
+                UserLatestSeenEpisodes = GetLastWatchedEpisodes(user),
+                UserFavoriteMovies = GetUserFavoriteMovies(user),
+                UserFavoriteSeries = GetUserFavoriteSeries(user),
+                LastWatchedFilmItem = GetLastWatchedFilmItem(user),
+                MostWatchedMovie = GetMostWatchedMovie(user)
             };
 
             if (user == null)
@@ -174,15 +168,13 @@ namespace MovieProject.Controllers
         {
             var applicationUser = _userManager.GetUserId(User);
             var filmItem = _context.FilmItem.FirstOrDefault(f => f.Id == int.Parse(Request.Form["FilmItemId"]));
+            var watchedOnDate = DateTime.Parse(Request.Form["WatchedOn"]);
 
-            UserWatchedFilmItemOn userWatchedOn = new UserWatchedFilmItemOn
-            {
-                ApplicationUserId = applicationUser,
-                FilmItem = filmItem,
-                WatchedOn = DateTime.Parse(Request.Form["WatchedOn"])
-            };
-            _context.UserWatching.Add(userWatchedOn);
-            _context.SaveChanges();
+            if (filmItem.Discriminator == "Movie" || filmItem.Discriminator == "Episode") {
+                AddFilmItemToHistory(filmItem, applicationUser, watchedOnDate);
+            } else {
+                AddFilmItemChildrenToHistory(filmItem, applicationUser, watchedOnDate);
+            }
             
             if (filmItem.Discriminator == "Season") {
                 return RedirectToAction("Details", filmItem.Discriminator, new { Slug = filmItem.Slug, SeasonNumber = filmItem.Season_SeasonNumber });
@@ -193,9 +185,49 @@ namespace MovieProject.Controllers
             }
         }
 
+        public void AddFilmItemChildrenToHistory(FilmItem item, string user, DateTime watchedOnDate)
+        {
+            var filmItemChildren = new List<FilmItem>();
+            if (item.Discriminator == "Series")
+            {
+                filmItemChildren = _context.FilmItem.Where(f => f.Slug == item.Slug).ToList();
+            } else if (item.Discriminator == "Season") {
+                filmItemChildren = _context.FilmItem.Where(f => f.Slug == item.Slug).Where(f => f.Season_SeasonNumber == item.Season_SeasonNumber || f.Episode_SeasonNumber == item.Season_SeasonNumber).ToList();
+            } 
+            
+            foreach (var filmItemChild in filmItemChildren) {
+                AddFilmItemToHistory(filmItemChild, user, watchedOnDate);
+            }
+        }
+
+        public void AddFilmItemToHistory(FilmItem filmItem, string user, DateTime watchedOnDate)
+        {
+            UserWatchedFilmItemOn userWatchedOn = new UserWatchedFilmItemOn
+            {
+                ApplicationUserId = user,
+                FilmItem = filmItem,
+                WatchedOn = watchedOnDate
+            };
+            _context.UserWatching.Add(userWatchedOn);
+            _context.SaveChanges();
+        }
+
+        public List<RatingDistribution> GetRatingDistribution(ApplicationUser user)
+        {
+            var ratingDistribution = _context.UserRatings.Where(u => u.ApplicationUserId == user.Id)
+                                                         .GroupBy(ur => ur.Rating)
+                                                         .Select(grp => new RatingDistribution { Value = grp.Key, Count = grp.Count() })
+                                                         .ToList();
+
+            var ratingGraphDistribution = LoadFullGraph(ratingDistribution);                                              
+
+            return ratingGraphDistribution;
+        }
+
         public List<RatingDistribution> LoadFullGraph(List<RatingDistribution> distribution)
         {
             List<int> hasRatings = new List<int>();
+
             foreach (var rating in distribution)
             {
                 hasRatings.Add(rating.Value);
@@ -209,6 +241,75 @@ namespace MovieProject.Controllers
             }
 
             return distribution.OrderBy(x => x.Value).ToList();
+        }
+
+        public FilmItem GetMostWatchedMovie(ApplicationUser user)
+        {
+            var moviesWithTimesWatched = _context.UserWatching.Include(f => f.FilmItem).Where(u => u.ApplicationUserId == user.Id).Where(f => f.FilmItem.Discriminator == "Movie").GroupBy(uw => uw.FilmItemId).Select(x => new { FilmItemId = x.Key, TimesWatched = x.Count()});
+            var mostWatchedMovies = moviesWithTimesWatched.Where(x => x.TimesWatched == moviesWithTimesWatched.Max(y => y.TimesWatched)).ToList();
+            
+            if (mostWatchedMovies.Count > 0)
+            {
+                Random rand = new Random();
+                int i = rand.Next(mostWatchedMovies.Count);
+                var movieEntry = mostWatchedMovies[i];
+                var movie = _context.Movies.FirstOrDefault(m => m.Id == movieEntry.FilmItemId);
+                return movie;
+            } else {
+                return null;
+            }
+        }
+
+        public List<UserRating> GetUserFavoriteMovies(ApplicationUser user)
+        {
+            var favoriteMovies = _context.UserRatings.Include(f => f.FilmItem)
+                                                     .Where(u => u.ApplicationUserId == user.Id)
+                                                     .Where(f => f.FilmItem.Discriminator == "Movie")
+                                                     .OrderByDescending(r => r.Rating)
+                                                     .Take(5)
+                                                     .ToList();
+            return favoriteMovies;
+        }
+
+        public List<UserRating> GetUserFavoriteSeries(ApplicationUser user)
+        {
+            var favoriteSeries = _context.UserRatings.Include(f => f.FilmItem)
+                                                     .Where(u => u.ApplicationUserId == user.Id)
+                                                     .Where(f => f.FilmItem.Discriminator == "Series")
+                                                     .OrderByDescending(r => r.Rating)
+                                                     .Take(5)
+                                                     .ToList();
+            return favoriteSeries;
+        }
+
+        public UserWatchedFilmItemOn GetLastWatchedFilmItem(ApplicationUser user)
+        {
+            var lastWatchedItem = _context.UserWatching.Include(f => f.FilmItem)
+                                                       .OrderByDescending(uw => uw.WatchedOn)
+                                                       .First();
+            return lastWatchedItem;
+        }
+
+        public List<UserWatchedFilmItemOn> GetLastWatchedMovies(ApplicationUser user)
+        {
+            var recentlyWatchedMovies = _context.UserWatching.Include(f => f.FilmItem)
+                                                             .Where(f => f.FilmItem.Discriminator == "Movie")
+                                                             .OrderByDescending(uw => uw.WatchedOn)
+                                                             .Take(5)
+                                                             .ToList();
+            
+            return recentlyWatchedMovies;
+        }
+
+        public List<UserWatchedFilmItemOn> GetLastWatchedEpisodes(ApplicationUser user)
+        {
+            var recentlyWatchedEpisodes = _context.UserWatching.Include(f => f.FilmItem)
+                                                               .Where(f => f.FilmItem.Discriminator == "Episode")
+                                                               .OrderByDescending(uw => uw.WatchedOn)
+                                                               .Take(5)
+                                                               .ToList();
+            
+            return recentlyWatchedEpisodes;
         }
     }
 }

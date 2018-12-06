@@ -31,6 +31,7 @@ namespace MovieProject.Models
         public List<UserRating> UserFavoriteSeries { get; set; }
         public List<UserRating> UserFavoriteMovies { get; set; }
         public UserWatchedFilmItemOn LastWatchedFilmItem { get; set; }
+        public FilmItem MostWatchedMovie { get; set; }
     }
 
     public class RatingDistribution
@@ -41,6 +42,7 @@ namespace MovieProject.Models
 
     public class MostWatchedMovie
     {
-        public FilmItem Movie { get; set; }
+        public int Movie { get; set; }
+        public int Count { get; set; }
     }
 }

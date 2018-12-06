@@ -25,6 +25,18 @@
 </div>
 
 <div class="row">
+    Most Watched Movie
+    @if (Model.MostWatchedMovie != null)
+    {
+        <a asp-action="Details" asp-controller="@(Model.MostWatchedMovie.Discriminator)" asp-route-slug="@(Model.MostWatchedMovie.Slug)">
+            <img src="/images/filmitem/poster/@(Model.MostWatchedMovie.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@(Model.MostWatchedMovie.Name)" height="127px" width="84px" />
+            @Model.MostWatchedMovie.Name
+        </a>
+        <a asp-action="Details" asp-controller="@(Model.MostWatchedMovie.Discriminator)" asp-route-slug="@(Model.MostWatchedMovie.Slug)">@Model.LastWatchedFilmItem.FilmItem.Discriminator Info</a>
+    }
+</div>
+
+<div class="row">
     Last Watched
     @if (Model.LastWatchedFilmItem.FilmItem.Discriminator == "Movie" || Model.LastWatchedFilmItem.FilmItem.Discriminator == "Series")
     {
