@@ -1,37 +1,37 @@
-@model MovieProject.Models.Episode
+@model MovieProject.Models.EpisodeDetailsViewModel
 @{
-    ViewData["Title"] = @ViewBag.Series + " " + @Model.Episode_SeasonNumber + "x" + @ViewBag.Episode + " \"" +  @Model.Name + "\"";
+    ViewData["Title"] = @Model.SeriesName + " " + @Model.Episode.Episode_SeasonNumber + "x" + @Model.EpisodeNumber + " \"" +  @Model.Episode.Name + "\"";
 }
 <h2 class="text-center">@ViewData["Title"]</h2>
 
 <form class="form-horizontal" asp-action="Edit" enctype="multipart/form-data" method="post">
-    <input type="hidden" name="Id" value="@Model.Id" />
+    <input type="hidden" name="Id" value="@Model.Episode.Id" />
     <div class="form-group">
-        <label class="col-md-2 control-label" asp-for="Name"></label>
+        <label class="col-md-2 control-label" asp-for="@Model.Episode.Name"></label>
         <div class="col-md-8">
-            <span asp-validation-for="Name" class="text-danger"></span>
-            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="@Model.Episode.Name" class="text-danger"></span>
+            <input asp-for="@Model.Episode.Name" class="form-control" />
         </div>
     </div>
     <div class="form-group">
-        <label class="col-md-2 control-label" asp-for="Description"></label>
+        <label class="col-md-2 control-label" asp-for="@Model.Episode.Description"></label>
         <div class="col-md-8">
-            <span asp-validation-for="Description" class="text-danger"></span>
-            <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="@Model.Episode.Description" class="text-danger"></span>
+            <textarea asp-for="@Model.Episode.Description" class="form-control"></textarea>
         </div>
     </div>
     <div class="form-group">
-        <label class="col-md-2 control-label" asp-for="ReleaseDate"></label>
+        <label class="col-md-2 control-label" asp-for="@Model.Episode.ReleaseDate"></label>
         <div class="col-md-8">
-            <span asp-validation-for="ReleaseDate" class="text-danger"></span>
-            <input type="date" asp-for="ReleaseDate" class="form-control" />
+            <span asp-validation-for="@Model.Episode.ReleaseDate" class="text-danger"></span>
+            <input type="date" asp-for="@Model.Episode.ReleaseDate" class="form-control" />
         </div>
     </div>
     <div class="form-group">
-        <label class="col-md-2 control-label" asp-for="Runtime"></label>
+        <label class="col-md-2 control-label" asp-for="@Model.Episode.Runtime"></label>
         <div class="col-md-8">
-            <span asp-validation-for="Runtime" class="text-danger"></span>
-            <input type="number" asp-for="Runtime" class="form-control" />
+            <span asp-validation-for="@Model.Episode.Runtime" class="text-danger"></span>
+            <input type="number" asp-for="@Model.Episode.Runtime" class="form-control" />
         </div>
     </div>
     <div class="form-group">

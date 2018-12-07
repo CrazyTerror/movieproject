@@ -1,6 +1,6 @@
 @model MovieProject.Models.Season
 @{
-    ViewData["Title"] = @ViewBag.Series.Name + " - " + @Model.Name;
+    ViewData["Title"] = @Model.Rel_SeriesName + " - " + @Model.Name;
 }
 <h2 class="text-center">Edit - @ViewData["Title"]</h2>
 

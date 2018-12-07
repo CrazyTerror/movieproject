@@ -54,23 +54,30 @@ namespace MovieProject.Controllers
                                         .Include(l => l.ListItems).ThenInclude(l => l.List)
                                         .FirstOrDefault(s => s.Slug == Slug);
 
-            ViewBag.Genres = series.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();
-            ViewBag.Year = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("yyyy") : "");
-            ViewBag.Premiere = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("dd MMMM yyyy") : "");
-            ViewBag.TotalRuntime = FilmItemMethods.CalculateSeriesTotalRuntime(series);
-            ViewBag.CommentCount = series.Reviews.Count;
-            ViewBag.ListCount = series.ListItems.Select(l => l.List).ToList().Count;
+            SeriesDetailsViewModel seriesDetailsViewModel = new SeriesDetailsViewModel
+            {
+                Series = series,
+                Genres = series.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray(),
+                ReleaseYear = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("yyyy") : ""),
+                PremiereDate = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("dd MMMM yyyy") : ""),
+                TotalRuntime = FilmItemMethods.CalculateSeriesTotalRuntime(series),
+                CommentCount = series.Reviews.Count,
+                ListCount = series.ListItems.Select(l => l.List).ToList().Count
+            };
 
-            return View(series);
+            return View(seriesDetailsViewModel);
         }
 
         [HttpGet("series/create")]
         public ViewResult Create()
         {
-            ViewBag.Genres = new SelectList((_context.Genres.OrderBy(g => g.Name)), "Id", "Name");
-            ViewBag.Languages = new SelectList((_context.Languages.OrderBy(l => l.Name)), "Id", "Name");
+            FilmItemCreateParentsViewModel createViewModel = new FilmItemCreateParentsViewModel
+            {
+                Genres = new SelectList((_context.Genres.OrderBy(g => g.Name)), "Id", "Name"),
+                Languages = new SelectList((_context.Languages.OrderBy(l => l.Name)), "Id", "Name")
+            };
 
-            return View();
+            return View(createViewModel);
         }
 
         [HttpPost("series/create")]
@@ -109,9 +116,14 @@ namespace MovieProject.Controllers
         public ViewResult Edit(string Slug)
         {
             var series = _context.Series.Include(sg => sg.FilmItemGenres).ThenInclude(g => g.Genre).FirstOrDefault(m => m.Slug == Slug);
-            ViewBag.Year = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("yyyy") : "");
 
-            return View(series);
+            SeriesDetailsViewModel seriesDetailsViewModel = new SeriesDetailsViewModel
+            {
+                Series = series,
+                ReleaseYear = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("yyyy") : "")
+            };
+
+            return View(seriesDetailsViewModel);
         }
 
         [HttpPost("series/{Slug}/edit")]
@@ -169,10 +181,13 @@ namespace MovieProject.Controllers
         [HttpGet("series/{Slug}/genres/add")]
         public ViewResult AddGenre(string Slug)
         {
-            ViewBag.FilmItem = _context.Series.FirstOrDefault(m => m.Slug == Slug);
-            ViewBag.Genres = new SelectList((_context.Genres.OrderBy(x => x.Name)), "Id", "Name");
-
-            return View();
+            FilmItemAddGenresViewModel filmItemAddGenresViewModel = new FilmItemAddGenresViewModel 
+            { 
+                FilmItem = _context.Series.FirstOrDefault(m => m.Slug == Slug),
+                Genres = new SelectList((_context.Genres.OrderBy(x => x.Name)), "Id", "Name")
+            };
+            
+            return View(filmItemAddGenresViewModel);
         }
 
         [HttpGet("series/{Slug}/credits")]
@@ -187,9 +202,9 @@ namespace MovieProject.Controllers
         [HttpGet("series/{Slug}/credits/add")]
         public ViewResult AddCredit(string Slug)
         {
-            ViewBag.FilmItem  = _context.Series.FirstOrDefault(m => m.Slug == Slug);
+            var filmItem  = _context.Series.Where(s => s.Discriminator == "Series").FirstOrDefault(m => m.Slug == Slug);
 
-            return View();
+            return View(filmItem);
         }
 
         [HttpGet("series/{Slug}/credits/{Id}/edit")]
@@ -206,10 +221,15 @@ namespace MovieProject.Controllers
         {
             var series = _context.Series.Where(m => m.Slug == Slug).FirstOrDefault();
             var comments = _context.Reviews.Include(r => r.FilmItem).Where(r => r.FilmItem == series).OrderByDescending(x => x.CreatedAt).ToList();
-            ViewBag.FilmItem = series;
-            ViewBag.ReleaseYear = series.ReleaseDate.Value.ToString("yyyy");
 
-            return View(comments);
+            FilmItemCommentsViewModel filmItemCommentsViewModel = new FilmItemCommentsViewModel
+            {
+                Comments = comments,
+                FilmItem = series,
+                ReleaseYear = series.ReleaseDate.Value.ToString("yyyy")
+            };
+
+            return View(filmItemCommentsViewModel);
         }
 
         [HttpGet("series/{Slug}/media")]
@@ -227,10 +247,13 @@ namespace MovieProject.Controllers
         {
             var series = _context.Series.Include(f => f.ListItems).ThenInclude(li => li.List).FirstOrDefault(m => m.Slug == Slug);
 
-            ViewBag.FilmItem = series;
-            ViewBag.ReleaseYear = series.ReleaseDate.Value.ToString("yyyy");
+            FilmItemListsViewModel filmItemListsViewModel = new FilmItemListsViewModel
+            {
+                FilmItem = series,
+                ReleaseYear = series.ReleaseDate.Value.ToString("yyyy")
+            };
 
-            return View(series);
+            return View(filmItemListsViewModel);
         }
 
         [HttpGet("series/{Slug}/listsModal")]
@@ -241,19 +264,15 @@ namespace MovieProject.Controllers
             ViewBag.FilmItem = series.Name;
             ViewBag.FilmItemId = series.Id;
 
-            var listsHavingFilmItem = 0;
-            foreach (var list in lists)
+            FilmItemListsModalViewModel filmItemListsViewModel = new FilmItemListsModalViewModel
             {
-                foreach (var listItem in list.ListItems)
-                {
-                    if (listItem.FilmItemId == series.Id) {
-                        listsHavingFilmItem++;
-                    }
-                }
-            }
-            ViewBag.ListsWithFilmItem = listsHavingFilmItem;
+                Lists = lists,
+                FilmItem = series.Name,
+                FilmItemId = series.Id,
+                ListsWithFilmItem = FilmItemMethods.ListHavingFilmItem(lists, series)
+            };
 
-            return PartialView("_FilmItemListsModalPartial", lists);
+            return PartialView("_FilmItemListsModalPartial", filmItemListsViewModel);
         }
 
         [HttpPost("series/{Slug}/listsModal")]

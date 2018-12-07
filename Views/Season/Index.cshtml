@@ -1,11 +1,11 @@
-@model List<MovieProject.Models.Season>
+@model MovieProject.Models.SeasonIndexViewModel
 
 @{
-    ViewData["Title"] = ViewBag.Series.Name + " - Seasons";
+    ViewData["Title"] = Model.Series.Name + " - Seasons";
 }
 <h2>@ViewData["Title"]</h2>
 
-@if (Model.Count > 0)
+@if (Model.Seasons.Count > 0)
 {
     <table class="table">
         <thead>
@@ -20,7 +20,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (Season s in Model)
+            @foreach (Season s in Model.Seasons)
             {
                 <tr>
                     <td>
@@ -53,6 +53,6 @@
 @if (User.Identity.IsAuthenticated)
 {
     <div class="text-center">
-        <a asp-controller="Season" asp-action="Create" class="btn btn-primary">Add Series</a>
+        <a asp-controller="Season" asp-action="Create" class="btn btn-primary">Add Season</a>
     </div>
 }

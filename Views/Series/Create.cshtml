@@ -1,3 +1,4 @@
+@model MovieProject.Models.FilmItemCreateParentsViewModel
 @{
     ViewData["Title"] = "Create Series";
 }
@@ -38,7 +39,7 @@
         <label class="col-md-2 control-label">Language</label>
         <div class="col-md-8">
             <span class="text-danger"></span>
-            <select name="OriginalLanguage" class="form-control" asp-items="ViewBag.Languages"></select>
+            <select name="OriginalLanguage" class="form-control" asp-items="@Model.Languages"></select>
         </div>
     </div>
     <div class="form-group">
@@ -66,7 +67,7 @@
         <label class="col-md-2 control-label">Genre</label>
         <div class="col-md-8">
             <span class="text-danger"></span>
-            <select name="Genre" multiple="multiple" class="form-control" asp-items="ViewBag.Genres"></select>
+            <select name="Genre" multiple="multiple" class="form-control" asp-items="@Model.Genres"></select>
         </div>
     </div>
     <div class="text-center">

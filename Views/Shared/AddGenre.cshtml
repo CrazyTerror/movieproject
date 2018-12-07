@@ -1,15 +1,16 @@
+@model MovieProject.Models.FilmItemAddGenresViewModel
 @{
-    ViewData["Title"] = ViewBag.FilmItem.Name + " - Add Genre";
+    ViewData["Title"] = Model.FilmItem.Name + " - Add Genre";
 }
 <h2 class="text-center">@ViewData["Title"]</h2>
 
 <form class="form-horizontal" asp-action="AddGenreToFilmItem" asp-controller="Genre" method="post">
-    <input type="hidden" name="FilmItemId" value="@ViewBag.FilmItem.Id"/>
+    <input type="hidden" name="FilmItemId" value="@Model.FilmItem.Id"/>
     <div class="form-group">
         <label class="col-md-2 control-label">Genre</label>
         <div class="col-md-8">
             <span class="text-danger"></span>
-            <select name="Genre" multiple="multiple" class="form-control" style="height: 500px;" asp-items="ViewBag.Genres"></select>
+            <select name="Genre" multiple="multiple" class="form-control" style="height: 500px;" asp-items="@Model.Genres"></select>
         </div>
     </div>
     <div class="text-center">

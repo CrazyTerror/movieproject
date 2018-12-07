@@ -1,19 +1,19 @@
-@model MovieProject.Models.Season
+@model MovieProject.Models.SeasonDetailsViewModel
 @inject UserManager<ApplicationUser> UserManager
 @{
-    ViewData["Title"] = @ViewBag.Series + " - " + @Model.Name;
+    ViewData["Title"] = @Model.Season.Rel_SeriesName + " - " + @Model.Season.Name;
     string selected = "color:red;";
 }
 
 <div class="row">
-    <img src="/images/filmitem/@(Model.SeriesId).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@Model.Name" width="100%" />
+    <img src="/images/filmitem/@(Model.Season.SeriesId).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@Model.Season.Name" width="100%" />
 </div>
 
 <div class="row">
-    <a asp-controller="Series" asp-action="Details">@ViewBag.Series</a>
+    <a asp-controller="Series" asp-action="Details">@Model.Season.Rel_SeriesName</a>
 </div>
 <div class="row">
-    @Model.Name
+    @Model.Season.Name
 </div>
 
 @if (User.Identity.IsAuthenticated)
@@ -32,47 +32,47 @@
 }
 
 <div>Season</div>
-@for (var i = 1; i < @ViewBag.SeasonCount + 1; i++)
+@for (var i = 1; i < @Model.SeasonCount + 1; i++)
 {
-    <a style="@(i == @Model.Season_SeasonNumber ? @selected : null )" asp-action="Details" asp-controller="Season" asp-route-seasonnumber="@i">@i </a>
+    <a style="@(i == @Model.Season.Season_SeasonNumber ? @selected : null )" asp-action="Details" asp-controller="Season" asp-route-seasonnumber="@i">@i </a>
 }
 
 <div class="row">
     <label>Average</label>
-    @if (@Model.VoteAverage != null) { @Model.VoteAverage } else { <text>No votes</text>}
+    @if (@Model.Season.VoteAverage != null) { @Model.Season.VoteAverage } else { <text>No votes</text>}
 </div>
 
 <div class="row">
     <label>Votes</label>
-    @if (@Model.VoteAverage != null) { @Model.VoteCount } else { <text>No votes</text>}
+    @if (@Model.Season.VoteAverage != null) { @Model.Season.VoteCount } else { <text>No votes</text>}
 </div>
 
 @if (User.Identity.IsAuthenticated)
 {
-    @await Html.PartialAsync("_FilmItemRatingPartial", Model)
+    @await Html.PartialAsync("_FilmItemRatingPartial", Model.Season)
 }
 
 <div class="row">
-    <label>Aired</label> @ViewBag.FirstEpisode
+    <label>Aired</label> @Model.FirstEpisodeDate
 </div>
 
 <div class="row">
-    <label>Total Runtime</label> @ViewBag.TotalRuntime
+    <label>Total Runtime</label> @Model.TotalRuntime
 </div>
 
 <div class="row">
-    <label>Language</label> @Model.OriginalLanguage
+    <label>Language</label> @Model.Season.OriginalLanguage
 </div>
 
 <div class="row">
-    <label>Genres</label> @String.Join(", ", ViewBag.Genres)
+    <label>Genres</label> @String.Join(", ", Model.Genres)
 </div>
 
 <div class="row">
-    <label>Description</label> @Model.Description
+    <label>Description</label> @Model.Season.Description
 </div>
 
-@foreach (var episode in @Model.Episodes.OrderBy(ob => ob.Episode_EpisodeNumber))
+@foreach (var episode in @Model.Season.Episodes.OrderBy(ob => ob.Episode_EpisodeNumber))
 {
     <div class="row">
         <a asp-action="Details" asp-controller="Episode" asp-route-episodenumber="@episode.Episode_EpisodeNumber">
@@ -100,7 +100,7 @@
 }
 
 <div>
-    @Model.Episodes.Count @(Model.Episodes.Count > 1 || Model.Episodes.Count == 0 ? "Episodes" : "Episode" )
+    @Model.Season.Episodes.Count @(Model.Season.Episodes.Count > 1 || Model.Season.Episodes.Count == 0 ? "Episodes" : "Episode" )
 </div>
 
 @if (User.Identity.IsAuthenticated)
@@ -116,7 +116,7 @@
 @if (User.Identity.IsAuthenticated)
 {
     <form class="form-horizontal" asp-action="HistoryModal" asp-controller="User" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="FilmItemId" value="@Model.Id" />
+        <input type="hidden" name="FilmItemId" value="@Model.Season.Id" />
         <div class="col-md-8">
             <span class="text-danger"></span>
             <input type="date" name="WatchedOn" />
@@ -127,21 +127,21 @@
     </form>
     
     <div id="modal-placeholder"></div>
-    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" data-url="@Url.Action("ListsModal", new { Slug = Model.Slug, SeasonNumber = Model.Season_SeasonNumber })">
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" data-url="@Url.Action("ListsModal", new { Slug = Model.Season.Slug, SeasonNumber = Model.Season.Season_SeasonNumber })">
         Add To List
     </button>
 }
 
-@await Html.PartialAsync("_FilmItemVideoPartial", Model)
+@await Html.PartialAsync("_FilmItemVideoPartial", Model.Season)
 
-@await Html.PartialAsync("_FilmItemCommentPartial", Model)
+@await Html.PartialAsync("_FilmItemCommentPartial", Model.Season)
 
-@await Html.PartialAsync("_FilmItemListsPartial", Model)
+@await Html.PartialAsync("_FilmItemListsPartial", Model.Season)
 
-@await Html.PartialAsync("_MediaPartial", Model.Media)
+@await Html.PartialAsync("_MediaPartial", Model.Season.Media)
 
 <div class="row">
-    <img src="/images/filmitem/poster/@(Model.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@Model.Name" />
+    <img src="/images/filmitem/poster/@(Model.Season.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@Model.Season.Name" />
 </div>
 
 @section Scripts

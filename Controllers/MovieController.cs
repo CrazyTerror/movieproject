@@ -58,31 +58,37 @@ namespace MovieProject.Controllers
                                        .Include(l => l.ListItems).ThenInclude(l => l.List)
                                        .FirstOrDefault(m => m.Slug == Slug);
 
-            ViewBag.Genres = movie.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();
-            ViewBag.Year = (movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("yyyy") : "Unknown");
-            ViewBag.Date = (movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("dd MMMM, yyyy") : "Unknown");
-
-            ViewBag.Directors = movie.FilmItemCredits.Where(p => p.PartType == PartType.Director).OrderBy(x => x.Person.Surname).ToList();
-            ViewBag.Producers = movie.FilmItemCredits.Where(p => p.PartType == PartType.Producer).ToList();
-            ViewBag.Writers = movie.FilmItemCredits.Where(p => p.PartType == PartType.Writer).ToList();
-            ViewBag.CommentCount = movie.Reviews.Count;
-            ViewBag.ListCount = movie.ListItems.Select(l => l.List).ToList().Count;
-            ViewBag.Lists = _context.Lists.Where(l => l.ApplicationUserId == _userManager.GetUserId(User)).ToList();
+            MovieDetailsViewModel movieDetailsViewModel = new MovieDetailsViewModel
+            {
+                Movie = movie,
+                Genres = movie.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray(),
+                ReleaseYear = (movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("yyyy") : "Unknown"),
+                ReleaseDate = (movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("dd MMMM, yyyy") : "Unknown"),
+                Directors = movie.FilmItemCredits.Where(p => p.PartType == PartType.Director).OrderBy(x => x.Person.Surname).ToList(), 
+                Producers = movie.FilmItemCredits.Where(p => p.PartType == PartType.Producer).ToList(),
+                Writers = movie.FilmItemCredits.Where(p => p.PartType == PartType.Writer).ToList(),
+                CommentCount = movie.Reviews.Count,
+                Lists = _context.Lists.Where(l => l.ApplicationUserId == _userManager.GetUserId(User)).ToList(),
+                ListCount = movie.ListItems.Select(l => l.List).ToList().Count
+            };
 
             if (movie == null)
             {
                 return View(nameof(Index));
             }
 
-            return View(movie);
+            return View(movieDetailsViewModel);
         }
 
         [HttpGet("movies/create")]
         public ViewResult Create()
         {
-            ViewBag.Genres = new SelectList((_context.Genres.OrderBy(g => g.Name)), "Id", "Name");
+            FilmItemCreateParentsViewModel createViewModel = new FilmItemCreateParentsViewModel
+            {
+                Genres = new SelectList((_context.Genres.OrderBy(g => g.Name)), "Id", "Name"),
+            };
 
-            return View();
+            return View(createViewModel);
         }
 
         [HttpPost("movies/create")]
@@ -121,9 +127,14 @@ namespace MovieProject.Controllers
         public ViewResult Edit(string Slug)
         {
             var movie = _context.Movies.Include(mg => mg.FilmItemGenres).ThenInclude(g => g.Genre).FirstOrDefault(m => m.Slug == Slug);
-            ViewBag.Year = (movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("yyyy") : "Unknown");
 
-            return View(movie);
+            MovieDetailsViewModel movieDetailsViewModel = new MovieDetailsViewModel
+            {
+                Movie = movie,
+                ReleaseYear = (movie.ReleaseDate.HasValue ? movie.ReleaseDate.Value.ToString("yyyy") : "Unknown")
+            };
+
+            return View(movieDetailsViewModel);
         }
 
         [HttpPost("movies/{Slug}/edit")]
@@ -182,18 +193,21 @@ namespace MovieProject.Controllers
         [HttpGet("movies/{Slug}/genres/add")]
         public ViewResult AddGenre(string Slug)
         {
-            ViewBag.FilmItem = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
-            ViewBag.Genres = new SelectList((_context.Genres.OrderBy(x => x.Name)), "Id", "Name");
-
-            return View();
+            FilmItemAddGenresViewModel filmItemAddGenresViewModel = new FilmItemAddGenresViewModel 
+            { 
+                FilmItem = _context.Movies.FirstOrDefault(m => m.Slug == Slug),
+                Genres = new SelectList((_context.Genres.OrderBy(x => x.Name)), "Id", "Name")
+            };
+            
+            return View(filmItemAddGenresViewModel);
         }
 
         [HttpGet("movies/{Slug}/credits/add")]
         public ViewResult AddCredit(string Slug)
         {
-            ViewBag.FilmItem = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
+            var filmItem = _context.FilmItem.FirstOrDefault(m => m.Slug == Slug);
 
-            return View();
+            return View(filmItem);
         }
 
         [HttpGet("movies/{Slug}/credits/{Id}/edit")]
@@ -219,10 +233,15 @@ namespace MovieProject.Controllers
         {
             var movie = _context.Movies.Where(m => m.Slug == Slug).FirstOrDefault();
             var comments = _context.Reviews.Include(r => r.FilmItem).Where(r => r.FilmItem == movie).OrderByDescending(x => x.CreatedAt).ToList();
-            ViewBag.FilmItem = movie;
-            ViewBag.ReleaseYear = movie.ReleaseDate.Value.ToString("yyyy");
+            
+            FilmItemCommentsViewModel filmItemCommentsViewModel = new FilmItemCommentsViewModel
+            {
+                Comments = comments,
+                FilmItem = movie,
+                ReleaseYear = movie.ReleaseDate.Value.ToString("yyyy")
+            };
 
-            return View(comments);
+            return View(filmItemCommentsViewModel);
         }
 
         [HttpGet("movies/{Slug}/media")]
@@ -239,11 +258,14 @@ namespace MovieProject.Controllers
         public ViewResult Lists(string Slug)
         {
             var movie = _context.Movies.Include(f => f.ListItems).ThenInclude(li => li.List).FirstOrDefault(m => m.Slug == Slug);
+            
+            FilmItemListsViewModel filmItemListsViewModel = new FilmItemListsViewModel
+            {
+                FilmItem = movie,
+                ReleaseYear = movie.ReleaseDate.Value.ToString("yyyy")
+            };
 
-            ViewBag.FilmItem = movie;
-            ViewBag.ReleaseYear = movie.ReleaseDate.Value.ToString("yyyy");
-
-            return View(movie);
+            return View(filmItemListsViewModel);
         }
 
         [HttpGet("movies/{Slug}/listsModal")]
@@ -251,22 +273,16 @@ namespace MovieProject.Controllers
         {
             var movie = _context.Movies.FirstOrDefault(m => m.Slug == Slug);
             var lists = _context.Lists.Include(li => li.ListItems).ThenInclude(m => m.FilmItem).Where(a => a.ApplicationUserId == _userManager.GetUserId(User)).ToList();
-            ViewBag.FilmItem = movie.Name;
-            ViewBag.FilmItemId = movie.Id;
 
-            var listsHavingFilmItem = 0;
-            foreach (var list in lists)
+            FilmItemListsModalViewModel filmItemListsViewModel = new FilmItemListsModalViewModel
             {
-                foreach (var listItem in list.ListItems)
-                {
-                    if (listItem.FilmItemId == movie.Id) {
-                        listsHavingFilmItem++;
-                    }
-                }
-            }
-            ViewBag.ListsWithFilmItem = listsHavingFilmItem;
+                Lists = lists,
+                FilmItem = movie.Name,
+                FilmItemId = movie.Id,
+                ListsWithFilmItem = FilmItemMethods.ListHavingFilmItem(lists, movie)
+            };
 
-            return PartialView("_FilmItemListsModalPartial", lists);
+            return PartialView("_FilmItemListsModalPartial", filmItemListsViewModel);
         }
 
         [HttpPost("movies/{Slug}/listsModal")]

@@ -1,8 +1,26 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 
 namespace MovieProject.Models
 {
+    public class SeasonIndexViewModel
+    {
+        public Series Series { get; set; }
+        public List<Season> Seasons { get; set; }
+    }
+
+    public class SeasonDetailsViewModel
+    {
+        public Season Season { get; set; }
+        public string[] Genres { get; set; }
+        public int? SeasonCount { get; set; }
+        public string TotalRuntime { get; set; }
+        public int CommentCount { get; set; }
+        public int ListCount { get; set; }
+        public string FirstEpisodeDate { get; set; }
+    }
+
     public class EditSeasonInfoViewModel
     {
         public int Id { get; set; }

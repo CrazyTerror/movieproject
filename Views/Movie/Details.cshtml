@@ -1,27 +1,27 @@
-@model MovieProject.Models.Movie
+@model MovieProject.Models.MovieDetailsViewModel
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<ApplicationUser> UserManager
 @{
-    ViewData["Title"] = @Model.Name + " (" + ViewBag.Year + ")";
+    ViewData["Title"] = @Model.Movie.Name + " (" + Model.ReleaseYear + ")";
 }
 
 <div class="row">
-    <img src="/images/filmitem/@(Model.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@Model.Name" width="100%">
+    <img src="/images/filmitem/@(Model.Movie.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@Model.Movie.Name" width="100%">
 </div>
 <div class="row">
     <div class="col-md-10">
         <ul>
             <li>
                 <label>Average</label>
-                @if (@Model.VoteAverage != null) { @Model.VoteAverage } else { <text>No votes</text> }
+                @if (@Model.Movie.VoteAverage != null) { @Model.Movie.VoteAverage } else { <text>No votes</text> }
             </li>
             <li>
                 <label>Votes</label>
-                @if (@Model.VoteCount != null) { @Model.VoteCount } else { <text>No votes</text> }
+                @if (@Model.Movie.VoteCount != null) { @Model.Movie.VoteCount } else { <text>No votes</text> }
             </li>
             @if (User.Identity.IsAuthenticated)
             {
-                @await Html.PartialAsync("_FilmItemRatingPartial", Model)
+                @await Html.PartialAsync("_FilmItemRatingPartial", Model.Movie)
             }
         </ul>
     </div>
@@ -30,38 +30,38 @@
 <div>
     <ul>
         <li>
-            <label>Released</label> @ViewBag.Date
+            <label>Released</label> @Model.ReleaseDate
         </li>
         <li>
-            <label>Runtime</label> @Model.Runtime
+            <label>Runtime</label> @Model.Movie.Runtime
         </li>
         <li>
             <label>Genres</label>
-            @String.Join(", ", ViewBag.Genres)
+            @String.Join(", ", Model.Genres)
             @if (User.Identity.IsAuthenticated) { <a asp-action="Genre">Edit</a> }
         </li>
         <li>
-            <label>Status</label> @Model.Status
+            <label>Status</label> @Model.Movie.Status
         </li>
-        @if (Model.FilmItemCredits.Where(p => p.PartType == PartType.Director).ToList().Count > 0)
+        @if (Model.Movie.FilmItemCredits.Where(p => p.PartType == PartType.Director).ToList().Count > 0)
         {
             <li>
                 <label>Director</label>
-                @Html.Raw(string.Join(", ", Model.FilmItemCredits.Where(p => p.PartType == PartType.Director).OrderBy(x => x.Person.Surname).Select(s => string.Format("<a href={0}>{1}{2}{3}</a>", "/person/" + s.Person.Slug, s.Person.FirstName, " ", s.Person.Surname))))
+                @Html.Raw(string.Join(", ", Model.Movie.FilmItemCredits.Where(p => p.PartType == PartType.Director).OrderBy(x => x.Person.Surname).Select(s => string.Format("<a href={0}>{1}{2}{3}</a>", "/person/" + s.Person.Slug, s.Person.FirstName, " ", s.Person.Surname))))
             </li>
         }
-        @if (Model.FilmItemCredits.Where(p => p.PartType == PartType.Producer).ToList().Count > 0)
+        @if (Model.Movie.FilmItemCredits.Where(p => p.PartType == PartType.Producer).ToList().Count > 0)
         {
             <li>
                 <label>Director</label>
-                @String.Join(", ", ViewBag.Producers)
+                @String.Join(", ", Model.Producers)
             </li>
         }
-        @if (Model.FilmItemCredits.Where(p => p.PartType == PartType.Writer).ToList().Count > 0)
+        @if (Model.Movie.FilmItemCredits.Where(p => p.PartType == PartType.Writer).ToList().Count > 0)
         {
             <li>
                 <label>Director</label>
-                @String.Join(", ", ViewBag.Writers)
+                @String.Join(", ", Model.Writers)
             </li>
         }
     </ul>
@@ -70,7 +70,7 @@
 @if (User.Identity.IsAuthenticated)
 {
     <form class="form-horizontal" asp-action="HistoryModal" asp-controller="User" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="FilmItemId" value="@Model.Id" />
+        <input type="hidden" name="FilmItemId" value="@Model.Movie.Id" />
         <div class="col-md-8">
             <span class="text-danger"></span>
             <input type="date" name="WatchedOn" />
@@ -81,23 +81,23 @@
     </form>
 
     <div id="modal-placeholder"></div>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" data-url="@Url.Action("ListsModal", new { Slug = Model.Slug })">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" data-url="@Url.Action("ListsModal", new { Slug = Model.Movie.Slug })">
         Add To List
     </button>
 }
 
-@await Html.PartialAsync("_FilmItemVideoPartial", Model)
+@await Html.PartialAsync("_FilmItemVideoPartial", Model.Movie)
 
-@await Html.PartialAsync("_FilmItemCastPartial", Model)
+@await Html.PartialAsync("_FilmItemCastPartial", Model.Movie)
 
-@await Html.PartialAsync("_FilmItemCommentPartial", Model)
+@await Html.PartialAsync("_FilmItemCommentPartial", Model.Movie)
 
-@await Html.PartialAsync("_FilmItemListsPartial", Model)
+@await Html.PartialAsync("_FilmItemListsPartial", Model.Movie)
 
-@await Html.PartialAsync("_MediaPartial", Model.Media)
+@await Html.PartialAsync("_MediaPartial", Model.Movie.Media)
 
 <div>
-    <img src="/images/filmitem/poster/@(Model.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@Model.Name">
+    <img src="/images/filmitem/poster/@(Model.Movie.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@Model.Movie.Name">
 </div>
 
 @section Scripts

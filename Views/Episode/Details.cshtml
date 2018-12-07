@@ -1,58 +1,58 @@
-@model MovieProject.Models.Episode
+@model MovieProject.Models.EpisodeDetailsViewModel
 @inject UserManager<ApplicationUser> UserManager
 @{
-    ViewData["Title"] = @ViewBag.Series + " " + @Model.Episode_SeasonNumber + "x" + @ViewBag.Episode + " \"" +  @Model.Name + "\"";
+    ViewData["Title"] = @Model.SeriesName + " " + @Model.Episode.Episode_SeasonNumber + "x" + @Model.EpisodeNumber + " \"" +  @Model.Episode.Name + "\"";
     string selected = "color:red;";
 }
 
 <div class="row">
-    <img src="/images/filmitem/@(Model.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@Model.Name" width="100%" />
+    <img src="/images/filmitem/@(Model.Episode.Id).jpg" onerror="this.src='/images/filmitem/template.jpg';this.onerror='';" alt="@Model.Episode.Name" width="100%" />
 </div>
 
 <div class="row">
-    <a asp-controller="Series" asp-action="Details">@ViewBag.Series:</a>
-    <a asp-controller="Season" asp-action="Details">@ViewBag.Season</a>
+    <a asp-controller="Series" asp-action="Details">@Model.SeriesName:</a>
+    <a asp-controller="Season" asp-action="Details">@Model.SeasonName</a>
 </div>
 <div class="row">
-    @(Model.Episode_SeasonNumber + "x" + ViewBag.Episode) @Model.Name
+    @(Model.Episode.Episode_SeasonNumber + "x" + Model.EpisodeNumber) @Model.Episode.Name
 </div>
 
 <div>Episode</div>
-@for (var i = 1; i < @ViewBag.EpisodeCount + 1; i++)
+@for (var i = 1; i < @Model.EpisodeCount + 1; i++)
 {
-    <a style="@(i == @Model.Episode_EpisodeNumber ? @selected : null )" asp-action="Details" asp-controller="Episode" asp-route-episodenumber="@i">@i</a>
+    <a style="@(i == @Model.Episode.Episode_EpisodeNumber ? @selected : null )" asp-action="Details" asp-controller="Episode" asp-route-episodenumber="@i">@i</a>
 }
 <div class="row">
-    <label>Average</label> @if (@Model.VoteAverage != null) { @Model.VoteAverage } else { <text>No votes</text>}
+    <label>Average</label> @if (@Model.Episode.VoteAverage != null) { @Model.Episode.VoteAverage } else { <text>No votes</text>}
 </div>
 
 <div class="row">
-    <label>Votes</label> @if (@Model.VoteAverage != null) { @Model.VoteCount } else { <text>No votes</text>}
+    <label>Votes</label> @if (@Model.Episode.VoteAverage != null) { @Model.Episode.VoteCount } else { <text>No votes</text>}
 </div>
 
 @if (User.Identity.IsAuthenticated)
 {
-    @await Html.PartialAsync("_FilmItemRatingPartial", Model)
+    @await Html.PartialAsync("_FilmItemRatingPartial", Model.Episode)
 }
 
 <div class="row">
-    <label>Aired</label> @(Model.ReleaseDate.HasValue ? Model.ReleaseDate.Value.ToString("d MMMM yyyy") : "")
+    <label>Aired</label> @(Model.Episode.ReleaseDate.HasValue ? Model.Episode.ReleaseDate.Value.ToString("d MMMM yyyy") : "")
 </div>
 
 <div class="row">
-    <label>Runtime</label> @Model.Runtime
+    <label>Runtime</label> @Model.Episode.Runtime
 </div>
 
 <div class="row">
-    <label>Language</label> @Model.OriginalLanguage
+    <label>Language</label> @Model.Episode.OriginalLanguage
 </div>
 
 <div class="row">
-    <label>Genres</label> @String.Join(", ", ViewBag.Genres)
+    <label>Genres</label> @String.Join(", ", Model.Genres)
 </div>
 
 <div class="row">
-    <label>Description</label> @Model.Description
+    <label>Description</label> @Model.Episode.Description
 </div>
 
 @if (User.Identity.IsAuthenticated)
@@ -63,7 +63,7 @@
         </a>
         @if (User.IsInRole("Admins"))
         {
-            <input type="hidden" name="Id" value="@Model.Id" />
+            <input type="hidden" name="Id" value="@Model.Episode.Id" />
             <button type="submit" class="btn btn-danger btn-sm">
                 Delete Episode
             </button>
@@ -74,7 +74,7 @@
 @if (User.Identity.IsAuthenticated)
 {
     <form class="form-horizontal" asp-action="HistoryModal" asp-controller="User" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="FilmItemId" value="@Model.Id" />
+        <input type="hidden" name="FilmItemId" value="@Model.Episode.Id" />
         <div class="col-md-8">
             <span class="text-danger"></span>
             <input type="date" name="WatchedOn" />
@@ -85,18 +85,18 @@
     </form>
     
     <div id="modal-placeholder"></div>
-    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" data-url="@Url.Action("ListsModal", new { Slug = Model.Slug, SeasonNumber = Model.Episode_SeasonNumber, EpisodeNumber = Model.Episode_EpisodeNumber })">
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" data-url="@Url.Action("ListsModal", new { Slug = Model.Episode.Slug, SeasonNumber = Model.Episode.Episode_SeasonNumber, EpisodeNumber = Model.Episode.Episode_EpisodeNumber })">
         Add To List
     </button>
 }
 
-@await Html.PartialAsync("_FilmItemVideoPartial", Model)
+@await Html.PartialAsync("_FilmItemVideoPartial", Model.Episode)
 
-@await Html.PartialAsync("_FilmItemCommentPartial", Model)
+@await Html.PartialAsync("_FilmItemCommentPartial", Model.Episode)
 
-@await Html.PartialAsync("_FilmItemListsPartial", Model)
+@await Html.PartialAsync("_FilmItemListsPartial", Model.Episode)
 
-@await Html.PartialAsync("_MediaPartial", Model.Media)
+@await Html.PartialAsync("_MediaPartial", Model.Episode.Media)
 
 @section Scripts
 {

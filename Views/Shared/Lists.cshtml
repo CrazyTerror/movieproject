@@ -1,25 +1,21 @@
-@model MovieProject.Models.FilmItem
+@model MovieProject.Models.FilmItemListsViewModel
 @inject UserManager<ApplicationUser> UserManager
 
 @{
-    if (ViewBag.FilmItem.Discriminator == "Episode") {
-        ViewData["Title"] = "Personal lists featuring " + ViewBag.FilmItem.Rel_SeriesName + " " + ViewBag.FilmItem.Episode_SeasonNumber + "x" + ViewBag.Episode + " \"" + ViewBag.FilmItem.Name + "\"";
-    } else if (ViewBag.FilmItem.Discriminator == "Season") {
-        ViewData["Title"] = "Personal lists featuring " + ViewBag.FilmItem.Rel_SeriesName + " - " + ViewBag.FilmItem.Name;
+    if (Model.FilmItem.Discriminator == "Episode") {
+        ViewData["Title"] = "Personal lists featuring " + Model.FilmItem.Rel_SeriesName + " " + Model.FilmItem.Episode_SeasonNumber + "x" + Model.EpisodeString + " \"" + Model.FilmItem.Name + "\"";
+    } else if (Model.FilmItem.Discriminator == "Season") {
+        ViewData["Title"] = "Personal lists featuring " + Model.FilmItem.Rel_SeriesName + " - " + Model.FilmItem.Name;
     } else {
-        ViewData["Title"] = "Personal lists featuring " + ViewBag.FilmItem.Name + " (" + ViewBag.ReleaseYear + ")";
+        ViewData["Title"] = "Personal lists featuring " + Model.FilmItem.Name + " (" + Model.ReleaseYear + ")";
     }
 }   
 
 <a href="" onClick="history.go(-1); return false;">Cancel</a> 
 
 <div class="row">
-    @foreach (var list in Model.ListItems.Where(l => l.List.Privacy == false).Select(l => l.List))
+    @foreach (var list in Model.FilmItem.ListItems.Where(l => l.List.Privacy == false).Select(l => l.List))
     {
-        /*var firstItems = @list.ListItems.Take(5);
-        foreach (var item in firstItems) {
-            <div>@item.FilmItem.Name</div>
-        }*/
         var user = UserManager.FindByIdAsync(list.ApplicationUserId);
         <div><a asp-action="Details" asp-controller="List" asp-route-slug="@user.Result.Slug" asp-route-listname="@list.Slug">@list.Name</a></div>
         <div>by <a asp-action="Details" asp-controller="User" asp-route-slug="@user.Result.Slug">@user.Result.UserName</a></div>

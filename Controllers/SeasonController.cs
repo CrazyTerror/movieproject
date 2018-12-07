@@ -35,11 +35,14 @@ namespace MovieProject.Controllers
         public ViewResult Index(string Slug)
         {
             var series = _context.Series.FirstOrDefault(s => s.Slug == Slug);
-            var seasons = _context.Seasons.Where(s => s.SeriesId == series.Id).ToList();
 
-            ViewBag.Series = series;
+            SeasonIndexViewModel seasonIndexViewModel = new SeasonIndexViewModel
+            {
+                Series = series,
+                Seasons = _context.Seasons.Where(s => s.SeriesId == series.Id).ToList()
+            };
 
-            return View(seasons);
+            return View(seasonIndexViewModel);
         }
 
         [HttpGet("series/{Slug}/seasons/{SeasonNumber}")]
@@ -58,31 +61,27 @@ namespace MovieProject.Controllers
                                          .Where(y => y.SeriesId == series.Id)
                                          .FirstOrDefault();
 
+            
 
-            ViewBag.Genres = series.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray();
-            ViewBag.Series = series.Name;
-            ViewBag.SeasonCount = series.Series_SeasonCount;
-            ViewBag.TotalRuntime = FilmItemMethods.CalculateSeasonTotalRuntime(season);
-            ViewBag.CommentCount = season.Reviews.Count;
-            ViewBag.ListCount = season.ListItems.Select(l => l.List).ToList().Count;
-
-            var firstEpisode = season.Episodes.OrderBy(e => e.ReleaseDate).First().ReleaseDate;
-            if (firstEpisode.HasValue)
+            SeasonDetailsViewModel seasonDetailsViewModel = new SeasonDetailsViewModel
             {
-                ViewBag.FirstEpisode = firstEpisode.Value.ToString("d MMMM yyyy");
-            } else
-            {
-                ViewBag.FirstEpisode = "";
-            }
+                Season = season,
+                Genres = series.FilmItemGenres.Select(g => g.Genre.Name).OrderBy(g => g).ToArray(),
+                SeasonCount = series.Series_SeasonCount,
+                TotalRuntime = FilmItemMethods.CalculateSeasonTotalRuntime(season),
+                CommentCount = season.Reviews.Count,
+                ListCount = season.ListItems.Select(l => l.List).ToList().Count,
+                FirstEpisodeDate = GetDateTimeFirstEpisode(season)
+            };
 
-            return View(season);
+            return View(seasonDetailsViewModel);
         }
 
         [HttpGet("series/{Slug}/seasons/create")]
         public ViewResult Create(string Slug)
         {
-            ViewBag.Series = _context.Series.FirstOrDefault(s => s.Slug == Slug);
-            return View();
+            var series = _context.Series.FirstOrDefault(s => s.Slug == Slug);
+            return View(series);
         }
 
         [HttpPost("series/{Slug}/seasons/create")]
@@ -116,8 +115,6 @@ namespace MovieProject.Controllers
         {
             var series = _context.Series.FirstOrDefault(m => m.Slug == Slug);
             var season = _context.Seasons.Where(s => s.SeriesId == series.Id).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
-
-            ViewBag.Series = series;
 
             return View(season);
         }
@@ -173,10 +170,15 @@ namespace MovieProject.Controllers
         {
             var season = _context.Seasons.Where(s => s.Slug == Slug).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
             var comments = _context.Reviews.Include(r => r.FilmItem).Where(r => r.FilmItem == season).OrderByDescending(x => x.CreatedAt).ToList();
-            ViewBag.FilmItem = season;
-            ViewBag.ReleaseYear = season.ReleaseDate.Value.ToString("yyyy");
 
-            return View(comments);
+            FilmItemCommentsViewModel filmItemCommentsViewModel = new FilmItemCommentsViewModel
+            {
+                Comments = comments,
+                FilmItem = season,
+                ReleaseYear = season.ReleaseDate.Value.ToString("yyyy")
+            };
+
+            return View(filmItemCommentsViewModel);
         }
 
         [HttpGet("series/{Slug}/seasons/{SeasonNumber}/media")]
@@ -194,34 +196,30 @@ namespace MovieProject.Controllers
         {
             var season = _context.Seasons.Include(f => f.ListItems).ThenInclude(li => li.List).Where(s => s.Slug == Slug).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
 
-            ViewBag.FilmItem = season;
-            ViewBag.ReleaseYear = season.ReleaseDate.Value.ToString("yyyy");
+            FilmItemListsViewModel filmItemListsViewModel = new FilmItemListsViewModel
+            {
+                FilmItem = season,
+                ReleaseYear = season.ReleaseDate.Value.ToString("yyyy")
+            };
 
-            return View(season);
+            return View(filmItemListsViewModel);
         }
 
         [HttpGet("series/{Slug}/seasons/{SeasonNumber}/listsModal")]
         public IActionResult ListsModal(string Slug, int SeasonNumber)
         {
-            var series = _context.Series.FirstOrDefault(s => s.Slug == Slug);
             var season = _context.Seasons.Where(s => s.Slug == Slug).Where(s => s.Season_SeasonNumber == SeasonNumber).FirstOrDefault();
             var lists = _context.Lists.Include(li => li.ListItems).ThenInclude(m => m.FilmItem).Where(a => a.ApplicationUserId == _userManager.GetUserId(User)).ToList();
-            ViewBag.FilmItem = series.Name + " - " + season.Name;
-            ViewBag.FilmItemId = season.Id;
 
-            var listsHavingFilmItem = 0;
-            foreach (var list in lists)
+            FilmItemListsModalViewModel filmItemListsViewModel = new FilmItemListsModalViewModel
             {
-                foreach (var listItem in list.ListItems)
-                {
-                    if (listItem.FilmItemId == season.Id) {
-                        listsHavingFilmItem++;
-                    }
-                }
-            }
-            ViewBag.ListsWithFilmItem = listsHavingFilmItem;
+                Lists = lists,
+                FilmItem = season.Rel_SeriesName + " - " + season.Name,
+                FilmItemId = season.Id,
+                ListsWithFilmItem = FilmItemMethods.ListHavingFilmItem(lists, season)
+            };
 
-            return PartialView("_FilmItemListsModalPartial", lists);
+            return PartialView("_FilmItemListsModalPartial", filmItemListsViewModel);
         }
 
         [HttpPost("series/{Slug}/seasons/{SeasonNumber}/listsModal")]
@@ -245,5 +243,20 @@ namespace MovieProject.Controllers
 
             return RedirectToAction("Details", new { Slug = Slug });
         }
+
+        public string GetDateTimeFirstEpisode(Season season)
+        {
+            var firstEpisode = season.Episodes.OrderBy(e => e.ReleaseDate).First().ReleaseDate;
+            var episodeDateString = "";
+            if (firstEpisode.HasValue)
+            {
+                episodeDateString = firstEpisode.Value.ToString("d MMMM yyyy");
+            } else
+            {
+                episodeDateString = "";
+            }
+
+            return episodeDateString;
+        } 
     }
 }

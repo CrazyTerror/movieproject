@@ -1,8 +1,8 @@
-@model List<MovieProject.Models.Review>
+@model MovieProject.Models.FilmItemCommentsViewModel
 @inject UserManager<ApplicationUser> UserManager
 
 @{
-    ViewData["Title"] = "All comments for " + ViewBag.FilmItem.Name + " (" + ViewBag.ReleaseYear + ")";
+    ViewData["Title"] = "All comments for " + Model.FilmItem.Name + " (" + Model.ReleaseYear + ")";
 }   
 
 <a href="" onClick="history.go(-1); return false;">Cancel</a> 
@@ -13,7 +13,7 @@
     <div class="row">
         <form class="form-horizontal" asp-action="AddReview" asp-controller="Review" method="post">
             <div class="form-group">
-                <input type="hidden" name="FilmItemId" value="@ViewBag.FilmItem.Id"/>
+                <input type="hidden" name="FilmItemId" value="@Model.FilmItem.Id"/>
                 <label class="col-md-2 control-label">Review</label>
                 <div class="col-md-8">
                     <span class="text-danger"></span>
@@ -27,10 +27,10 @@
     </div>
 }
 
-@if (Model.Count > 0)
+@if (Model.Comments.Count > 0)
 {
     <div class="row">
-        @foreach (var review in Model)
+        @foreach (var review in Model.Comments)
         {
             var user = @UserManager.FindByIdAsync(review.ApplicationUserId);
             <div>Review by <a asp-action="Details" asp-controller="User" asp-route-slug="@user.Result.Slug">@user.Result.UserName</a></div> 

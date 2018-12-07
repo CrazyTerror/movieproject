@@ -3,6 +3,17 @@ using Microsoft.AspNetCore.Http;
 
 namespace MovieProject.Models
 {
+    public class SeriesDetailsViewModel
+    {
+        public Series Series { get; set; }
+        public string[] Genres { get; set; }
+        public string ReleaseYear { get; set; }
+        public string PremiereDate { get; set; }
+        public string TotalRuntime { get; set; }
+        public int CommentCount { get; set; }
+        public int ListCount { get; set; }
+    }
+
     public class EditSeriesInfoViewModel
     {
         public int Id { get; set; }

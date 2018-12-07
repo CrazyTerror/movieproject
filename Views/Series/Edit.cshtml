@@ -1,30 +1,30 @@
-@model MovieProject.Models.Series
+@model MovieProject.Models.SeriesDetailsViewModel
 @{
-    ViewData["Title"] = @Model.Name + " (" + ViewBag.Year + ")";
+    ViewData["Title"] = @Model.Series.Name + " (" + Model.ReleaseYear + ")";
 }
 <h2 class="text-center">Edit @ViewData["Title"]</h2>
 
 <form class="form-horizontal" asp-action="Edit" enctype="multipart/form-data" method="post">
-    <input type="hidden" name="Id" value="@Model.Id" />
+    <input type="hidden" name="Id" value="@Model.Series.Id" />
     <div class="form-group">
-        <label class="col-md-2 control-label" asp-for="Name"></label>
+        <label class="col-md-2 control-label" asp-for="@Model.Series.Name"></label>
         <div class="col-md-8">
-            <span asp-validation-for="Name" class="text-danger"></span>
-            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="@Model.Series.Name" class="text-danger"></span>
+            <input asp-for="@Model.Series.Name" class="form-control" />
         </div>
     </div>
     <div class="form-group">
-        <label class="col-md-2 control-label" asp-for="Description"></label>
+        <label class="col-md-2 control-label" asp-for="@Model.Series.Description"></label>
         <div class="col-md-8">
-            <span asp-validation-for="Description" class="text-danger"></span>
-            <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="@Model.Series.Description" class="text-danger"></span>
+            <textarea asp-for="@Model.Series.Description" class="form-control"></textarea>
         </div>
     </div>
     <div class="form-group">
-        <label class="col-md-2 control-label" asp-for="FirstAirDate"></label>
+        <label class="col-md-2 control-label" asp-for="@Model.Series.FirstAirDate"></label>
         <div class="col-md-8">
-            <span asp-validation-for="FirstAirDate" class="text-danger"></span>
-            <input type="date" asp-for="FirstAirDate" class="form-control" />
+            <span asp-validation-for="@Model.Series.FirstAirDate" class="text-danger"></span>
+            <input type="date" asp-for="@Model.Series.FirstAirDate" class="form-control" />
         </div>
     </div>
     <div class="form-group">

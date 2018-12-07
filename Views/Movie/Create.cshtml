@@ -1,3 +1,4 @@
+@model MovieProject.Models.FilmItemCreateParentsViewModel
 @{
     ViewData["Title"] = "Create Movie";
 }
@@ -73,7 +74,7 @@
         <label class="col-md-2 control-label">Genre</label>
         <div class="col-md-8">
             <span class="text-danger"></span>
-            <select name="Genre" multiple="multiple" class="form-control" asp-items="ViewBag.Genres"></select>
+            <select name="Genre" multiple="multiple" class="form-control" asp-items="@Model.Genres"></select>
         </div>
     </div>
     <div class="text-center">

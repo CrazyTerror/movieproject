@@ -1,10 +1,11 @@
+@model MovieProject.Models.FilmItem
 @{
-    ViewData["Title"] = ViewBag.FilmItem.Name + " - Add Credit";
+    ViewData["Title"] = Model.Name + " - Add Credit";
 }
 <h2 class="text-center">@ViewData["Title"]</h2>
 
 <form class="form-horizontal" asp-action="AddCredit" asp-controller="Credit" method="post">
-    <input type="hidden" name="FilmItemId" value="@ViewBag.FilmItem.Id" />
+    <input type="hidden" name="FilmItemId" value="@Model.Id" />
     <div class="form-group">
         <label class="col-md-2 control-label">First Name</label>
         <div class="col-md-8">

@@ -1,17 +1,17 @@
-@model List<MovieProject.Models.Episode>
+@model MovieProject.Models.EpisodeIndexViewModel
 
 @{
-    ViewData["Title"] = ViewBag.Series + " - " + ViewBag.Season + " - Episodes";
+    ViewData["Title"] = Model.SeriesName + " - " + Model.SeasonName + " - Episodes";
 }
 <h2>@ViewData["Title"]</h2>
 
-@if (Model.Count > 0)
+@if (Model.Episodes.Count > 0)
 {
     <table class="table">
         <thead>
             <tr>
                 <th scope="col">Episode</th>
-                <th scope="col">Year</th>
+                <th scope="col">Release Date</th>
                 @if (User.Identity.IsAuthenticated == true)
                 {
                     <th scope="col"></th>
@@ -20,7 +20,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (Episode e in Model)
+            @foreach (Episode e in Model.Episodes)
             {
                 <tr>
                     <td>
