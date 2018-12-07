@@ -14,6 +14,13 @@ namespace MovieProject.Models
         public int MoviesWatched { get; set; }
         public string MovieTimeWatched { get; set; }
         public List<UserWatchedFilmItemOn> RecentlyWatchedFilmItems { get; set; }
-        
+    }
+
+    public class UserViewings
+    {
+        public int EpisodesWatched { get; set; }
+        public int? EpisodeTimeWatched { get; set; }
+        public int MoviesWatched { get; set; }
+        public int? MovieTimeWatched { get; set; }
     }
 }

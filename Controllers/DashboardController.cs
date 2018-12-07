@@ -26,39 +26,24 @@ namespace MovieProject.Controllers
         [HttpGet("dashboard")]
         public ViewResult Index()
         {
-            var episodesWatched = 0;
-            int? episodeTimeWatched = 0;
-            var moviesWatched = 0;
-            int? moviesTimeWatched = 0;
-
             var user = _userManager.Users.FirstOrDefault(u => u.Id == _userManager.GetUserId(User));
             var filmItems = _context.UserWatching.Include(f => f.FilmItem).Where(u => u.ApplicationUserId == user.Id).ToList();
 
-            foreach (var filmItemWatched in filmItems)
-            {
-                if (filmItemWatched.FilmItem.Discriminator == "Movie") {
-                    moviesWatched++;
-                    moviesTimeWatched += filmItemWatched.FilmItem.Runtime;
-                } else if (filmItemWatched.FilmItem.Discriminator == "Episode") {
-                    episodesWatched++;
-                    episodeTimeWatched += filmItemWatched.FilmItem.Runtime;
-                } 
-            }
-
             var seriesWatched = filmItems.Where(f => f.FilmItem.Discriminator == "Episode").GroupBy(x => x.FilmItem.Rel_SeriesId).Select(x => new { Count = x.Count() });
+            var userViewings = GetUserWatched(filmItems);
 
-            DashboardIndexViewModel divm = new DashboardIndexViewModel
+            DashboardIndexViewModel dashboardIndexViewModel = new DashboardIndexViewModel
             {
                 User = user,
-                EpisodesWatched = episodesWatched,
-                EpisodeTimeWatched = CalculateInDays(episodeTimeWatched),
+                EpisodesWatched = userViewings.EpisodesWatched,
+                EpisodeTimeWatched = CalculateInDays(userViewings.EpisodeTimeWatched),
                 SeriesWatched = seriesWatched.Count(),
-                MoviesWatched = moviesWatched,
-                MovieTimeWatched = CalculateInDays(moviesTimeWatched),
+                MoviesWatched = userViewings.MoviesWatched,
+                MovieTimeWatched = CalculateInDays(userViewings.MovieTimeWatched),
                 RecentlyWatchedFilmItems = RecentlyWatchedFilmItems(user)
             };
             
-            return View(divm);
+            return View(dashboardIndexViewModel);
         }
 
         public string CalculateInDays(int? totalTime)
@@ -73,9 +58,11 @@ namespace MovieProject.Controllers
             } else if (days == 0 && hours != 0)
             {
                 return string.Format("{0} hours, {1} mins watching", hours, minutes);
-            } else 
+            } else if (minutes != 0)
             {
                 return string.Format("{0} mins watching", minutes);
+            } else {
+                return string.Format("");
             }
         }
 
@@ -87,6 +74,28 @@ namespace MovieProject.Controllers
                                                                 .ToList();
             
             return recentlyWatchedFilmItems;
+        }
+
+        public UserViewings GetUserWatched(List<UserWatchedFilmItemOn> filmItems)
+        {
+            int? movieTimeWatched = 0;
+            int? episodeTimeWatched = 0;
+            UserViewings userViewings = new UserViewings();
+
+            foreach (var filmItemWatched in filmItems)
+            {
+                if (filmItemWatched.FilmItem.Discriminator == "Movie") {
+                    userViewings.MoviesWatched++;
+                    movieTimeWatched += filmItemWatched.FilmItem.Runtime;
+                } else if (filmItemWatched.FilmItem.Discriminator == "Episode") {
+                    userViewings.EpisodesWatched++;
+                    episodeTimeWatched += filmItemWatched.FilmItem.Runtime;
+                } 
+            }
+            userViewings.MovieTimeWatched = movieTimeWatched;
+            userViewings.EpisodeTimeWatched = episodeTimeWatched;
+
+            return userViewings;
         }
     }
 }
