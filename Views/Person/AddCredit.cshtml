@@ -1,5 +1,6 @@
+@model MovieProject.Models.Person
 @{
-    ViewData["Title"] = ViewBag.Person.FirstName + " " + ViewBag.Person.Surname +  " - Add Credit";
+    ViewData["Title"] = Model.FirstName + " " + Model.Surname +  " - Add Credit";
 }
 <h2 class="text-center">@ViewData["Title"]</h2>
 

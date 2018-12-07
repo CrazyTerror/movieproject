@@ -163,9 +163,9 @@ namespace MovieProject.Controllers
         [HttpGet("person/{Slug}/credits/add")]
         public ViewResult AddCredit(string Slug)
         {
-            ViewBag.Person = _context.Persons.FirstOrDefault(p => p.Slug == Slug);
+            var person = _context.Persons.FirstOrDefault(p => p.Slug == Slug);
 
-            return View();
+            return View(person);
         }
 
         [HttpPost("person/{Slug}/credits/add")]

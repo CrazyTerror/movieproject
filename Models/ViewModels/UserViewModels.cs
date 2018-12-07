@@ -45,4 +45,22 @@ namespace MovieProject.Models
         public int Movie { get; set; }
         public int Count { get; set; }
     }
+
+    public class UserHistoryViewModel
+    {
+        public List<UserWatchedFilmItemOn> UserWatchedFilmItems { get; set; }
+        public ApplicationUser User { get; set; }
+    }
+
+    public class UserRatingsViewModel
+    {
+        public List<UserRating> Ratings { get; set; }
+        public ApplicationUser User { get; set; }
+    }
+
+    public class UserCommentsViewModel
+    {
+        public List<Review> Comments { get; set; }
+        public ApplicationUser User { get; set; }
+    }
 }

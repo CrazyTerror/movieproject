@@ -266,5 +266,21 @@ namespace MovieProject.Infrastructure
 
             _ctx.SaveChanges();
         }
+
+        public static int ListHavingFilmItem(List<List> lists, FilmItem filmItem)
+        {
+            var listsHavingFilmItem = 0;
+            foreach (var list in lists)
+            {
+                foreach (var listItem in list.ListItems)
+                {
+                    if (listItem.FilmItemId == filmItem.Id) {
+                        listsHavingFilmItem++;
+                    }
+                }
+            }
+            
+            return listsHavingFilmItem;
+        }
     }
 }

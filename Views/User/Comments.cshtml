@@ -1,12 +1,12 @@
-@model List<MovieProject.Models.Review>
+@model MovieProject.Models.UserCommentsViewModel
 
 @{
-    ViewData["Title"] = @ViewBag.User + "'s comments"; 
+    ViewData["Title"] = @Model.User.UserName + "'s comments"; 
 }
 
-@if (Model.Count > 0)
+@if (Model.Comments.Count > 0)
 {
-    @foreach (var comment in Model)
+    @foreach (var comment in Model.Comments)
     {
         if (comment.FilmItem.Discriminator == "Episode")    
         {
@@ -36,5 +36,5 @@
     }
 } else
 {
-    <div>@ViewBag.User has no ratings</div>
+    <div>@Model.User.UserName has no comments</div>
 }

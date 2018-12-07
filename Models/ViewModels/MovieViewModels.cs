@@ -1,8 +1,24 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 
 namespace MovieProject.Models
 {
+    public class MovieDetailsViewModel
+    {
+        public Movie Movie { get; set; }
+        public string[] Genres { get; set; }
+        public string ReleaseYear { get; set; }
+        public string ReleaseDate { get; set; }
+        public List<FilmItemCredits> Directors { get; set; }
+        public List<FilmItemCredits> Producers { get; set; }
+        public List<FilmItemCredits> Writers { get; set; }
+        public List<List> Lists { get; set; }
+        public int ListCount { get; set; }
+        public int CommentCount { get; set; }
+
+    }
+
     public class EditMovieInfoViewModel
     {
         public int Id { get; set; }

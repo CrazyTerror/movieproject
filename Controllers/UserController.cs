@@ -61,10 +61,14 @@ namespace MovieProject.Controllers
         {
             var user = _userManager.Users.Where(u => u.Slug == Slug).FirstOrDefault();
             var filmItemsWatched = _context.UserWatching.Include(f => f.FilmItem).OrderByDescending(x => x.WatchedOn).ToList();
+            
+            UserHistoryViewModel userHistoryViewModel = new UserHistoryViewModel
+            {
+                UserWatchedFilmItems = filmItemsWatched,
+                User = user
+            };
 
-            ViewBag.User = user.UserName;
-
-            return View(filmItemsWatched);
+            return View(userHistoryViewModel);
         }
 
         [HttpGet("users/{slug}/ratings")]
@@ -72,9 +76,14 @@ namespace MovieProject.Controllers
         {
             var user = _userManager.Users.Where(u => u.Slug == Slug).FirstOrDefault();
             var ratings = _context.UserRatings.Include(u => u.FilmItem).Where(u => u.ApplicationUserId == user.Id).OrderByDescending(x => x.CreatedAt).ToList();
-            ViewBag.User = user.UserName;
+            
+            UserRatingsViewModel userRatingsViewModel = new UserRatingsViewModel
+            {
+                Ratings = ratings,
+                User = user
+            };
 
-            return View(ratings);
+            return View(userRatingsViewModel);
         }
 
         [HttpGet("users/{slug}/comments")]
@@ -82,9 +91,14 @@ namespace MovieProject.Controllers
         {
             var user = _userManager.Users.Where(u => u.Slug == Slug).FirstOrDefault();
             var comments = _context.Reviews.Include(r => r.FilmItem).Where(u => u.ApplicationUserId == user.Id).OrderByDescending(x => x.CreatedAt).ToList();
-            ViewBag.User = user.UserName;
 
-            return View(comments);
+            UserCommentsViewModel userCommentsViewModel = new UserCommentsViewModel
+            {
+                Comments = comments,
+                User = user
+            };
+
+            return View(userCommentsViewModel);
         }
 
         [HttpPost("addRating")]
@@ -127,6 +141,28 @@ namespace MovieProject.Controllers
             return RedirectToAction("Details", filmItem.Discriminator, new { Slug = filmItem.Slug});
         }
 
+        [HttpPost("historyModal")]
+        public IActionResult HistoryModal()
+        {
+            var applicationUser = _userManager.GetUserId(User);
+            var filmItem = _context.FilmItem.FirstOrDefault(f => f.Id == int.Parse(Request.Form["FilmItemId"]));
+            var watchedOnDate = DateTime.Parse(Request.Form["WatchedOn"]);
+
+            if (filmItem.Discriminator == "Movie" || filmItem.Discriminator == "Episode") {
+                AddFilmItemToHistory(filmItem, applicationUser, watchedOnDate);
+            } else {
+                AddFilmItemChildrenToHistory(filmItem, applicationUser, watchedOnDate);
+            }
+            
+            if (filmItem.Discriminator == "Season") {
+                return RedirectToAction("Details", filmItem.Discriminator, new { Slug = filmItem.Slug, SeasonNumber = filmItem.Season_SeasonNumber });
+            } else if (filmItem.Discriminator == "Episode") {
+                return RedirectToAction("Details", filmItem.Discriminator, new { Slug = filmItem.Slug, SeasonNumber = filmItem.Episode_SeasonNumber, EpisodeNumber = filmItem.Episode_EpisodeNumber });
+            } else {
+                return RedirectToAction("Details", filmItem.Discriminator, new { Slug = filmItem.Slug });
+            }
+        }
+
         public void AlterFilmItemAverage(FilmItem filmItem, int rating)
         {
             _context.Attach(filmItem);
@@ -161,28 +197,6 @@ namespace MovieProject.Controllers
             filmItem.UpdatedAt = DateTime.Now;
 
             _context.SaveChanges();
-        }
-
-        [HttpPost("historyModal")]
-        public IActionResult HistoryModal()
-        {
-            var applicationUser = _userManager.GetUserId(User);
-            var filmItem = _context.FilmItem.FirstOrDefault(f => f.Id == int.Parse(Request.Form["FilmItemId"]));
-            var watchedOnDate = DateTime.Parse(Request.Form["WatchedOn"]);
-
-            if (filmItem.Discriminator == "Movie" || filmItem.Discriminator == "Episode") {
-                AddFilmItemToHistory(filmItem, applicationUser, watchedOnDate);
-            } else {
-                AddFilmItemChildrenToHistory(filmItem, applicationUser, watchedOnDate);
-            }
-            
-            if (filmItem.Discriminator == "Season") {
-                return RedirectToAction("Details", filmItem.Discriminator, new { Slug = filmItem.Slug, SeasonNumber = filmItem.Season_SeasonNumber });
-            } else if (filmItem.Discriminator == "Episode") {
-                return RedirectToAction("Details", filmItem.Discriminator, new { Slug = filmItem.Slug, SeasonNumber = filmItem.Episode_SeasonNumber, EpisodeNumber = filmItem.Episode_EpisodeNumber });
-            } else {
-                return RedirectToAction("Details", filmItem.Discriminator, new { Slug = filmItem.Slug });
-            }
         }
 
         public void AddFilmItemChildrenToHistory(FilmItem item, string user, DateTime watchedOnDate)
