@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 
 namespace MovieProject.Models
@@ -12,6 +13,7 @@ namespace MovieProject.Models
         public string TotalRuntime { get; set; }
         public int CommentCount { get; set; }
         public int ListCount { get; set; }
+        public List<Episode> RecentlyAiredEpisodes { get; set; }
     }
 
     public class EditSeriesInfoViewModel

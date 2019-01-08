@@ -62,7 +62,8 @@ namespace MovieProject.Controllers
                 PremiereDate = (series.FirstAirDate.HasValue ? series.FirstAirDate.Value.ToString("dd MMMM yyyy") : ""),
                 TotalRuntime = FilmItemMethods.CalculateSeriesTotalRuntime(series),
                 CommentCount = series.Reviews.Count,
-                ListCount = series.ListItems.Select(l => l.List).ToList().Count
+                ListCount = series.ListItems.Select(l => l.List).ToList().Count,
+                RecentlyAiredEpisodes = FilmItemMethods.GetRecentlyAiredEpisodes(_context, series)
             };
 
             return View(seriesDetailsViewModel);

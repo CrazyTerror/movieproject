@@ -282,5 +282,16 @@ namespace MovieProject.Infrastructure
             
             return listsHavingFilmItem;
         }
+
+        public static List<Episode> GetRecentlyAiredEpisodes(MovieContext _ctx, FilmItem item)
+        {
+            var threeRecentEpisodes = _ctx.Episodes.Where(e => e.Discriminator == "Episode")
+                                                   .Where(e => e.Slug == item.Slug)
+                                                   .OrderByDescending(e => e.ReleaseDate)
+                                                   .Take(3)
+                                                   .ToList();
+
+            return threeRecentEpisodes;
+        }
     }
 }

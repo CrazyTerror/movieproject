@@ -42,6 +42,8 @@ namespace MovieProject.Controllers
                 MovieTimeWatched = CalculateInDays(userViewings.MovieTimeWatched),
                 RecentlyWatchedFilmItems = RecentlyWatchedFilmItems(user)
             };
+
+            GetUserWatchedLast30Days(filmItems, GetLast30Days());
             
             return View(dashboardIndexViewModel);
         }
@@ -96,6 +98,44 @@ namespace MovieProject.Controllers
             userViewings.EpisodeTimeWatched = episodeTimeWatched;
 
             return userViewings;
+        }
+
+        public List<DateTime> GetLast30Days()
+        {
+            DateTime date = DateTime.Now;
+            List<DateTime> thirtyDaysDateList = new List<DateTime>();
+            for (DateTime d = DateTime.Now.AddDays(-29); d <= DateTime.Now; d = d.AddDays(1))
+            {
+                thirtyDaysDateList.Add(d.Date);
+            }
+
+            return thirtyDaysDateList;
+        }
+
+        public static void GetUserWatchedLast30Days(List<UserWatchedFilmItemOn> filmItems, List<DateTime> dateList)
+        {
+            WatchedByDate userViewingsByDate = new WatchedByDate();
+            
+            foreach (var date in dateList)
+            {
+                userViewingsByDate.Date = date.Date;
+            }
+
+            var orderedFilmItems = filmItems.Where(f => f.FilmItem.Discriminator == "Movie" || f.FilmItem.Discriminator == "Episode").OrderByDescending(f => f.WatchedOn);
+
+            foreach (var filmItemWatched in orderedFilmItems)
+            {
+                if (userViewingsByDate.Date == filmItemWatched.WatchedOn.Date)
+                {
+                    userViewingsByDate.TimeWatched += filmItemWatched.FilmItem.Runtime;
+                    if (filmItemWatched.FilmItem.Discriminator == "Episode")
+                    {
+                        userViewingsByDate.AmountOfEpisodes++;
+                    } else if (filmItemWatched.FilmItem.Discriminator == "Movie") {
+                        userViewingsByDate.AmountOfMovies++;
+                    }
+                }
+            }
         }
     }
 }

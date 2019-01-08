@@ -61,8 +61,6 @@ namespace MovieProject.Controllers
                                          .Where(y => y.SeriesId == series.Id)
                                          .FirstOrDefault();
 
-            
-
             SeasonDetailsViewModel seasonDetailsViewModel = new SeasonDetailsViewModel
             {
                 Season = season,

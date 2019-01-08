@@ -13,28 +13,30 @@
 <div>@(Model.MoviesWatched) movies</div>
 
 <div class="row">
-    Recently Watched
+    <div>Recently Watched</div>
     @foreach (var filmItem in Model.RecentlyWatchedFilmItems)
     {
-        @if (filmItem.FilmItem.Discriminator == "Movie" || filmItem.FilmItem.Discriminator == "Series")
-        {
-            <a asp-action="Details" asp-controller="@(filmItem.FilmItem.Discriminator)" asp-route-slug="@(filmItem.FilmItem.Slug)">
-                <img src="/images/filmitem/poster/@(filmItem.FilmItem.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@(filmItem.FilmItem.Name)" height="127px" width="84px" />
-                @filmItem.FilmItem.Name
-            </a>
-        } else if (filmItem.FilmItem.Discriminator == "Episode") {
-            var episodeNumber = (filmItem.FilmItem.Episode_EpisodeNumber < 10 ? "0" + filmItem.FilmItem.Episode_EpisodeNumber : "" + filmItem.FilmItem.Episode_EpisodeNumber);
-            <a asp-action="Details" asp-controller="@filmItem.FilmItem.Discriminator" asp-route-slug="@filmItem.FilmItem.Slug" asp-route-seasonnumber="@filmItem.FilmItem.Episode_SeasonNumber" asp-route-episodenumber="@filmItem.FilmItem.Episode_EpisodeNumber">
-                <img src="/images/filmitem/poster/@(filmItem.FilmItem.Rel_SeriesId).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@filmItem.FilmItem.Name" height="127px" width="84px" />
-            </a>
-            <a asp-action="Details" asp-controller="Series" asp-route-slug="@(filmItem.FilmItem.Slug)">@filmItem.FilmItem.Rel_SeriesName</a>
-            <a asp-action="Details" asp-controller="@filmItem.FilmItem.Discriminator" asp-route-slug="@filmItem.FilmItem.Slug" asp-route-seasonnumber="@filmItem.FilmItem.Episode_SeasonNumber" asp-route-episodenumber="@filmItem.FilmItem.Episode_EpisodeNumber">@(filmItem.FilmItem.Episode_SeasonNumber + "x" + @episodeNumber + " " + @filmItem.FilmItem.Name)</a>
-        } else if (filmItem.FilmItem.Discriminator == "Season") {
-            <a asp-action="Details" asp-controller="@filmItem.FilmItem.Discriminator" asp-route-slug="@filmItem.FilmItem.Slug" asp-route-seasonnumber="@filmItem.FilmItem.Season_SeasonNumber">
-                <img src="/images/filmitem/poster/@(filmItem.FilmItem.Rel_SeriesId).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@filmItem.FilmItem.Name" height="127px" width="84px" />
-            </a>
-            <a asp-action="Details" asp-controller="Series" asp-route-slug="@(filmItem.FilmItem.Slug)">@filmItem.FilmItem.Rel_SeriesName</a>
-            <a asp-action="Details" asp-controller="@filmItem.FilmItem.Discriminator" asp-route-slug="@filmItem.FilmItem.Slug" asp-route-seasonnumber="@filmItem.FilmItem.Season_SeasonNumber">@filmItem.FilmItem.Name</a>
-        }
+        <div>
+            @if (filmItem.FilmItem.Discriminator == "Movie" || filmItem.FilmItem.Discriminator == "Series")
+            {
+                <a asp-action="Details" asp-controller="@(filmItem.FilmItem.Discriminator)" asp-route-slug="@(filmItem.FilmItem.Slug)">
+                    <img src="/images/filmitem/poster/@(filmItem.FilmItem.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@(filmItem.FilmItem.Name)" height="127px" width="84px" />
+                    @filmItem.FilmItem.Name
+                </a>
+            } else if (filmItem.FilmItem.Discriminator == "Episode") {
+                var episodeNumber = (filmItem.FilmItem.Episode_EpisodeNumber < 10 ? "0" + filmItem.FilmItem.Episode_EpisodeNumber : "" + filmItem.FilmItem.Episode_EpisodeNumber);
+                <a asp-action="Details" asp-controller="@filmItem.FilmItem.Discriminator" asp-route-slug="@filmItem.FilmItem.Slug" asp-route-seasonnumber="@filmItem.FilmItem.Episode_SeasonNumber" asp-route-episodenumber="@filmItem.FilmItem.Episode_EpisodeNumber">
+                    <img src="/images/filmitem/poster/@(filmItem.FilmItem.Rel_SeriesId).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@filmItem.FilmItem.Name" height="127px" width="84px" />
+                </a>
+                <a asp-action="Details" asp-controller="Series" asp-route-slug="@(filmItem.FilmItem.Slug)">@filmItem.FilmItem.Rel_SeriesName</a>
+                <a asp-action="Details" asp-controller="@filmItem.FilmItem.Discriminator" asp-route-slug="@filmItem.FilmItem.Slug" asp-route-seasonnumber="@filmItem.FilmItem.Episode_SeasonNumber" asp-route-episodenumber="@filmItem.FilmItem.Episode_EpisodeNumber">@(filmItem.FilmItem.Episode_SeasonNumber + "x" + @episodeNumber + " " + @filmItem.FilmItem.Name)</a>
+            } else if (filmItem.FilmItem.Discriminator == "Season") {
+                <a asp-action="Details" asp-controller="@filmItem.FilmItem.Discriminator" asp-route-slug="@filmItem.FilmItem.Slug" asp-route-seasonnumber="@filmItem.FilmItem.Season_SeasonNumber">
+                    <img src="/images/filmitem/poster/@(filmItem.FilmItem.Rel_SeriesId).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@filmItem.FilmItem.Name" height="127px" width="84px" />
+                </a>
+                <a asp-action="Details" asp-controller="Series" asp-route-slug="@(filmItem.FilmItem.Slug)">@filmItem.FilmItem.Rel_SeriesName</a>
+                <a asp-action="Details" asp-controller="@filmItem.FilmItem.Discriminator" asp-route-slug="@filmItem.FilmItem.Slug" asp-route-seasonnumber="@filmItem.FilmItem.Season_SeasonNumber">@filmItem.FilmItem.Name</a>
+            }
+        </div>
     }
 </div>

@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using MovieProject.Data;
+using System;
 
 namespace MovieProject.Models
 {
@@ -22,5 +23,13 @@ namespace MovieProject.Models
         public int? EpisodeTimeWatched { get; set; }
         public int MoviesWatched { get; set; }
         public int? MovieTimeWatched { get; set; }
+    }
+
+    public class WatchedByDate
+    {
+        public int? TimeWatched { get; set; }
+        public DateTime Date { get; set; }
+        public int AmountOfMovies { get; set; }
+        public int AmountOfEpisodes { get; set; }
     }
 }
