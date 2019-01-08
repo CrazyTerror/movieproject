@@ -40,10 +40,9 @@ namespace MovieProject.Controllers
                 SeriesWatched = seriesWatched.Count(),
                 MoviesWatched = userViewings.MoviesWatched,
                 MovieTimeWatched = CalculateInDays(userViewings.MovieTimeWatched),
-                RecentlyWatchedFilmItems = RecentlyWatchedFilmItems(user)
+                RecentlyWatchedFilmItems = RecentlyWatchedFilmItems(user),
+                UserViewingByDate = GetLast30Days(filmItems)
             };
-
-            GetUserWatchedLast30Days(filmItems, GetLast30Days());
             
             return View(dashboardIndexViewModel);
         }
@@ -100,42 +99,48 @@ namespace MovieProject.Controllers
             return userViewings;
         }
 
-        public List<DateTime> GetLast30Days()
+        public List<UserViewingByDate> GetLast30Days(List<UserWatchedFilmItemOn> filmItems)
         {
-            DateTime date = DateTime.Now;
             List<DateTime> thirtyDaysDateList = new List<DateTime>();
             for (DateTime d = DateTime.Now.AddDays(-29); d <= DateTime.Now; d = d.AddDays(1))
             {
                 thirtyDaysDateList.Add(d.Date);
             }
 
-            return thirtyDaysDateList;
-        }
-
-        public static void GetUserWatchedLast30Days(List<UserWatchedFilmItemOn> filmItems, List<DateTime> dateList)
-        {
-            WatchedByDate userViewingsByDate = new WatchedByDate();
-            
-            foreach (var date in dateList)
+            List<UserViewingByDate> userViewingsList = new List<UserViewingByDate>();
+            foreach (var date in thirtyDaysDateList)
             {
-                userViewingsByDate.Date = date.Date;
+                UserViewingByDate userViewingByDate = new UserViewingByDate();
+                userViewingByDate.Date = date;
+
+                var userViewing = GetUserWatchedLast30Days(filmItems, userViewingByDate);
+                userViewingsList.Add(userViewing);
             }
 
+            return userViewingsList;
+        }
+
+        public UserViewingByDate GetUserWatchedLast30Days(List<UserWatchedFilmItemOn> filmItems, UserViewingByDate userViewingByDate)
+        {
+            int? timeWatched = 0;
             var orderedFilmItems = filmItems.Where(f => f.FilmItem.Discriminator == "Movie" || f.FilmItem.Discriminator == "Episode").OrderByDescending(f => f.WatchedOn);
 
             foreach (var filmItemWatched in orderedFilmItems)
             {
-                if (userViewingsByDate.Date == filmItemWatched.WatchedOn.Date)
+                if (userViewingByDate.Date == filmItemWatched.WatchedOn.Date)
                 {
-                    userViewingsByDate.TimeWatched += filmItemWatched.FilmItem.Runtime;
+                    timeWatched += filmItemWatched.FilmItem.Runtime;
                     if (filmItemWatched.FilmItem.Discriminator == "Episode")
                     {
-                        userViewingsByDate.AmountOfEpisodes++;
+                        userViewingByDate.AmountOfEpisodes++;
                     } else if (filmItemWatched.FilmItem.Discriminator == "Movie") {
-                        userViewingsByDate.AmountOfMovies++;
+                        userViewingByDate.AmountOfMovies++;
                     }
                 }
             }
+            userViewingByDate.TimeWatched = timeWatched;
+
+            return userViewingByDate;
         }
     }
 }
