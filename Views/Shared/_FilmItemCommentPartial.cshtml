@@ -35,8 +35,13 @@
                     Delete
                 </button>
             </form>
-        } 
-        <div>@review.CreatedAt.ToString("d MMMM yyyy HH:mm")</div>
+        } else if (review.ApplicationUserId != UserManager.GetUserId(User) && User.Identity.IsAuthenticated) {
+            <a href="">Reply</a>
+            
+        }
+        <a asp-action="Details" asp-controller="Review" asp-route-id="@review.Id">
+            <div>@review.CreatedAt.ToString("d MMMM yyyy HH:mm")</div>
+        </a>
         <div>@review.Comment</div>
     }
 </div>

@@ -22,6 +22,14 @@ namespace MovieProject.Controllers
             _context = context;
             _userManager = userManager;
         }
+
+        [HttpGet("reviews/{id}")]
+        public ViewResult Details(int id)
+        {
+            var review = _context.Reviews.FirstOrDefault(r => r.Id == id);
+
+            return View(review);
+        }
         
         [HttpPost("addReview")]
         [ValidateAntiForgeryToken]
@@ -29,7 +37,7 @@ namespace MovieProject.Controllers
         {
             var applicationUser = _userManager.GetUserId(User);
             var filmItem = _context.FilmItem.FirstOrDefault(f => f.Id == int.Parse(Request.Form["FilmItemId"]));
-
+            
             Review review = new Review
             {
                 ApplicationUserId = applicationUser,
