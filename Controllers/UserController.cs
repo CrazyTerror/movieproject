@@ -61,10 +61,10 @@ namespace MovieProject.Controllers
         {
             var user = _userManager.Users.Where(u => u.Slug == Slug).FirstOrDefault();
             var filmItemsWatched = _context.UserWatching.Include(f => f.FilmItem).OrderByDescending(x => x.WatchedOn).ToList();
-            
+
             UserHistoryViewModel userHistoryViewModel = new UserHistoryViewModel
             {
-                UserWatchedFilmItems = filmItemsWatched,
+                UserWatchedFilmItems = GroupFilmItemHistoryByDate(filmItemsWatched),
                 User = user
             };
 
@@ -324,6 +324,47 @@ namespace MovieProject.Controllers
                                                                .ToList();
             
             return recentlyWatchedEpisodes;
+        }
+
+        private List<FilmItemHistoryByDate> GroupFilmItemHistoryByDate(List<UserWatchedFilmItemOn> filmItemsWatched)
+        {
+            List<FilmItemHistoryByDate> filmItemsByDate = new List<FilmItemHistoryByDate>();
+            List<DateTime> dates = new List<DateTime>();
+            filmItemsWatched = filmItemsWatched.Where(f => f.FilmItem.Discriminator == "Movie" || f.FilmItem.Discriminator == "Episode").ToList();
+
+            foreach (var filmItemWatched in filmItemsWatched)
+            {
+                if (!dates.Contains(filmItemWatched.WatchedOn.Date))
+                {
+                    dates.Add(filmItemWatched.WatchedOn.Date);
+                }
+            }
+
+            foreach (var date in dates)
+            {
+                FilmItemHistoryByDate filmItemHistoryByDate = new FilmItemHistoryByDate();
+                filmItemHistoryByDate.Date = date;
+                filmItemHistoryByDate.FilmItems = new List<FilmItemWatching>();
+
+                int? runtimeByDate = 0;
+                foreach (var filmItem in filmItemsWatched)
+                {
+                    if (date.Date == filmItem.WatchedOn.Date)
+                    {
+                        FilmItemWatching filmItemWatching = new FilmItemWatching();
+                        filmItemWatching.Date = filmItem.WatchedOn;
+                        filmItemWatching.FilmItem = filmItem.FilmItem;
+
+                        filmItemHistoryByDate.FilmItems.Add(filmItemWatching);
+
+                        runtimeByDate += filmItem.FilmItem.Runtime;
+                    }
+                }
+                filmItemHistoryByDate.Runtime = runtimeByDate;
+                filmItemsByDate.Add(filmItemHistoryByDate);
+            }
+
+            return filmItemsByDate;
         }
     }
 }

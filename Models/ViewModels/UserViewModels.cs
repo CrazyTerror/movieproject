@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using MovieProject.Data;
+using System;
 
 namespace MovieProject.Models
 {
@@ -48,7 +49,7 @@ namespace MovieProject.Models
 
     public class UserHistoryViewModel
     {
-        public List<UserWatchedFilmItemOn> UserWatchedFilmItems { get; set; }
+        public List<FilmItemHistoryByDate> UserWatchedFilmItems { get; set; }
         public ApplicationUser User { get; set; }
     }
 
@@ -62,5 +63,18 @@ namespace MovieProject.Models
     {
         public List<Review> Comments { get; set; }
         public ApplicationUser User { get; set; }
+    }
+
+    public class FilmItemHistoryByDate 
+    {
+        public DateTime Date { get; set; }
+        public List<FilmItemWatching> FilmItems { get; set; }
+        public int? Runtime { get; set; }
+    }
+
+    public class FilmItemWatching
+    {
+        public DateTime Date { get; set; }
+        public FilmItem FilmItem { get; set; }
     }
 }

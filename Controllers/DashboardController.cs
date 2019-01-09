@@ -159,7 +159,6 @@ namespace MovieProject.Controllers
             {
                 upcomingFilmItems.Add(listItem.FilmItem);
             }
-            System.Console.WriteLine(upcomingFilmItems.Count);
 
             var seriesInWishlist = watchList.ListItems.Where(li => li.FilmItem.Discriminator == "Series").ToList();
             if (seriesInWishlist.Count > 0)
@@ -176,7 +175,6 @@ namespace MovieProject.Controllers
                     }
                 }
             }
-            System.Console.WriteLine(upcomingFilmItems.Count);
 
             var upcomingFilmItemsByDate = UpcomingFilmItemsByDate(upcomingFilmItems);
 
@@ -201,7 +199,6 @@ namespace MovieProject.Controllers
                 }
 
                 upcomingFilmItemList.Add(upcomingFilmItems);
-                //System.Console.WriteLine(d.Date);
             }
 
             return upcomingFilmItemList;
