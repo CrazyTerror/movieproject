@@ -50,6 +50,35 @@
     </div>  
 </div>
 
+<div class="row">
+    <div>Upcoming Schedule</div>
+    @foreach (var upcomingDay in Model.UpcomingFilmItems)
+    {
+        if (@upcomingDay.Date == DateTime.Now.Date)
+        {
+            <div>Today @upcomingDay.Date.ToString("d MMMM")</div>
+        } else if (@upcomingDay.Date == DateTime.Now.AddDays(1).Date) {
+            <div>Tomorrow @upcomingDay.Date.ToString("d MMMM")</div>
+        } else {
+            <div>@upcomingDay.Date.ToString("dddd d MMMM")</div>
+        }
+        
+        @foreach (var filmItem in upcomingDay.FilmItems)
+        {
+            @if (filmItem.Discriminator == "Episode")
+            {
+                var episodeNumber = (filmItem.Episode_EpisodeNumber < 10 ? "0" + filmItem.Episode_EpisodeNumber : "" + filmItem.Episode_EpisodeNumber);
+                <img src="/images/filmitem/poster/@(filmItem.Rel_SeriesId).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@filmItem.Name" height="127px" width="84px" />
+                <a asp-action="Details" asp-controller="Series" asp-route-slug="@(filmItem.Slug)">@filmItem.Rel_SeriesName</a>
+                <a asp-action="Details" asp-controller="@filmItem.Discriminator" asp-route-slug="@filmItem.Slug" asp-route-seasonnumber="@filmItem.Episode_SeasonNumber" asp-route-episodenumber="@filmItem.Episode_EpisodeNumber">@(filmItem.Episode_SeasonNumber + "x" + @episodeNumber + " " + @filmItem.Name)</a>
+            } else if (filmItem.Discriminator == "Movie") {
+                <img src="/images/filmitem/poster/@(filmItem.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@(filmItem.Name)" height="127px" width="84px" />
+                <a asp-action="Details" asp-controller="@filmItem.Discriminator" asp-route-slug="@filmItem.Slug">@filmItem.Name</a>
+            }
+        }
+    }    
+</div>
+
 @section Scripts {
     <script type="text/javascript">  
         $(function () {  

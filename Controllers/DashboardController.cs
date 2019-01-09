@@ -41,8 +41,11 @@ namespace MovieProject.Controllers
                 MoviesWatched = userViewings.MoviesWatched,
                 MovieTimeWatched = CalculateInDays(userViewings.MovieTimeWatched),
                 RecentlyWatchedFilmItems = RecentlyWatchedFilmItems(user),
-                UserViewingByDate = GetLast30Days(filmItems)
+                UserViewingByDate = GetLast30Days(filmItems),
+                UpcomingFilmItems = UpcomingFilmItemsFromWatchlist(user)
             };
+
+            UpcomingFilmItemsFromWatchlist(user);
             
             return View(dashboardIndexViewModel);
         }
@@ -141,6 +144,67 @@ namespace MovieProject.Controllers
             userViewingByDate.TimeWatched = timeWatched;
 
             return userViewingByDate;
+        }
+
+        public List<UpcomingFilmItems> UpcomingFilmItemsFromWatchlist(ApplicationUser user)
+        {
+            var watchList = _context.Lists.Include(l => l.ListItems).ThenInclude(li => li.FilmItem).Where(l => l.ApplicationUserId == user.Id).Where(l => l.Name == "Watchlist").FirstOrDefault();
+            
+            var upcomingWatchListItems = watchList.ListItems.Where(li => li.FilmItem.Discriminator == "Movie" || li.FilmItem.Discriminator == "Episode")
+                                                            .Where(l => l.FilmItem.ReleaseDate.Value.Date >= DateTime.Now.Date)
+                                                            .Where(l => l.FilmItem.ReleaseDate.Value.Date < DateTime.Now.AddDays(7));
+
+            List<FilmItem> upcomingFilmItems = new List<FilmItem>();
+            foreach (var listItem in upcomingWatchListItems)
+            {
+                upcomingFilmItems.Add(listItem.FilmItem);
+            }
+            System.Console.WriteLine(upcomingFilmItems.Count);
+
+            var seriesInWishlist = watchList.ListItems.Where(li => li.FilmItem.Discriminator == "Series").ToList();
+            if (seriesInWishlist.Count > 0)
+            {
+                foreach (var series in seriesInWishlist)
+                {
+                    var episodeInSeries = _context.Episodes.Where(e => e.Rel_SeriesId == series.FilmItemId);
+                    foreach (var episode in episodeInSeries)
+                    {
+                        if ((episode.ReleaseDate.Value.Date >= DateTime.Now && episode.ReleaseDate.Value.Date < DateTime.Now.AddDays(7)) && !upcomingFilmItems.Contains(episode))
+                        {
+                            upcomingFilmItems.Add(episode);
+                        }
+                    }
+                }
+            }
+            System.Console.WriteLine(upcomingFilmItems.Count);
+
+            var upcomingFilmItemsByDate = UpcomingFilmItemsByDate(upcomingFilmItems);
+
+            return upcomingFilmItemsByDate;
+        }
+
+        public List<UpcomingFilmItems> UpcomingFilmItemsByDate(List<FilmItem> upcomingWatchListItems)
+        {
+            List<UpcomingFilmItems> upcomingFilmItemList = new List<UpcomingFilmItems>();
+            for (DateTime d = DateTime.Now; d < DateTime.Now.AddDays(7); d = d.AddDays(1))
+            {
+                UpcomingFilmItems upcomingFilmItems = new UpcomingFilmItems();
+                upcomingFilmItems.Date = d.Date;
+                upcomingFilmItems.FilmItems = new List<FilmItem>();
+
+                foreach (var item in upcomingWatchListItems)
+                {
+                    if (item.ReleaseDate.Value.Date == d.Date)
+                    {
+                        upcomingFilmItems.FilmItems.Add(item);
+                    }
+                }
+
+                upcomingFilmItemList.Add(upcomingFilmItems);
+                //System.Console.WriteLine(d.Date);
+            }
+
+            return upcomingFilmItemList;
         }
     }
 }

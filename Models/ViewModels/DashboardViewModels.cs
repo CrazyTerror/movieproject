@@ -16,6 +16,7 @@ namespace MovieProject.Models
         public string MovieTimeWatched { get; set; }
         public List<UserWatchedFilmItemOn> RecentlyWatchedFilmItems { get; set; }
         public List<UserViewingByDate> UserViewingByDate { get; set; }
+        public List<UpcomingFilmItems> UpcomingFilmItems { get; set; }
     }
 
     public class UserViewings
@@ -32,5 +33,11 @@ namespace MovieProject.Models
         public DateTime Date { get; set; }
         public int AmountOfMovies { get; set; }
         public int AmountOfEpisodes { get; set; }
+    }
+
+    public class UpcomingFilmItems
+    {
+        public DateTime Date { get; set; }
+        public List<FilmItem> FilmItems { get; set; }
     }
 }
