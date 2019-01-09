@@ -160,13 +160,21 @@ namespace MovieProject.Controllers
                 upcomingFilmItems.Add(listItem.FilmItem);
             }
 
-            var seriesInWishlist = watchList.ListItems.Where(li => li.FilmItem.Discriminator == "Series").ToList();
-            if (seriesInWishlist.Count > 0)
+            var seasonSeriesInWishlist = watchList.ListItems.Where(li => li.FilmItem.Discriminator == "Season" || li.FilmItem.Discriminator == "Series").ToList();
+            if (seasonSeriesInWishlist.Count > 0)
             {
-                foreach (var series in seriesInWishlist)
+                foreach (var listItem in seasonSeriesInWishlist)
                 {
-                    var episodeInSeries = _context.Episodes.Where(e => e.Rel_SeriesId == series.FilmItemId);
-                    foreach (var episode in episodeInSeries)
+                    List<Episode> episodes = new List<Episode>(); 
+                    if (listItem.FilmItem.Discriminator == "Season")
+                    {
+                        episodes = _context.Episodes.Where(e => e.Episode_SeasonNumber == listItem.FilmItem.Season_SeasonNumber).Where(e => e.Rel_SeriesId == listItem.FilmItem.Rel_SeriesId).ToList();
+                    } else if (listItem.FilmItem.Discriminator == "Series")
+                    {
+                        episodes = _context.Episodes.Where(e => e.Rel_SeriesId == listItem.FilmItemId).ToList();
+                    }
+
+                    foreach (var episode in episodes)
                     {
                         if ((episode.ReleaseDate.Value.Date >= DateTime.Now && episode.ReleaseDate.Value.Date < DateTime.Now.AddDays(7)) && !upcomingFilmItems.Contains(episode))
                         {
