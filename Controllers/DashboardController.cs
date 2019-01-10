@@ -72,8 +72,9 @@ namespace MovieProject.Controllers
 
         public List<UserWatchedFilmItemOn> RecentlyWatchedFilmItems(ApplicationUser user)
         {
-            var recentlyWatchedFilmItems = _context.UserWatching.Where(uw => uw.ApplicationUserId == user.Id)
-                                                                .Include(f => f.FilmItem)
+            var recentlyWatchedFilmItems = _context.UserWatching.Include(f => f.FilmItem)
+                                                                .Where(uw => uw.ApplicationUserId == user.Id)
+                                                                .Where(uw => uw.FilmItem.Discriminator == "Movie" || uw.FilmItem.Discriminator == "Episode")
                                                                 .OrderByDescending(uw => uw.WatchedOn)
                                                                 .Take(5)
                                                                 .ToList();

@@ -32,7 +32,7 @@
             <img src="/images/filmitem/poster/@(Model.MostWatchedMovie.Id).jpg" onerror="this.src='/images/filmitem/poster/template.jpg';this.onerror='';" alt="@(Model.MostWatchedMovie.Name)" height="127px" width="84px" />
             @Model.MostWatchedMovie.Name
         </a>
-        <a asp-action="Details" asp-controller="@(Model.MostWatchedMovie.Discriminator)" asp-route-slug="@(Model.MostWatchedMovie.Slug)">@Model.LastWatchedFilmItem.FilmItem.Discriminator Info</a>
+        <a asp-action="Details" asp-controller="@(Model.MostWatchedMovie.Discriminator)" asp-route-slug="@(Model.MostWatchedMovie.Slug)">@Model.MostWatchedMovie.Discriminator Info</a>
     }
 </div>
 
