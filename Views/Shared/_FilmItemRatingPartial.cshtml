@@ -30,6 +30,7 @@
         }
     } else 
     { 
-        <div>You can rate when the series is out</div> 
+        string filmItemType = Model.Discriminator.ToLower();
+        <div>You can rate when the @filmItemType is out</div>
     }
 </li>

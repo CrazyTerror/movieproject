@@ -19,8 +19,8 @@
 }
 
 <div class="row">
-    <a asp-action="Comments">All @ViewBag.CommentCount Comments</a>
-    @foreach (var review in @Model.Reviews.OrderByDescending(x => x.CreatedAt).Take(3))
+    <a asp-action="Comments">All @ViewBag.CommentCount Reviews</a>
+    @foreach (var review in @Model.Reviews.Where(r => r.ShoutId == null).OrderByDescending(x => x.CreatedAt).Take(3))
     {
         var user = @UserManager.FindByIdAsync(review.ApplicationUserId);
         <div>Review by <a asp-action="Details" asp-controller="User" asp-route-slug="@user.Result.Slug">@user.Result.UserName</a></div>
@@ -35,13 +35,58 @@
                     Delete
                 </button>
             </form>
-        } else if (review.ApplicationUserId != UserManager.GetUserId(User) && User.Identity.IsAuthenticated) {
-            <a href="">Reply</a>
-            
-        }
+        } 
         <a asp-action="Details" asp-controller="Review" asp-route-id="@review.Id">
             <div>@review.CreatedAt.ToString("d MMMM yyyy HH:mm")</div>
         </a>
         <div>@review.Comment</div>
+
+        <a onclick="javascript:showRepliesDiv(@review.Id)">Replies</a>
+        <div id="replies#@review.Id" style="display: none;">
+            @foreach (var reply in @Model.Reviews.Where(r => r.ShoutId == review.Id).OrderBy(r => r.CreatedAt))
+            {
+                @if (reply.ApplicationUserId == UserManager.GetUserId(User) || User.IsInRole("Admins"))
+                {
+                    <form asp-action="DeleteReview" asp-controller="Review" method="post">
+                        <input type="hidden" name="ReviewId" value="@reply.Id" />
+                        <a asp-action="EditReview" asp-controller="Review" class="btn btn-sm btn-warning" asp-route-id="@reply.Id">
+                            Edit
+                        </a>
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            Delete
+                        </button>
+                    </form>
+                } 
+                var userReplying = @UserManager.FindByIdAsync(reply.ApplicationUserId);
+                <div>Reply by <a asp-action="Details" asp-controller="User" asp-route-slug="@user.Result.Slug">@userReplying.Result.UserName</a></div>
+                <div>@reply.Comment</div>
+                <a asp-action="Details" asp-controller="Review" asp-route-id="@review.Id">
+                    <div>@reply.CreatedAt.ToString("d MMMM yyyy HH:mm")</div>
+                </a>
+                <br>
+            }
+        </div>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a onclick="javascript:showReplyDiv(@review.Id)">Reply</a>
+            <div id="reply#@review.Id" style="display: none;">
+                <form class="form-horizontal" asp-action="AddReview" asp-controller="Review" method="post">
+                    <div class="form-group">
+                        <input type="hidden" name="FilmItemId" value="@Model.Id" />
+                        <input type="hidden" name="ReviewId" value="@review.Id" />
+                        <label class="col-md-2 control-label">Reply</label>
+                        <div class="col-md-8">
+                            <span class="text-danger"></span>
+                            <textarea name="Comment" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-primary" type="submit">Submit Reply</button>
+                    </div>
+                </form>
+            </div>
+        }
+        <br>
     }
 </div>

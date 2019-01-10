@@ -23,12 +23,21 @@ namespace MovieProject.Controllers
             _userManager = userManager;
         }
 
+
         [HttpGet("reviews/{id}")]
+        [AllowAnonymous]
         public ViewResult Details(int id)
         {
-            var review = _context.Reviews.FirstOrDefault(r => r.Id == id);
+            var review = _context.Reviews.Include(r => r.FilmItem).FirstOrDefault(r => r.Id == id);
+            var replies = _context.Reviews.Where(r => r.ShoutId == review.Id).OrderBy(r => r.CreatedAt).ToList();
 
-            return View(review);
+            ReviewDetailsViewModel reviewDetailsViewModel = new ReviewDetailsViewModel
+            {
+                Review = review,
+                Replies = replies
+            };
+
+            return View(reviewDetailsViewModel);
         }
         
         [HttpPost("addReview")]
@@ -38,11 +47,21 @@ namespace MovieProject.Controllers
             var applicationUser = _userManager.GetUserId(User);
             var filmItem = _context.FilmItem.FirstOrDefault(f => f.Id == int.Parse(Request.Form["FilmItemId"]));
             
+            int? reviewId;
+            if (!string.IsNullOrWhiteSpace(Request.Form["ReviewId"]))
+            {
+                reviewId = int.Parse(Request.Form["ReviewId"]);
+            } else
+            {
+                reviewId = null;
+            }
+            
             Review review = new Review
             {
                 ApplicationUserId = applicationUser,
                 FilmItem = filmItem,
-                Comment = Request.Form["Comment"]
+                Comment = Request.Form["Comment"],
+                ShoutId = reviewId
             };
             _context.Reviews.Add(review);
             _context.SaveChanges();

@@ -1,0 +1,58 @@
+@model MovieProject.Models.ReviewDetailsViewModel
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var user = @UserManager.FindByIdAsync(Model.Review.ApplicationUserId);
+    ViewData["Title"] = @Model.Review.FilmItem.Name + " (" + Model.Review.FilmItem.ReleaseDate.Value.Year + ")" + " review by " + @user.Result.UserName;
+}
+
+<div class="row">
+    <div>Review by <a asp-action="Details" asp-controller="User" asp-route-slug="@user.Result.Slug">@user.Result.UserName</a></div>
+    @if (Model.Review.ApplicationUserId == UserManager.GetUserId(User) || User.IsInRole("Admins"))
+    {
+        <form asp-action="DeleteReview" asp-controller="Review" method="post">
+            <input type="hidden" name="ReviewId" value="@Model.Review.Id" />
+            <a asp-action="EditReview" asp-controller="Review" class="btn btn-sm btn-warning" asp-route-id="@Model.Review.Id">
+                Edit
+            </a>
+            <button type="submit" class="btn btn-danger btn-sm">
+                Delete
+            </button>
+        </form>
+    } 
+    <a asp-action="Details" asp-controller="Review" asp-route-id="@Model.Review.Id">
+        <div>@Model.Review.CreatedAt.ToString("d MMMM yyyy HH:mm")</div>
+    </a>
+    <div>@Model.Review.Comment</div>
+    <br>
+</div>
+
+@if (Model.Replies.Count > 0)
+{
+    <div class="row">
+        <div>Replies</div>
+        @foreach (var reply in Model.Replies)
+        {
+            @if (reply.ApplicationUserId == UserManager.GetUserId(User) || User.IsInRole("Admins"))
+            {
+                <form asp-action="DeleteReview" asp-controller="Review" method="post">
+                    <input type="hidden" name="ReviewId" value="@reply.Id" />
+                    <a asp-action="EditReview" asp-controller="Review" class="btn btn-sm btn-warning" asp-route-id="@reply.Id">
+                        Edit
+                    </a>
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        Delete
+                    </button>
+                </form>
+            } 
+            var userReplying = @UserManager.FindByIdAsync(reply.ApplicationUserId);
+            <div>Reply by <a asp-action="Details" asp-controller="User" asp-route-slug="@user.Result.Slug">@userReplying.Result.UserName</a></div>
+            <div>@reply.Comment</div>
+            <a asp-action="Details" asp-controller="Review" asp-route-id="@reply.Id">
+                <div>@reply.CreatedAt.ToString("d MMMM yyyy HH:mm")</div>
+            </a>
+            <br>
+        }
+    </div>
+}
+

@@ -110,4 +110,24 @@
         }
         $('#rating').html(select);
     </script>
+
+    <script language="javascript" type='text/javascript'>
+        function showRepliesDiv(id)
+        {
+            if (document.getElementById)
+            {
+                document.getElementById('replies#' + id).style.display = "block";
+            }
+        }
+    </script>
+
+    <script language="javascript" type='text/javascript'>
+        function showReplyDiv(id)
+        {
+            if (document.getElementById)
+            {
+                document.getElementById('reply#' + id).style.display = "block";
+            }
+        }
+    </script>
 }
