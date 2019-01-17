@@ -113,6 +113,13 @@ namespace MovieProject.Controllers
                 list.Name = tempList.Name;
                 list.Slug = UrlEncoder.ListSlugSearch(_context, tempList, user.Id);
                 list.Description = tempList.Description;
+
+                if (tempList.Name == "Watchlist") {
+                    list.Privacy = false;
+                } else {
+                    list.Privacy = tempList.Privacy;
+                }
+                
                 list.UpdatedAt = DateTime.Now;
                 _context.SaveChanges();
                 

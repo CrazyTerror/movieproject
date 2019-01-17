@@ -20,6 +20,20 @@
             <textarea asp-for="Description" class="form-control"></textarea>
         </div>
     </div>
+    @if (Model.Name != "Watchlist")
+    {
+        <div class="form-group">
+            <label class="col-md-2 control-label" asp-for="Privacy"></label>
+            <div class="col-md-8">
+                <span asp-validation-for="Privacy" class="text-danger"></span>
+                <select asp-for="Privacy" name="Privacy" class="form-control">
+                    <option selected disabled>--- Choose ---</option>
+                    <option value="false">Public</option>
+                    <option value="true">Private</option>
+                </select>
+            </div>
+        </div>
+    }
     <div class="text-center">
         <button class="btn btn-primary" type="submit">Save</button>
         <a asp-action="Index" class="btn btn-secondary">Cancel</a>
