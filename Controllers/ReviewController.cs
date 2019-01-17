@@ -101,7 +101,7 @@ namespace MovieProject.Controllers
         [HttpGet("comment/{id}")]
         public IActionResult EditReview(int Id)
         {
-            var comment = _context.Reviews.Include(f => f.FilmItem).FirstOrDefault(r => r.Id == Id);
+            var comment = _context.Reviews.Include(f => f.FilmItem).Include(l => l.List).FirstOrDefault(r => r.Id == Id);
 
             if (comment != null && comment.ApplicationUserId == _userManager.GetUserId(User))
             {
@@ -122,7 +122,14 @@ namespace MovieProject.Controllers
             comment.UpdatedAt = DateTime.Now;
             _context.SaveChanges();
 
-            return RedirectToAction("Details", comment.FilmItem.Discriminator, new { Slug = comment.FilmItem.Slug});
+            if (comment.ListId != null)
+            {
+                var list = _context.Lists.FirstOrDefault(l => l.Id == comment.ListId);
+                var user = _userManager.Users.FirstOrDefault(u => u.Id == list.ApplicationUserId);
+                return RedirectToAction("Comments", "List", new { Slug = user, listName = list.Slug });
+            } else {
+                return RedirectToAction("Details", comment.FilmItem.Discriminator, new { Slug = comment.FilmItem.Slug});
+            }
         }
 
         [HttpPost("deleteReview")]
@@ -135,9 +142,16 @@ namespace MovieProject.Controllers
                 _context.Reviews.Remove(comment);
                 _context.SaveChanges();
 
-                TempData["message"] = $"Your comment on {comment.FilmItem.Name} was deleted";
+                TempData["message"] = $"Your comment was deleted";
             } 
-            return RedirectToAction("Details", comment.FilmItem.Discriminator, new { Slug = comment.FilmItem.Slug});
+
+            if (comment.ListId != null) {
+                var list = _context.Lists.FirstOrDefault(l => l.Id == comment.ListId);
+                var user = _userManager.Users.FirstOrDefault(u => u.Id == list.ApplicationUserId);
+                return RedirectToAction("Comments", "List", new { Slug = user, listName = list.Slug });
+            } else {
+                return RedirectToAction("Details", comment.FilmItem.Discriminator, new { Slug = comment.FilmItem.Slug});
+            }
         }
     }
 }

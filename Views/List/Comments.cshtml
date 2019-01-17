@@ -29,10 +29,26 @@
 {
     @foreach (var comment in Model.Comments)
     {
+        @if (comment.ApplicationUserId == UserManager.GetUserId(User) || User.IsInRole("Admins"))
+        {
+            <form asp-action="DeleteReview" asp-controller="Review" method="post">
+                <input type="hidden" name="ReviewId" value="@comment.Id" />
+                <a asp-action="EditReview" asp-controller="Review" class="btn btn-sm btn-warning" asp-route-id="@comment.Id">
+                    Edit
+                </a>
+                <button type="submit" class="btn btn-danger btn-sm">
+                    Delete
+                </button>
+            </form>
+        } 
+
         var user = @UserManager.FindByIdAsync(comment.ApplicationUserId);
         <div>Shout by 
             <a asp-action="Details" asp-controller="User" asp-route-slug="@user.Result.Slug">@(user.Result.UserName)</a>
         </div>
+        
         <div>@comment.CreatedAt.ToString("d MMMM yyyy HH:mm")</div>
+        <div>@(comment.Comment)</div>
+        <br>
     }
 }
