@@ -170,36 +170,6 @@ namespace MovieProject.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Reviews",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    ApplicationUserId = table.Column<string>(nullable: true),
-                    FilmItemId = table.Column<int>(nullable: false),
-                    ShoutId = table.Column<int>(nullable: true),
-                    Comment = table.Column<string>(nullable: true),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    UpdatedAt = table.Column<DateTime>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Reviews", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Reviews_FilmItem_FilmItemId",
-                        column: x => x.FilmItemId,
-                        principalTable: "FilmItem",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Reviews_Reviews_ShoutId",
-                        column: x => x.ShoutId,
-                        principalTable: "Reviews",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Trivia",
                 columns: table => new
                 {
@@ -347,6 +317,43 @@ namespace MovieProject.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Reviews",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ApplicationUserId = table.Column<string>(nullable: true),
+                    FilmItemId = table.Column<int>(nullable: true),
+                    ShoutId = table.Column<int>(nullable: true),
+                    ListId = table.Column<int>(nullable: true),
+                    Comment = table.Column<string>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reviews", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reviews_FilmItem_FilmItemId",
+                        column: x => x.FilmItemId,
+                        principalTable: "FilmItem",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Reviews_Lists_ListId",
+                        column: x => x.ListId,
+                        principalTable: "Lists",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Reviews_Reviews_ShoutId",
+                        column: x => x.ShoutId,
+                        principalTable: "Reviews",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FilmItemCredits",
                 columns: table => new
                 {
@@ -453,12 +460,14 @@ namespace MovieProject.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Media_FilmItemId",
                 table: "Media",
-                column: "FilmItemId");
+                column: "FilmItemId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Media_PersonId",
                 table: "Media",
-                column: "PersonId");
+                column: "PersonId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Photos_FilmItemId",
@@ -469,6 +478,11 @@ namespace MovieProject.Migrations
                 name: "IX_Reviews_FilmItemId",
                 table: "Reviews",
                 column: "FilmItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reviews_ListId",
+                table: "Reviews",
+                column: "ListId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_ShoutId",
@@ -538,10 +552,10 @@ namespace MovieProject.Migrations
                 name: "Genres");
 
             migrationBuilder.DropTable(
-                name: "Lists");
+                name: "Persons");
 
             migrationBuilder.DropTable(
-                name: "Persons");
+                name: "Lists");
 
             migrationBuilder.DropTable(
                 name: "FilmItem");

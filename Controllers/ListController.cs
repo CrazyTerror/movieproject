@@ -49,6 +49,7 @@ namespace MovieProject.Controllers
             var user = _userManager.Users.FirstOrDefault(u => u.Slug == Slug);
 
             var list = _context.Lists.Include(li => li.ListItems).ThenInclude(f => f.FilmItem)
+                                     .Include(l => l.Reviews)
                                      .Where(u => u.ApplicationUserId == user.Id)
                                      .FirstOrDefault(l => l.Slug == listName);
                                      
@@ -191,6 +192,22 @@ namespace MovieProject.Controllers
             } 
 
             return RedirectToAction("Details", "List", new { listName = listName });
+        }
+
+        [HttpGet("users/{Slug}/lists/{listName}/comments")]
+        [AllowAnonymous]
+        public ViewResult Comments(string Slug, string listName)
+        {
+            var list = _context.Lists.Where(m => m.Slug == listName).FirstOrDefault();
+            var comments = _context.Reviews.Include(r => r.List).Where(r => r.List == list).OrderByDescending(x => x.CreatedAt).ToList();
+
+            ListCommentsViewModel listCommentsViewModel = new ListCommentsViewModel
+            {
+                Comments = comments,
+                List = list
+            };
+
+            return View(listCommentsViewModel);
         }
     }
 }

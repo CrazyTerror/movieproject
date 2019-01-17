@@ -1,0 +1,38 @@
+@model MovieProject.Models.ListCommentsViewModel
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "All comments for " + Model.List.Name;
+}   
+
+@if (User.Identity.IsAuthenticated)
+{   
+    <div class="row">Add Comment</div>
+    <div class="row">
+        <form class="form-horizontal" asp-action="AddReview" asp-controller="Review" method="post">
+            <div class="form-group">
+                <input type="hidden" name="ListId" value="@Model.List.Id"/>
+                <label class="col-md-2 control-label">Comment</label>
+                <div class="col-md-8">
+                    <span class="text-danger"></span>
+                    <textarea name="Comment" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="text-center">
+                <button class="btn btn-primary" type="submit">Add Review</button>
+            </div>
+        </form>
+    </div>
+}
+
+@if (Model.Comments.Count > 0)
+{
+    @foreach (var comment in Model.Comments)
+    {
+        var user = @UserManager.FindByIdAsync(comment.ApplicationUserId);
+        <div>Shout by 
+            <a asp-action="Details" asp-controller="User" asp-route-slug="@user.Result.Slug">@(user.Result.UserName)</a>
+        </div>
+        <div>@comment.CreatedAt.ToString("d MMMM yyyy HH:mm")</div>
+    }
+}

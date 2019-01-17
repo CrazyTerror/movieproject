@@ -161,15 +161,6 @@ namespace MovieProject.Models
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
 
-    /*public class FilmItemCharacter
-    {
-        public int Id { get; set; }
-        public int FilmItemCreditsId { get; set; }
-        public FilmItemCredits FilmItemCredits { get; set; }
-        public string Character { get; set; }
-        public int BillingPosition { get; set; }
-    }*/
-
     public class FilmItemGenre
     {
         public int Id { get; set; }
@@ -218,6 +209,7 @@ namespace MovieProject.Models
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
         public ICollection<ListItem> ListItems { get; set; }
+        public ICollection<Review> Reviews { get; set; }
     }
     
     public class ListItem
@@ -235,27 +227,17 @@ namespace MovieProject.Models
     {
         public int Id { get; set; }
         public string ApplicationUserId { get; set; }
-        public int FilmItemId { get; set; }
-        public FilmItem FilmItem { get; set; }
+        public int? FilmItemId { get; set; }
+        public FilmItem FilmItem { get; set; } = null;
         public int? ShoutId { get; set; }
         public Review Shout { get; set; } = null;
+        public int? ListId { get; set; }
+        public List List { get; set; } = null;
         [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$")]
         public string Comment { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
-
-    /* public class Reply
-    {
-        public int Id { get; set; }
-        public string ApplicationUserId { get; set; }
-        public int ReviewId { get; set; }
-        public Review Review { get; set; }
-        public string Comment { get; set; }
-        public int Likes { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
-    }*/
 
     public class Trivia
     {

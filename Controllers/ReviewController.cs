@@ -45,9 +45,9 @@ namespace MovieProject.Controllers
         public IActionResult AddReview()
         {
             var applicationUser = _userManager.GetUserId(User);
-            var filmItem = _context.FilmItem.FirstOrDefault(f => f.Id == int.Parse(Request.Form["FilmItemId"]));
             
-            int? reviewId;
+            int? reviewId, listId, filmItemId;
+            FilmItem filmItem = new FilmItem();
             if (!string.IsNullOrWhiteSpace(Request.Form["ReviewId"]))
             {
                 reviewId = int.Parse(Request.Form["ReviewId"]);
@@ -55,17 +55,40 @@ namespace MovieProject.Controllers
             {
                 reviewId = null;
             }
+
+            if (!string.IsNullOrWhiteSpace(Request.Form["ListId"]))
+            {
+                listId = int.Parse(Request.Form["ListId"]);
+            } else {
+                listId = null;
+            }
+
+            if (!string.IsNullOrWhiteSpace(Request.Form["FilmItemId"]))
+            {
+                filmItemId = int.Parse(Request.Form["FilmItemId"]);
+                filmItem = _context.FilmItem.FirstOrDefault(f => f.Id == int.Parse(Request.Form["FilmItemId"]));
+            } else {
+                filmItemId = null;
+            }
             
             Review review = new Review
             {
                 ApplicationUserId = applicationUser,
-                FilmItem = filmItem,
+                FilmItemId = filmItemId,
                 Comment = Request.Form["Comment"],
-                ShoutId = reviewId
+                ShoutId = reviewId,
+                ListId = listId
             };
             _context.Reviews.Add(review);
             _context.SaveChanges();
             
+            if (listId != null)
+            {
+                var list = _context.Lists.FirstOrDefault(l => l.Id == listId);
+                var user = _userManager.Users.FirstOrDefault(u => u.Id == list.ApplicationUserId);
+                return RedirectToAction("Comments", "List", new { Slug = user, listName = list.Slug });
+            }
+
             if (filmItem.Discriminator == "Season") {
                 return RedirectToAction("Details", filmItem.Discriminator, new { Slug = filmItem.Slug, SeasonNumber = filmItem.Season_SeasonNumber });
             } else if (filmItem.Discriminator == "Episode") {

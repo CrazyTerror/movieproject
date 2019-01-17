@@ -9,7 +9,7 @@ using MovieProject.Models;
 namespace MovieProject.Migrations
 {
     [DbContext(typeof(MovieContext))]
-    [Migration("20181130145142_Initial")]
+    [Migration("20190117112050_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -243,9 +243,11 @@ namespace MovieProject.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FilmItemId");
+                    b.HasIndex("FilmItemId")
+                        .IsUnique();
 
-                    b.HasIndex("PersonId");
+                    b.HasIndex("PersonId")
+                        .IsUnique();
 
                     b.ToTable("Media");
                 });
@@ -313,7 +315,9 @@ namespace MovieProject.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<int>("FilmItemId");
+                    b.Property<int?>("FilmItemId");
+
+                    b.Property<int?>("ListId");
 
                     b.Property<int?>("ShoutId");
 
@@ -322,6 +326,8 @@ namespace MovieProject.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FilmItemId");
+
+                    b.HasIndex("ListId");
 
                     b.HasIndex("ShoutId");
 
@@ -512,12 +518,12 @@ namespace MovieProject.Migrations
             modelBuilder.Entity("MovieProject.Models.Media", b =>
                 {
                     b.HasOne("MovieProject.Models.FilmItem", "FilmItem")
-                        .WithMany("Media")
-                        .HasForeignKey("FilmItemId");
+                        .WithOne("Media")
+                        .HasForeignKey("MovieProject.Models.Media", "FilmItemId");
 
                     b.HasOne("MovieProject.Models.Person", "Person")
-                        .WithMany()
-                        .HasForeignKey("PersonId");
+                        .WithOne("Media")
+                        .HasForeignKey("MovieProject.Models.Media", "PersonId");
                 });
 
             modelBuilder.Entity("MovieProject.Models.Photo", b =>
@@ -532,8 +538,11 @@ namespace MovieProject.Migrations
                 {
                     b.HasOne("MovieProject.Models.FilmItem", "FilmItem")
                         .WithMany("Reviews")
-                        .HasForeignKey("FilmItemId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("FilmItemId");
+
+                    b.HasOne("MovieProject.Models.List", "List")
+                        .WithMany("Reviews")
+                        .HasForeignKey("ListId");
 
                     b.HasOne("MovieProject.Models.Review", "Shout")
                         .WithMany()
@@ -559,7 +568,7 @@ namespace MovieProject.Migrations
             modelBuilder.Entity("MovieProject.Models.UserWatchedFilmItemOn", b =>
                 {
                     b.HasOne("MovieProject.Models.FilmItem", "FilmItem")
-                        .WithMany()
+                        .WithMany("UserWatchedOn")
                         .HasForeignKey("FilmItemId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
